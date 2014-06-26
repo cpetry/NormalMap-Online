@@ -3,21 +3,18 @@ var max_height = 300;
 
 
 var initHeightMap = function(){
-	var div_container = document.getElementById("height_map");
-	div_container.setAttribute("style","width:" + max_height + "px; height:" + max_height + "px;");
-	
+	var div_container = document.getElementById("height_map");	
 	var canvas = document.getElementById('height_canvas');
-	canvas.setAttribute("style","width:" + max_height + "px; height:" + max_height + "px;");
 	var context = canvas.getContext('2d');
+	
+	canvas.height = max_height;
+	
     height_image = new Image();
-
 	height_image.onload = function () {
 		context.drawImage(height_image, 0, 0, height_image.width, height_image.height, 0,0, canvas.width, canvas.height);
 		height_image.width = height_image.naturalWidth;
 		height_image.height = height_image.naturalHeight;
     };
-	
-	
 	
     height_image.src = './images/default_pic.png';
 }
@@ -60,6 +57,7 @@ require(["dojo/dom", "dojo/domReady!"], function(dom){
 	
 	var render = function(source){
 		height_image = new Image();
+
 		height_image.onload = function(){
 			if(height_image.height > max_height) {
 				height_image.width *= max_height / height_image.height;
@@ -74,10 +72,11 @@ require(["dojo/dom", "dojo/domReady!"], function(dom){
 			context.clearRect(0, 0, height_canvas.width, height_canvas.height);
 			height_map_drop.style.width = height_image.width + "px";
 			height_map_drop.style.height = height_image.height + "px";
+			
 			height_canvas.width = height_image.width;
 			height_canvas.height = height_image.height;
 			
-			context.drawImage(height_image, 0, 0, height_image.width, height_image.height);
+			context.drawImage(height_image, 0, 0, height_canvas.width, height_canvas.height);
 		};
 		
 		height_image.src = source;
@@ -93,12 +92,12 @@ require(["dojo/dom", "dojo/domReady!"], function(dom){
 
 var createNormalMap = function(){
 	var div_container = document.getElementById("normal_map");
-	div_container.setAttribute("style","width:" + max_height + "px; height:" + max_height + "px;");
-	
-	var normal_canvas = document.getElementById("normal_canvas");
-	normal_canvas.setAttribute("style","width:" + max_height + "px; height:" + max_height + "px;");
-	
+	var normal_canvas = document.getElementById("normal_canvas");	
 	var ctx_normal = normal_canvas.getContext("2d");
+	
+	normal_canvas.height = max_height;
+	normal_canvas.width = max_height;
+	
 	ctx_normal.clearRect(0, 0, normal_canvas.width, normal_canvas.height);
 	
 	var grayscale = Filters.filterImage(Filters.grayscale, height_image);
@@ -107,7 +106,10 @@ var createNormalMap = function(){
 	// to use a Float32Array for the gradient values because they
 	// range between -255 and 255.
 	
-	var img_data = Filters.newsobelfilter(grayscale, document.getElementById("strength_slider").value, document.getElementById("level_slider").value);
+	var img_data = Filters.newsobelfilter(grayscale, 
+			document.getElementById("strength_slider").value, 
+			document.getElementById("level_slider").value);
+	
 	var idata = Filters.createImageData(img_data.width, img_data.height);
 	
 	for (var i=0; i<img_data.data.length; i++)
