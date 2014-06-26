@@ -100,8 +100,6 @@ var createNormalMap = function(){
 	
 	var ctx_normal = normal_canvas.getContext("2d");
 	ctx_normal.clearRect(0, 0, normal_canvas.width, normal_canvas.height);
-	normal_canvas.width = height_image.width;
-	normal_canvas.height = height_image.height;
 	
 	var grayscale = Filters.filterImage(Filters.grayscale, height_image);
 	
