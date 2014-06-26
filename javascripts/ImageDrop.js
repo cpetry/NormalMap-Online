@@ -92,6 +92,9 @@ require(["dojo/dom", "dojo/domReady!"], function(dom){
 
 
 var createNormalMap = function(){
+	var div_container = document.getElementById("normal_map");
+	div_container.setAttribute("style","width:" + max_height + "px; height:" + max_height + "px;");
+	
 	var normal_canvas = document.getElementById("normal_canvas");
 	
 	var ctx_normal = normal_canvas.getContext("2d");
