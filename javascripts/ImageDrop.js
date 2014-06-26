@@ -116,6 +116,8 @@ var createNormalMap = function(){
 		idata.data[i] = img_data.data[i];
 	
 	ctx_normal.putImageData(idata, 0, 0);
+	ctx_normal.height = normal_canvas.height;
+	ctx_normal.width = normal_canvas.width;
 }
 
 
