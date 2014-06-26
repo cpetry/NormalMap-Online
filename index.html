@@ -1,18 +1,67 @@
 <!DOCTYPE html>
-<html>
-<!--
-  <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="Normalmap-online : NormalMap Generator Online" />
+<html lang="en" dir="ltr" xmlns:fb="http://ogp.me/ns/fb#">
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+<style type="text/css">
+		#preview-row {
+			position: relative;
+			width: auto;
+			padding: 12px;
+			border: 1px solid #ccc;
+			height: 336px;
+		}
+		#height_map {
+			position: relative;
+			background-color: #eee;
+			border: 1px solid #ccc;
+			text-align: center;
+			padding: 12px;
+		}
+		#normal_map {
+			position: relative;
+			background-color: #eee;
+			border: 1px solid #ccc;
+			text-align: center;
+			padding: 12px;
+		}
+</style>
+	
 
-    <title>Normalmap-online</title>
-  </head>
-
-  <body>
-
-  </body>
-  -->
-</html>
+<div id="promoNode"></div>	
+	<div id="preview-row">
+		<table>
+			<tr>
+				<td>
+					<div id="height_map">
+					<canvas id="height_canvas"></canvas>
+					</div>
+				</td>
+				<td>
+					<div id="normal_map">
+					<canvas id="normal_canvas"></canvas>
+					</div>
+				</td>
+			</tr>
+			<tr><td><br/></td></tr>
+			<tr>
+				<td>
+					<input type="button" onclick="createNormalMap()" value="Generate NormalMap"/>
+				</td>
+				<td>
+					<table>
+					<tr>
+					<td align="right">Strength</td>
+					<td><input id="strength_slider" type="range"  min='0' max='1' value='0.1' step='0.1'/></td>
+					</tr>
+					<tr>
+					<td align="right">Level</td>
+					<td><input id="level_slider" type="range" value='6.0' min='4' max='8'/></td>
+					</tr>
+				</td>
+			</tr>
+		</table>
+	</div>
+	
+	<script type="text/javascript" src="javascripts/dojo.js"></script>
+	<script type="text/javascript" src="javascripts/filters.js"></script>
+	<script type="text/javascript" src="javascripts/ImageDrop.js"></script>
+</div>
