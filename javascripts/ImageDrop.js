@@ -59,19 +59,14 @@ require(["dojo/dom", "dojo/domReady!"], function(dom){
 		height_image = new Image();
 
 		height_image.onload = function(){
-			if(height_image.height > max_height) {
-				height_image.width *= max_height / height_image.height;
-				height_image.height = max_height;
-			}
-			else{
-				height_image.width = max_height;
-				height_image.height = max_height;
-			}
+			
+			height_image.width = max_height;
+			height_image.height = max_height;
 			
 			var context = height_canvas.getContext("2d");
 			context.clearRect(0, 0, height_canvas.width, height_canvas.height);
-			height_map_drop.style.width = height_image.width + "px";
-			height_map_drop.style.height = height_image.height + "px";
+			height_map_drop.width = height_image.width;
+			height_map_drop.height = height_image.height;
 			
 			height_canvas.width = height_image.width;
 			height_canvas.height = height_image.height;
