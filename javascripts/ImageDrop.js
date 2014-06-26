@@ -81,16 +81,14 @@ require(["dojo/dom", "dojo/domReady!"], function(dom){
 });
 
 
-var download = function(file){
-	canvas = document.getElementById("height_canvas");
-	
-	// here is the most important part because if you dont replace you will get a DOM 18 exception
-	var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");  
-	
-	window.location.href=image; // it will save locally
+function downloadCanvas(link, canvasId, filename) {
+    link.href = document.getElementById(canvasId).toDataURL();
+    link.download = filename;
 }
 
-
+document.getElementById('download').addEventListener('click', function() {
+    downloadCanvas(this, 'height_canvas', 'test.png'); // <- this can be a dynamic name
+}, false);
 
 var createNormalMap = function(){
 	var div_container = document.getElementById("normal_map");
