@@ -81,14 +81,14 @@ require(["dojo/dom", "dojo/domReady!"], function(dom){
 });
 
 
-function downloadCanvas(link, canvasId, filename) {
+var downloadCanvas = function(link, canvasId, filename) {
     link.href = document.getElementById(canvasId).toDataURL();
     link.download = filename;
 }
 
-document.getElementById('download').addEventListener('click', function() {
+var downloadFile = function() {
     downloadCanvas(this, 'height_canvas', 'test.png'); // <- this can be a dynamic name
-}, false);
+}
 
 var createNormalMap = function(){
 	var div_container = document.getElementById("normal_map");
