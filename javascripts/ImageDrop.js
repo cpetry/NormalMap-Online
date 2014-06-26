@@ -96,6 +96,7 @@ var createNormalMap = function(){
 	div_container.setAttribute("style","width:" + max_height + "px; height:" + max_height + "px;");
 	
 	var normal_canvas = document.getElementById("normal_canvas");
+	normal_canvas.setAttribute("style","width:" + max_height + "px; height:" + max_height + "px;");
 	
 	var ctx_normal = normal_canvas.getContext("2d");
 	ctx_normal.clearRect(0, 0, normal_canvas.width, normal_canvas.height);
