@@ -93,7 +93,6 @@ require(["dojo/dom", "dojo/domReady!"], function(dom){
 		height_canvas = dom.byId("height_canvas");
 		
 	
-
 	//	DOMReady setup
 	height_map_drop.addEventListener("dragover", function(e) {e.preventDefault();}, true);
 	height_map_drop.addEventListener("drop", function(e){
@@ -135,6 +134,8 @@ require(["dojo/dom", "dojo/domReady!"], function(dom){
 			height_canvas.height = height_image.height;
 			
 			context.drawImage(height_image, 0, 0, height_canvas.width, height_canvas.height);
+			height_image.width = height_image.naturalWidth;
+			height_image.height = height_image.naturalHeight;
 		};
 		
 		height_image.src = source;
