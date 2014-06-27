@@ -134,10 +134,10 @@ Filters.newsobelfilter = function(pixels, strength, level){
 			
 			var l = Math.sqrt((dX * dX) + (dY * dY) + (dZ * dZ));
 			
-			dst[dstOff] = (dX/l * 0.5 + 0.5) * 255; 	// red
-			dst[dstOff+1] = (dY/l * 0.5 + 0.5) * 255; 	// green
-			dst[dstOff+2] = dZ/l * 255; 				// blue
-			dst[dstOff+3] = 255;
+			dst[dstOff] = (dX/l * 0.5 + 0.5) * 255.0; 	// red
+			dst[dstOff+1] = (dY/l * 0.5 + 0.5) * 255.0; 	// green
+			dst[dstOff+2] = dZ/l * 255.0; 				// blue
+			dst[dstOff+3] = 255.0;
 		}
 	}
 	return output;

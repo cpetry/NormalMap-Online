@@ -1,6 +1,7 @@
 var invert_red = 0;
 var invert_green = 0;
 var invert_source = 0;
+var smoothing = 0;
 
 var createNormalMap = function(){
 	var div_container = document.getElementById("normal_map");
@@ -23,19 +24,30 @@ var createNormalMap = function(){
 			document.getElementById("strength_slider").value, 
 			document.getElementById("level_slider").value);
 	
+	// smoothing
+	var weight_array = []
+	for( var i = 0; i < smoothing * smoothing; i++)
+		weight_array.push(1.0 / (smoothing * smoothing));
+	
+	if (smoothing >= 2)
+		img_data = Filters.convoluteFloat32(img_data,weight_array);
+	
 	var idata = Filters.createImageData(img_data.width, img_data.height);
 	
 	
+	
+	// invert colors if needed
 	for (var i=0; i<img_data.data.length; i++){
 		if ((i % 4 == 0 && invert_red)
 		|| (i % 4 == 1 && invert_green))
-			idata.data[i] = 255 - img_data.data[i];
+			idata.data[i] = 255.0 - img_data.data[i];
 		else
 			idata.data[i] = img_data.data[i];
 	}
+	
+	
 	ctx_normal.putImageData(idata, 0, 0, 0, 0, img_data.width, img_data.height);
 	
-	console.log("canvas_height: " + normal_canvas.height);
 	
 	img.src = normal_canvas.toDataURL("image/png");
 }
@@ -64,5 +76,10 @@ var invertSource = function(){
 	else
 		invert_source = 1;
 		
+	createNormalMap();
+}
+
+var setSmoothing = function(v){
+	smoothing = v;
 	createNormalMap();
 }
