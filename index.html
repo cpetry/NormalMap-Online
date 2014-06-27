@@ -1,14 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr" xmlns:fb="http://ogp.me/ns/fb#">
 
+	
 <style type="text/css">
-		#preview-row {
-			position: relative;
-			width: auto;
-			padding: 12px;
-			border: 1px solid #ccc;
-			height: 336px;
-		}
+		
 		#height_map {
 			position: relative;
 			background-color: #eee;
@@ -23,49 +18,80 @@
 			text-align: center;
 			padding: 12px;
 		}
+		#render_view {
+			position: relative;
+			background-color: #eee;
+			border: 1px solid #ccc;
+			text-align: center;
+			padding: 12px;
+		}
 </style>
 	
 
-<div id="promoNode"></div>	
-	<div id="preview-row">
-		<table>
-			<tr>
+<div id="promoNode"></div>
+	<table align=center >
+		<tr>
+			<td align=center>
+				<p>Drag & Drop Height Map</p>
+			</td>
+			<td align=center>
+				<p>Normal Map</p>
+			</td>
+			<td align=center>
+				<p>3D Preview</p>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<div id="height_map">
+				<canvas height=300 width=300 id="height_canvas"></canvas>
+				</div>
+			</td>
+			<td>
+				<div id="normal_map">
+				<img height=300 width=300 id="normal_img" name="normal_map"/>
+				</div>
+			</td>
+			<td>
+				<div id="render_view">
+				</div>
+			</td>
+		</tr>
+		<tr>
+			<td align=center>
+				<input type="button" onclick="createNormalMap()" value="Generate NormalMap"/>
+			</td>
+			<td align=center>
+				<table>
+				<tr>
+				<td align="right">Strength</td>
+				<td><input id="strength_slider" onchange="createNormalMap()" type="range"  min='0' max='5' value='1' step='0.1'/></td>
+				</tr>
+				<tr>
+				<td align="right">Level</td>
+				<td><input id="level_slider" onchange="createNormalMap()" type="range" value='8.0' min='4' max='10' step='0.1'/></td>
+				</tr>
+				<tr>
 				<td>
-					<div id="height_map">
-					<canvas id="height_canvas"></canvas>
-					</div>
+					<input type="checkbox" onchange="invertRed()">invert red<br>
 				</td>
 				<td>
-					<div id="normal_map">
-					<canvas height=300 id="normal_canvas"></canvas>
-					</div>
+					<input type="checkbox" onchange="invertGreen()">invert green<br>
 				</td>
-			</tr>
-			<tr>
+				<!--
 				<td>
-					<button id="download" onclick="downloadFile()"> Download </button>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<input type="button" onclick="createNormalMap()" value="Generate NormalMap"/>
-				</td>
-				<td>
-					<table>
-					<tr>
-					<td align="right">Strength</td>
-					<td><input id="strength_slider" type="range"  min='0' max='1' value='0.1' step='0.1'/></td>
-					</tr>
-					<tr>
-					<td align="right">Level</td>
-					<td><input id="level_slider" type="range" value='6.0' min='4' max='8'/></td>
-					</tr>
-				</td>
-			</tr>
-		</table>
-	</div>
-	
-	<script type="text/javascript" src="javascripts/dojo.js"></script>
-	<script type="text/javascript" src="javascripts/filters.js"></script>
-	<script type="text/javascript" src="javascripts/ImageDrop.js"></script>
+					<input type="checkbox" onchange="invertSource()">invert source<br>
+				</td>-->
+				</tr>
+			</td>
+		</tr>
+	</table>
 </div>
+
+
+<script type="text/javascript" src="javascripts/three.min.js"></script>
+<script type="text/javascript" src="javascripts/dojo.js"></script>
+<script type="text/javascript" src="javascripts/filters.js"></script>
+<script type="text/javascript" src="javascripts/ImageDrop.js"></script>
+<script type="text/javascript" src="javascripts/normalMap.js"></script>
+<script type="text/javascript" src="javascripts/main.js"></script>
