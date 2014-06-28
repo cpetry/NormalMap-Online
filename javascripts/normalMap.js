@@ -52,8 +52,7 @@ var createNormalMap = function(){
 		
 	ctx_normal.putImageData(idata, 0, 0, 0, 0, img_data.width, img_data.height);
 	
-	
-	img.src = normal_canvas.toDataURL("image/png");
+	img.src = normal_canvas.toDataURL('image/jpeg');
 }
 
 var invertRed = function(){
