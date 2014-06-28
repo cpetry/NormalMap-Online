@@ -85,6 +85,19 @@
 					</tr>
 				</table>
 			</td>
+			<td>
+				<input id="repeat_sliderx" onchange="setRepeat(document.getElementById('repeat_sliderx').value, document.getElementById('repeat_slidery').value)" 
+				type="number"  min='1' max='3' value='1' step='1'/>
+				<input id="repeat_slidery" onchange="setRepeat(document.getElementById('repeat_sliderx').value, document.getElementById('repeat_slidery').value)" 
+				type="number"  min='1' max='3' value='1' step='1'/>
+				<select id="model" onchange="setModel(document.getElementById('model').value)">
+					<option selected>Cube</option>
+					<option>Plane</option>
+					<option>Sphere</option>
+					<option>Cylinder</option>
+				</select>
+				<input id="input_rot" type="checkbox" value="rotation" onclick="toggleRotation()"> Rotation<br>
+			</td>
 		</tr>
 	</table>
 </div>
