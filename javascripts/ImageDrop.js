@@ -136,6 +136,8 @@ require(["dojo/dom", "dojo/domReady!"], function(dom){
 			context.drawImage(height_image, 0, 0, height_canvas.width, height_canvas.height);
 			height_image.width = height_image.naturalWidth;
 			height_image.height = height_image.naturalHeight;
+			
+			createNormalMap();
 		};
 		
 		height_image.src = source;
@@ -145,11 +147,11 @@ require(["dojo/dom", "dojo/domReady!"], function(dom){
 });
 
 
-var downloadCanvas = function(link, canvasId, filename) {
-    link.href = document.getElementById(canvasId).toDataURL();
-    link.download = filename;
-}
-
+var button = document.getElementById('download');
+button.addEventListener('click', function (e) {
+    var dataURL = normal_canvas.toDataURL('image/png');
+    button.href = dataURL;
+});
 
 
 

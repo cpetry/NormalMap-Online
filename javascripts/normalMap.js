@@ -12,9 +12,11 @@ var createNormalMap = function(){
 	normal_canvas.width = height_image.width;
 	normal_canvas.height = height_image.height;
 	
+	
 	ctx_normal.clearRect(0, 0, height_image.width, height_image.height);
 	
 	var grayscale = Filters.filterImage(Filters.grayscale, height_image);
+	
 	
 	// Note that ImageData values are clamped between 0 and 255, so we need
 	// to use a Float32Array for the gradient values because they
@@ -24,6 +26,8 @@ var createNormalMap = function(){
 			document.getElementById("strength_slider").value, 
 			document.getElementById("level_slider").value);
 	
+	
+	
 	// smoothing
 	var weight_array = []
 	for( var i = 0; i < smoothing * smoothing; i++)
@@ -32,11 +36,11 @@ var createNormalMap = function(){
 	if (smoothing >= 2)
 		img_data = Filters.convoluteFloat32(img_data,weight_array);
 	
+	
 	var idata = Filters.createImageData(img_data.width, img_data.height);
 	
 	
-	
-	// invert colors if needed
+		// invert colors if needed
 	for (var i=0; i<img_data.data.length; i++){
 		if ((i % 4 == 0 && invert_red)
 		|| (i % 4 == 1 && invert_green))
@@ -45,7 +49,7 @@ var createNormalMap = function(){
 			idata.data[i] = img_data.data[i];
 	}
 	
-	
+		
 	ctx_normal.putImageData(idata, 0, 0, 0, 0, img_data.width, img_data.height);
 	
 	

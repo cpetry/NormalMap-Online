@@ -61,18 +61,19 @@ Filters.convoluteFloat32 = function(pixels, weights, opaque) {
 
   var alphaFac = opaque ? 1 : 0;
 
+  var sy, sx, dstOff, r, g, b, a, scy, scx, srcOff, wt;
   for (var y=0; y<h; y++) {
 	for (var x=0; x<w; x++) {
-	  var sy = y;
-	  var sx = x;
-	  var dstOff = (y*w+x)*4;
-	  var r=0, g=0, b=0, a=0;
+	  sy = y;
+	  sx = x;
+	  dstOff = (y*w+x)*4;
+	  r=0, g=0, b=0, a=0;
 	  for (var cy=0; cy<side; cy++) {
 		for (var cx=0; cx<side; cx++) {
-		  var scy = Math.min(sh-1, Math.max(0, sy + cy - halfSide));
-		  var scx = Math.min(sw-1, Math.max(0, sx + cx - halfSide));
-		  var srcOff = (scy*sw+scx)*4;
-		  var wt = weights[cy*side+cx];
+		  scy = Math.min(sh-1, Math.max(0, sy + cy - halfSide));
+		  scx = Math.min(sw-1, Math.max(0, sx + cx - halfSide));
+		  srcOff = (scy*sw+scx)*4;
+		  wt = weights[cy*side+cx];
 		  r += src[srcOff] * wt;
 		  g += src[srcOff+1] * wt;
 		  b += src[srcOff+2] * wt;
@@ -113,26 +114,30 @@ Filters.newsobelfilter = function(pixels, strength, level){
 	};
 	
 	var dst = output.data;
+	    
+	max_size = w*h*4-1;
+	
+	var tl, l, bl, t, b, tr, r, br, dX,dY,dZ,l;
+	var dZ = 1.0 / strength * (1.0 + Math.pow(2.0, level)); // very costly operation!
 	
 	for (var y=0; y<h; y++) {
 		for (var x=0; x<w; x++) {
 			var dstOff = (y*w+x)*4;
 	
-			var tl = src[Math.min(Math.max(dstOff - 4 - w*4,0),w*h*4-1)];   // top left  
-			var  l = src[Math.min(Math.max(dstOff - 4      ,0),w*h*4-1)];   // left  
-			var bl = src[Math.min(Math.max(dstOff - 4 + w*4,0),w*h*4-1)];   // bottom left  
-			var  t = src[Math.min(Math.max(dstOff - w*4    ,0),w*h*4-1)];   // top  
-			var  b = src[Math.min(Math.max(dstOff + w*4    ,0),w*h*4-1)];   // bottom  
-			var tr = src[Math.min(Math.max(dstOff + 4 - w*4,0),w*h*4-1)];   // top right  
-			var  r = src[Math.min(Math.max(dstOff + 4      ,0),w*h*4-1)];   // right  
-			var br = src[Math.min(Math.max(dstOff + 4 + w*4,0),w*h*4-1)];   // bottom right  
+			tl = src[Math.min(Math.max(dstOff - 4 - w*4,0),max_size)];   // top left  
+			l  = src[Math.min(Math.max(dstOff - 4      ,0),max_size)];   // left  
+			bl = src[Math.min(Math.max(dstOff - 4 + w*4,0),max_size)];   // bottom left  
+			t  = src[Math.min(Math.max(dstOff - w*4    ,0),max_size)];   // top  
+			b  = src[Math.min(Math.max(dstOff + w*4    ,0),max_size)];   // bottom  
+			tr = src[Math.min(Math.max(dstOff + 4 - w*4,0),max_size)];   // top right  
+			r  = src[Math.min(Math.max(dstOff + 4      ,0),max_size)];   // right  
+			br = src[Math.min(Math.max(dstOff + 4 + w*4,0),max_size)];   // bottom right  
     
    
-			var dX = tr + 2.0*r + br -tl - 2.0*l - bl;
-			var dY = bl + 2.0*b + br -tl - 2.0*t - tr;
-			var dZ = 1.0 / strength * (1.0 + Math.pow(2.0, level));
-			
-			var l = Math.sqrt((dX * dX) + (dY * dY) + (dZ * dZ));
+			dX = tr + 2.0*r + br -tl - 2.0*l - bl;
+			dY = bl + 2.0*b + br -tl - 2.0*t - tr;
+
+			l = Math.sqrt((dX * dX) + (dY * dY) + (dZ * dZ));
 			
 			dst[dstOff] = (dX/l * 0.5 + 0.5) * 255.0; 	// red
 			dst[dstOff+1] = (dY/l * 0.5 + 0.5) * 255.0; 	// green
@@ -140,5 +145,6 @@ Filters.newsobelfilter = function(pixels, strength, level){
 			dst[dstOff+3] = 255.0;
 		}
 	}
+	
 	return output;
 }

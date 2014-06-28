@@ -49,7 +49,9 @@
 			</td>
 			<td>
 				<div id="normal_map">
-				<img height=300 width=300 id="normal_img" name="normal_map"/>
+				<a onclick="document.getElementById('normal_img').src" download="ImageName" title="ImageName">
+					<img height=300 width=300 id="normal_img" name="normal_map"/>
+				</a>
 				</div>
 			</td>
 			<td>
@@ -62,6 +64,10 @@
 				<input type="button" onclick="createNormalMap()" value="Generate NormalMap"/>
 			</td>
 			<td align=center>
+			
+				<a href="#" id="download" download="my-file-name.png">
+					<img src="images/Download_NormalMap_128.png"/>
+				</a>
 				<table>
 					<tr>
 						<td align="right">Strength</td>
