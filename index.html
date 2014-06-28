@@ -36,44 +36,17 @@
 </style>
 	
 <body>
-<div id="promoNode"></div>
+	<br/>
+	<div align=center >
+		<img src="images/title_page.png" />
+	</div>
+	<div style="min-height:50px"></div>
 	<table align=center >
 		<tr>
 			<td align=center>
-				<p>Drag & Drop Height Map</p>
+				<img src="images/drag_drop.png" />
 			</td>
 			<td align=center>
-				<p>Normal Map</p>
-			</td>
-			<td align=center>
-				<p>3D Preview</p>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<div id="height_map">
-				<canvas height=300 width=300 id="height_canvas"></canvas>
-				</div>
-			</td>
-			<td>
-				<div id="normal_map">
-					<img height=300 width=300 id="normal_img" name="normal_map"/>
-				</div>
-			</td>
-			<td>
-				<div id="render_view">
-				</div>
-			</td>
-		</tr>
-		<tr>
-			<td align=center>
-				<input type="button" onclick="createNormalMap()" value="Generate NormalMap"/>
-			</td>
-			<td align=center>
-			
-				<a href="#" id="download" download="my-file-name.jpg">
-					<img src="images/Download_NormalMap_128.png"/>
-				</a>
 				<table>
 					<tr>
 						<td align="right">Strength</td>
@@ -93,7 +66,8 @@
 					</tr>
 				</table>
 			</td>
-			<td>
+			<td align=center>
+				<p>3D Preview</p>
 				<input id="repeat_sliderx" onchange="setRepeat(document.getElementById('repeat_sliderx').value, document.getElementById('repeat_slidery').value)" 
 				type="number"  min='1' max='3' value='1' step='1'/>
 				<input id="repeat_slidery" onchange="setRepeat(document.getElementById('repeat_sliderx').value, document.getElementById('repeat_slidery').value)" 
@@ -107,8 +81,43 @@
 				<input id="input_rot" type="checkbox" value="rotation" onclick="toggleRotation()"> Rotation<br>
 			</td>
 		</tr>
+		<tr>
+			<td>
+				<div id="height_map">
+				<canvas height=300 width=300 id="height_canvas"></canvas>
+				</div>
+			</td>
+			<td>
+				<div id="normal_map">
+					<img height=300 width=300 id="normal_img" name="normal_map"/>
+				</div>
+			</td>
+			<td>
+				<div id="render_view">
+				
+				</div>
+			</td>
+		</tr>
+		<tr>
+			
+			<td align=center>
+			<!--
+				<input type="button" onclick="createNormalMap()" value="Generate NormalMap"/>
+			-->
+			</td>
+			<td align=center>
+				<div style="min-height:30px"></div>
+				<a href="#" id="download" download="my-file-name.jpg">
+					<img src="images/Download_NormalMap_128.png"/>
+				</a>
+				
+				
+			</td>
+			<td>
+				
+			</td>
+		</tr>
 	</table>
-</div>
 </body>
 
 <script type="text/javascript" src="javascripts/three.min.js"></script>
