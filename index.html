@@ -33,91 +33,178 @@
 			text-align: center;
 			padding: 12px;
 		}
+		
+		div.content {
+			padding: 20px 20px 20px 20px;
+			position: relative;
+			margin-left: auto;
+			margin-right: auto;
+			border: 1px solid;
+			display: inline-block;
+			border-radius: 20px;
+			box-shadow: 7px 7px 10px #888888;
+			
+		}
+		
+		div.step {
+			display: inline-block;
+			vertical-align: top;
+			width:326px;
+		}
+		div.steptop {
+			vertical-align: top;
+			margin-left: auto;
+			margin-right: auto;
+			height: 110px;
+		}
+		div.stepnumber {
+			display: inline-block;
+			vertical-align: top;
+			border: 1px solid;
+			border-radius: 20px;
+			width:30px;
+			margin-top:0px;
+			margin-left:5px;
+			background-color:#aaaaaa;
+		}
+		div.imprint {
+			float:right;
+			margin-top: 80px;
+			border: 1px solid;
+			display: inline-block;
+			border-radius: 20px;
+			width:300px;
+		}
+		div.imprinttext {
+			width:60px;
+			margin-top:-10px;
+			margin-left:15px;
+			background:white;
+		}
 </style>
 	
-<body>
+<body align="center">
 	<br/>
-	<div align=center >
+	<div align="center" >
 		<img src="images/title_page.png" />
 	</div>
 	<div style="min-height:50px"></div>
-	<table align=center >
-		<tr>
-			<td align=center>
+	
+	<div class="content">
+		<div class="step">
+			<div class="steptop">
+				<div class="stepnumber">
+				<b>1</b>
+				</div>
 				<img src="images/drag_drop.png" />
-			</td>
-			<td align=center>
-				<table>
-					<tr>
-						<td align="right">Strength</td>
-						<td><input id="strength_slider" onchange="createNormalMap()" 
-							type="range"  min='0' max='5' value='2.5' step='0.1'/></td>
-					</tr>
-					<tr>
-						<td align="right">Level</td>
-						<td><input id="level_slider" onchange="createNormalMap()" 
-							type="range" value='7.0' min='4' max='10' step='0.1'/></td>
-					</tr>
-					<tr>
-						<td align="right">Smoothing</td>
-						<td><input id="smooth_slider" 
-						onchange="setSmoothing(document.getElementById('smooth_slider').value)" 
-						type="range" value='6' min='1' max='8' step='1'/></td>
-					</tr>
-				</table>
-			</td>
-			<td align=center>
-				<p>3D Preview</p>
-				<input id="repeat_sliderx" onchange="setRepeat(document.getElementById('repeat_sliderx').value, document.getElementById('repeat_slidery').value)" 
-				type="number"  min='1' max='3' value='1' step='1'/>
-				<input id="repeat_slidery" onchange="setRepeat(document.getElementById('repeat_sliderx').value, document.getElementById('repeat_slidery').value)" 
-				type="number"  min='1' max='3' value='1' step='1'/>
-				<select id="model" onchange="setModel(document.getElementById('model').value)">
-					<option selected>Cube</option>
-					<option>Plane</option>
-					<option>Sphere</option>
-					<option>Cylinder</option>
-				</select>
-				<input id="input_rot" type="checkbox" value="rotation" onclick="toggleRotation()"> Rotation<br>
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<div id="height_map">
+			</div>
+			<div id="height_map">
 				<canvas height=300 width=300 id="height_canvas"></canvas>
-				</div>
-			</td>
-			<td>
-				<div id="normal_map">
-					<img height=300 width=300 id="normal_img" name="normal_map"/>
-				</div>
-			</td>
-			<td>
-				<div id="render_view">
-				
-				</div>
-			</td>
-		</tr>
-		<tr>
+			</div>
 			
-			<td align=center>
-			<!--
-				<input type="button" onclick="createNormalMap()" value="Generate NormalMap"/>
-			-->
-			</td>
-			<td align=center>
-				<div style="min-height:30px"></div>
+			<div style="min-height:30px"></div>
+			<div>
+				Please give feedback:<br/>
+				<img src="images/email_adresse.png"/>
+			</div>
+			
+		</div>
+		<div class="step">
+			<div class="steptop">
+				<div class="stepnumber">
+				<b>2</b>
+				</div>
+				<div style="display:inline-block; height:30px">
+					Choose settings
+				</div>
+				<div>
+					<div>
+						<span style="width:70px;display:inline-block;vertical-align:top;">Strength</span>
+							<input id="strength_slider" onchange="createNormalMap()" 
+									type="range"  min='0' max='5' value='2.5' step='0.1'/>
+						
+					</div>
+					<div>
+						<span style="width:70px;display:inline-block;vertical-align:top;">Level</span>
+						<input id="level_slider" onchange="createNormalMap()" 
+								type="range" value='7.0' min='4' max='10' step='0.1'/>
+					</div>
+					<div>
+						<span style="width:70px;display:inline-block;vertical-align:top;">Smoothing</span>
+						<input id="smooth_slider" 
+							onchange="setSmoothing(document.getElementById('smooth_slider').value)" 
+							type="range" value='0' min='1' max='8' step='1'/>
+					</div>
+				</div>
+			</div>
+			<div id="normal_map">
+					<img height=300 width=300 id="normal_img" name="normal_map"/>
+			</div>
+			
+			<div style="min-height:30px"></div>
+			<div>
+				<div class="stepnumber">
+				<b>3</b>
+				</div>
 				<a href="#" id="download" download="my-file-name.jpg">
 					<img src="images/Download_NormalMap_128.png"/>
 				</a>
-				
-				
-			</td>
-			<td>
-				
-			</td>
-		</tr>
-	</table>
+			</div>
+		</div>
+		<div class="step" id="preview" <!--style="display: none;-->">
+			<div class="steptop">
+				<div style="display:inline-block; height:30px">
+				3D Preview
+				</div>
+				<div>
+					<span style="width:50px;display:inline-block; text-align:right;">UV</span>
+					<div style="display: inline-block; width: 170px; text-align:left;margin-left:10px;">
+						x:<input id="repeat_sliderx" onchange="setRepeat(document.getElementById('repeat_sliderx').value, document.getElementById('repeat_slidery').value)" 
+							type="number"  min='1' max='3' value='1' step='1'/>
+						y:<input id="repeat_slidery" onchange="setRepeat(document.getElementById('repeat_sliderx').value, document.getElementById('repeat_slidery').value)" 
+							type="number"  min='1' max='3' value='1' step='1'/>
+					</div>
+				</div>
+				<div>
+					<span style="width:50px;display:inline-block;text-align:right;">Model</span>
+					<div style="display: inline-block; width: 170px; text-align:left;margin-left:10px;">
+						<select id="model" onchange="setModel(document.getElementById('model').value)">
+							<option selected>Cube</option>
+							<option>Plane</option>
+							<option>Sphere</option>
+							<option>Cylinder</option>
+						</select>
+					</div>
+				</div>
+				<div>
+					<input id="input_rot" type="checkbox" value="rotation" onclick="toggleRotation()" checked> Rotation<br>
+				</div>
+			</div>
+			
+			<div id="render_view"></div>
+			
+			
+			<div style="min-height:30px"></div>
+			<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+				<input type="hidden" name="cmd" value="_s-xclick">
+				<input type="hidden" name="hosted_button_id" value="G7RU6CUFL4EKL">
+				<input type="image" src="images/donate_normal.png" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+				<img alt="" border="0" src="https://www.paypalobjects.com/de_DE/i/scr/pixel.gif" width="1" height="1">
+			</form>
+			<!--
+				<input type="button" onclick="createNormalMap()" value="Generate NormalMap"/>
+			-->
+		</div>
+	</div>
+	<br/>
+	<div class="imprint">
+		<div class="imprinttext">Imprint:
+		</div>
+		Christian Petry<br/>
+		St.Nepomuk-Str. 2a<br/>
+		97218 Gerbrunn<br/>
+		Germany
+	</div>
 </body>
 
 <script type="text/javascript" src="javascripts/three.min.js"></script>

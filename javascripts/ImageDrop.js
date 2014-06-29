@@ -34,7 +34,7 @@ var model;
 var texture;
 var normal_map;
 var material;
-var rotation_enabled = 0;
+var rotation_enabled = 1;
 
 var initRenderer = function(){
 
