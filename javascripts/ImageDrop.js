@@ -17,11 +17,15 @@ var initHeightMap = function(){
 		height_image.width = height_image.naturalWidth;
 		height_image.height = height_image.naturalHeight;
 		
+		document.getElementById("size").value = "" +(height_image.naturalWidth) + " x " + (height_image.naturalHeight);
 		
 		createNormalMap(); // height map was loaded... so create standard normal map!
     };
 	
     height_image.src = './images/standard_height.png';
+	
+	
+			
 	
 	
 }
@@ -185,6 +189,8 @@ require(["dojo/dom", "dojo/domReady!"], function(dom){
 			context.drawImage(height_image, 0, 0, height_canvas.width, height_canvas.height);
 			height_image.width = height_image.naturalWidth;
 			height_image.height = height_image.naturalHeight;
+			
+			document.getElementById("size").value = "" +(height_image.width) + " x " + (height_image.height);
 			
 			createNormalMap();
 		};

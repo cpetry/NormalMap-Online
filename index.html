@@ -74,6 +74,7 @@
 			margin: 20px;
 			bottom: 0px;
 		}
+		
 </style>
 	
 <body style="text-align: center">
@@ -93,13 +94,16 @@
 			<div id="height_map">
 				<canvas height=300 width=300 id="height_canvas"></canvas>
 			</div>
+			<div style="float:left; margin:-8px 0 0 0; padding:0 0 0 0;">Size: 
+				<input style="border: none; border-color: transparent;" id="size" type="text" size="20" maxlength="20" readonly>
+			</div>
 			
 			<div style="min-height:10px"></div>
-			<div>
+			<p>
 				Feedback:<br/>
 				<img src="images/email_adresse.png"/><br/>
 				
-			</div>
+			</p>
 			
 		</div>
 		<div class="step">
@@ -137,8 +141,10 @@
 			
 			<div style="min-height:10px"></div>
 			<div>
-				<a href="#" id="download" target="_blank" download="NormalMap.jpg">
-					<img src="images/Download_NormalMap_128.png"/>
+				Right-Click, "Save Image to..." or
+				<div style="min-height:5px"></div>
+				<a href="#" id="download" class="download" target="_blank" download="NormalMap.jpg">
+					<button style="width: 8em;  height: 2em;"><b>Download</b></button><!--<img src="images/Download_NormalMap_128.png"/>-->
 				</a>
 			</div>
 		</div>
