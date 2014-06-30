@@ -45,7 +45,7 @@ var initRenderer = function(){
 	scene = new THREE.Scene();
 	camera = new THREE.PerspectiveCamera( 70, container_height / container_height, 0.1, 1000 );
 
-	renderer = new THREE.WebGLRenderer({ alpha: true });
+	renderer = new THREE.WebGLRenderer({ alpha: false });
 	renderer.setSize( container_height, container_height );
 	document.getElementById('render_view').appendChild( renderer.domElement );
 
