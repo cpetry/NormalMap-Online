@@ -211,7 +211,7 @@ button.addEventListener('click', function (e) {
 		console.log("size of pic: " + filesize); 
 		qual -= 0.1;
 	}while(filesize >= 2000000);
-	pic.src.replace("image/png", "image/octet-stream");
+	//pic.src.replace("image/png", "image/octet-stream");
     button.href = pic;
 });
 
