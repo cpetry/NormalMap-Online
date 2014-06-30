@@ -1,8 +1,11 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html lang="en" dir="ltr" xmlns:fb="http://ogp.me/ns/fb#">
 
 <head>
 	<title>NormalMap-Online</title>
+	<link rel="icon" type="image/png" href="images/favicon.png" />
+	<link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:700"></link>
 	<meta name="description" content="Online NormalMap Generator">
 	<meta name="author" content="Christian Petry">
 	<meta name="language" CONTENT="english">
@@ -14,22 +17,28 @@
 		
 		#height_map, #normal_map, #render_view {
 			position: relative;
-			background-color: #eee;
+			//background-color: #eee;
 			border: 1px solid #ccc;
 			text-align: center;
 			padding: 8px;
 			margin: 8px;
 		}
 		
+		body{
+			background: url('./images/background.png');
+			font-family:"Open Sans";
+		}
+
 		div.content {
 			padding: 10px 10px 10px 10px;
 			position: relative;
 			margin-left: auto;
 			margin-right: auto;
-			border: 1px solid;
 			display: inline-block;
-			border-radius: 20px;
-			box-shadow: 7px 7px 10px #888888;
+			border-radius: 10px;
+			box-shadow: 2px 2px 10px #333;
+			background: none repeat scroll 0% 0% rgba(10,10,10,0.5);
+			color: #fff;
 		}
 		
 		div.step {
@@ -50,7 +59,7 @@
 			width:30px;
 			margin-left: auto;
 			margin-right: auto;
-			background-color:#aaaaaa;
+			//background-color:#aaaaaa;
 		}
 		div.imprint {
 			float:right;
@@ -68,13 +77,14 @@
 		}
 		
 		footer, footer p {
-			//background-color:#D0D0D0;
-			position: relative;
-			display: block;
-			margin: 20px;
-			bottom: 0px;
+			color: #fff;
+			text-align: left;
+			position: fixed;
+			bottom: 0;
+			left:0;
+			opacity: 0.9;
+			font-size: 12px;
 		}
-		
 </style>
 	
 <body style="text-align: center">
@@ -93,8 +103,8 @@
 			<div id="height_map">
 				<canvas height=300 width=300 id="height_canvas"></canvas>
 			</div>
-			<div style="float:left; margin:-8px 0 0 0; padding:0 0 0 0;">Size: 
-				<input style="border: none; border-color: transparent;" id="size" type="text" size="20" maxlength="20" readonly>
+			<div style="float:center; margin:-8px 15px 0 0; padding:0 0 0 0;">Size: 
+				<input style="border: none; color:white; background-color: transparent; border-color: transparent;" id="size" type="text" size="20" maxlength="20" readonly>
 			</div>
 			
 			<div style="min-height:10px"></div>
@@ -110,24 +120,24 @@
 				
 				<div>
 					<div>
-						<span style="width:70px;display:inline-block;vertical-align:top;">Strength</span>
+						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left;">Strength</span>
 							<input id="strength_slider" onchange="createNormalMap()" 
 									type="range"  min='0' max='5' value='2.5' step='0.1'/>
 						
 					</div>
 					<div>
-						<span style="width:70px;display:inline-block;vertical-align:top;">Level</span>
+						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left">Level</span>
 						<input id="level_slider" onchange="createNormalMap()" 
 								type="range" value='7.0' min='4' max='10' step='0.1'/>
 					</div>
 					<div>
-						<span style="width:70px;display:inline-block;vertical-align:top;">Smoothing</span>
+						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left">Smoothing</span>
 						<input id="smooth_slider" 
 							onchange="setSmoothing(document.getElementById('smooth_slider').value)" 
 							type="range" value='0' min='1' max='8' step='1'/>
 					</div>
 					<div>
-						<span style="width:70px;display:inline-block;vertical-align:top;">Invert</span>
+						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left">Invert</span>
 						<input id="invert_r" type="checkbox" onclick="invertRed()" />R
 						<input id="invert_g" type="checkbox" onclick="invertGreen()" />G
 						<input id="invert_height" type="checkbox" onclick="invertSource()" />Height
@@ -196,7 +206,7 @@
 	
 </body>
 <footer>
-		<p>Imprint: Christian Petry, St.Nepomuk-Str. 2a, 97218 Gerbrunn, Germany<br/>
+		<p>Imprint: Christian Petry, St.Nepomuk-Str. 2a, 97218 Gerbrunn, Germany - 
 		
 		<a href="http://www.petry-christian.de"> www.petry-christian.de </a>
 		</p>
