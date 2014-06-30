@@ -12,30 +12,17 @@
 
 <style type="text/css">
 		
-		#height_map {
+		#height_map, #normal_map, #render_view {
 			position: relative;
 			background-color: #eee;
 			border: 1px solid #ccc;
 			text-align: center;
-			padding: 12px;
-		}
-		#normal_map {
-			position: relative;
-			background-color: #eee;
-			border: 1px solid #ccc;
-			text-align: center;
-			padding: 12px;
-		}
-		#render_view {
-			position: relative;
-			background-color: #eee;
-			border: 1px solid #ccc;
-			text-align: center;
-			padding: 12px;
+			padding: 8px;
+			margin: 8px;
 		}
 		
 		div.content {
-			padding: 20px 20px 20px 20px;
+			padding: 10px 10px 10px 10px;
 			position: relative;
 			margin-left: auto;
 			margin-right: auto;
@@ -49,10 +36,9 @@
 		div.step {
 			display: inline-block;
 			vertical-align: top;
-			width:326px;
+			width:338px;
 		}
 		div.steptop {
-			vertical-align: top;
 			margin-left: auto;
 			margin-right: auto;
 			height: 110px;
@@ -61,10 +47,10 @@
 			display: inline-block;
 			vertical-align: top;
 			border: 1px solid;
-			border-radius: 20px;
+			border-radius: 10px;
 			width:30px;
-			margin-top:0px;
-			margin-left:5px;
+			margin-left: auto;
+			margin-right: auto;
 			background-color:#aaaaaa;
 		}
 		div.imprint {
@@ -86,37 +72,32 @@
 <body align="center">
 	<br/>
 	<div align="center" >
-		<img src="images/title_page.png" />
+		<img src="images/title_page.png" /><br/>
+		<a href="http://www.petry-christian.de"> www.petry-christian.de </a>
 	</div>
 	<div style="min-height:50px"></div>
 	
 	<div class="content">
 		<div class="step">
 			<div class="steptop">
-				<div class="stepnumber">
-				<b>1</b>
-				</div>
 				<img src="images/drag_drop.png" />
+					
 			</div>
 			<div id="height_map">
 				<canvas height=300 width=300 id="height_canvas"></canvas>
 			</div>
 			
-			<div style="min-height:30px"></div>
+			<div style="min-height:10px"></div>
 			<div>
-				Please give feedback:<br/>
-				<img src="images/email_adresse.png"/>
+				Feedback:<br/>
+				<img src="images/email_adresse.png"/><br/>
+				
 			</div>
 			
 		</div>
 		<div class="step">
 			<div class="steptop">
-				<div class="stepnumber">
-				<b>2</b>
-				</div>
-				<div style="display:inline-block; height:30px">
-					Choose settings
-				</div>
+				
 				<div>
 					<div>
 						<span style="width:70px;display:inline-block;vertical-align:top;">Strength</span>
@@ -135,18 +116,21 @@
 							onchange="setSmoothing(document.getElementById('smooth_slider').value)" 
 							type="range" value='0' min='1' max='8' step='1'/>
 					</div>
+					<div>
+						<span style="width:70px;display:inline-block;vertical-align:top;">Invert</span>
+						<input id="invert_r" type="checkbox" onclick="invertRed()" />R
+						<input id="invert_g" type="checkbox" onclick="invertGreen()" />G
+						<input id="invert_height" type="checkbox" onclick="invertSource()" />Height
+					</div>
 				</div>
 			</div>
 			<div id="normal_map">
 					<img height=300 width=300 id="normal_img" name="normal_map"/>
 			</div>
 			
-			<div style="min-height:30px"></div>
+			<div style="min-height:10px"></div>
 			<div>
-				<div class="stepnumber">
-				<b>3</b>
-				</div>
-				<a href="#" id="download" download="my-file-name.jpg">
+				<a href="#" id="download" target="_blank" download="NormalMap.jpg">
 					<img src="images/Download_NormalMap_128.png"/>
 				</a>
 			</div>
@@ -184,11 +168,12 @@
 			<div id="render_view"></div>
 			
 			
-			<div style="min-height:30px"></div>
+			<div style="min-height:10px"></div>
+			If you like this, please
 			<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
 				<input type="hidden" name="cmd" value="_s-xclick">
 				<input type="hidden" name="hosted_button_id" value="G7RU6CUFL4EKL">
-				<input type="image" src="images/donate_normal.png" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+				<input type="image" src="https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
 				<img alt="" border="0" src="https://www.paypalobjects.com/de_DE/i/scr/pixel.gif" width="1" height="1">
 			</form>
 			<!--

@@ -90,7 +90,7 @@ Filters.convoluteFloat32 = function(pixels, weights, opaque) {
 };
 
 
-Filters.grayscale = function(pixels, args) {
+Filters.grayscale = function(pixels, invert_height) {
   var d = pixels.data;
   for (var i=0; i<d.length; i+=4) {
 	var r = d[i];
@@ -99,7 +99,8 @@ Filters.grayscale = function(pixels, args) {
 	// CIE luminance for the RGB
 	// The human eye is bad at seeing red and blue, so we de-emphasize them.
 	var v = 0.2126*r + 0.7152*g + 0.0722*b;
-	d[i] = d[i+1] = d[i+2] = v
+	
+	d[i] = d[i+1] = d[i+2] = invert_height ? 255-v : v;
   }
   return pixels;
 };

@@ -15,7 +15,7 @@ var createNormalMap = function(){
 	
 	ctx_normal.clearRect(0, 0, height_image.width, height_image.height);
 	
-	var grayscale = Filters.filterImage(Filters.grayscale, height_image);
+	var grayscale = Filters.filterImage(Filters.grayscale, height_image, invert_source);
 	
 	
 	// Note that ImageData values are clamped between 0 and 255, so we need
