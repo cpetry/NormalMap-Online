@@ -124,6 +124,7 @@ function toggleRotation(){
 
 function render() {
 	requestAnimationFrame(render);
+	renderer.setClearColor( 0x000000, 1);
 	renderer.render(scene, camera);
 	if(rotation_enabled){
 		model.rotation.x += 0.003;
