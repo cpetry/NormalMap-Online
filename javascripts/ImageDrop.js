@@ -48,7 +48,8 @@ var initRenderer = function(){
 	var height_canvas   = document.getElementById('height_canvas');
 	texture  		= new THREE.Texture( height_canvas );
 	normal_map  	= new THREE.Texture( normal_canvas );
-	normal_map.wrapS = normal_map.wrapT = THREE.RepeatWrapping;
+	normal_map.wrapS = THREE.RepeatWrapping;
+	normal_map.wrapT = THREE.RepeatWrapping;
 	
 	material = new THREE.MeshPhongMaterial ( { 
 		ambient: 0xbbbbbb, 
