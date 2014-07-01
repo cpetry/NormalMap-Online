@@ -2,6 +2,7 @@ var height_image;
 var container_height = 300;
 var pic_height;
 var normal_canvas = document.createElement("canvas");
+var normal_canvas_preview = document.createElement("canvas");
 	
 
 var initHeightMap = function(){
@@ -32,6 +33,7 @@ var renderer;
 var model;
 var texture;
 var normal_map;
+var normal_map_preview;
 var material;
 var rotation_enabled = 1;
 
@@ -45,10 +47,10 @@ var initRenderer = function(){
 	document.getElementById('render_view').appendChild( renderer.domElement );
 
 	var height_canvas   = document.getElementById('height_canvas');
-	texture  		= new THREE.Texture( height_canvas );
-	normal_map  	= new THREE.Texture( normal_canvas );
-	normal_map.wrapS = THREE.RepeatWrapping;
-	normal_map.wrapT = THREE.RepeatWrapping;
+	texture  				= new THREE.Texture( height_canvas );
+	normal_map_preview  	= new THREE.Texture( normal_canvas_preview );
+	normal_map_preview.wrapS = THREE.RepeatWrapping;
+	normal_map_preview.wrapT = THREE.RepeatWrapping;
 	
 	material = new THREE.MeshPhongMaterial ( { 
 		ambient: 0xbbbbbb, 
@@ -56,7 +58,7 @@ var initRenderer = function(){
 		specular: 0x555555,
 		shininess: 30,
 		shading: THREE.SmoothShading,
-		normalMap: normal_map,
+		normalMap: normal_map_preview,
 		metal: false,
         skining: true
 	} );
@@ -88,7 +90,7 @@ var initRenderer = function(){
 }
 
 var setRepeat = function(v_x, v_y){
-	normal_map.repeat.set( v_x, v_y );
+	normal_map_preview.repeat.set( v_x, v_y );
 }
 
 var setModel = function(type){
@@ -128,21 +130,33 @@ function toggleRotation(){
 		rotation_enabled=1;
 }
 
+function animate() {
+    setTimeout( function() {
+        requestAnimationFrame( animate );
+    }, 1000 / 30 );
+    renderer.render();
+
+}
 
 function render() {
 	requestAnimationFrame(render);
-	renderer.setClearColor( 0x000000, 1);
+	renderer.setClearColor( 0x000000, 0);
 	renderer.render(scene, camera);
 	if(rotation_enabled){
 		model.rotation.x += 0.003;
 		model.rotation.y += 0.003;
 	}
-	normal_map.needsUpdate = true;
+	normal_map_preview.needsUpdate = true;
 	texture.needsUpdate = true;
 }
 
 
-
+function isPowerOf2(val){
+	if((val & -val) == val)
+		return true;
+	else 
+		return false;
+}
 
 require(["dojo/dom", "dojo/domReady!"], function(dom){
 	var height_map_drop = dom.byId("height_map"),
@@ -193,7 +207,9 @@ require(["dojo/dom", "dojo/domReady!"], function(dom){
 			height_image.width = height_image.naturalWidth;
 			height_image.height = height_image.naturalHeight;
 			
-			document.getElementById("size").value = "" +(height_image.width) + " x " + (height_image.height);
+			var size_text = "" + (height_image.width) + " x " + (height_image.height);
+			size_text += (!isPowerOf2(height_image.width) && !isPowerOf2(height_image.height)) ? " NOT POWER OF 2 !" : "";
+			document.getElementById("size").value = size_text;
 			
 			createNormalMap();
 		};
@@ -203,6 +219,8 @@ require(["dojo/dom", "dojo/domReady!"], function(dom){
 	
 	
 });
+
+
 
 
 var button = document.getElementById('download');
