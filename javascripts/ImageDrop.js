@@ -22,12 +22,7 @@ var initHeightMap = function(){
 		createNormalMap(); // height map was loaded... so create standard normal map!
     };
 	
-    height_image.src = './images/standard_height.png';
-	
-	
-			
-	
-	
+    height_image.src = './images/standard_height.png';	
 }
 
 
