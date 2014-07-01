@@ -70,8 +70,8 @@ Filters.convoluteFloat32 = function(pixels, weights, opaque) {
 	  r=0, g=0, b=0, a=0;
 	  for (var cy=0; cy<side; cy++) {
 		for (var cx=0; cx<side; cx++) {
-		  scy = Math.min(sh-1, Math.max(0, sy + cy - halfSide));
-		  scx = Math.min(sw-1, Math.max(0, sx + cx - halfSide));
+		  scy = ((sy + cy - halfSide) % (sh-1)) % (sh-1);
+		  scx = ((sx + cx - halfSide) % (sh-1)) % (sw-1);
 		  srcOff = (scy*sw+scx)*4;
 		  wt = weights[cy*side+cx];
 		  r += src[srcOff] * wt;
@@ -105,6 +105,10 @@ Filters.grayscale = function(pixels, invert_height) {
   return pixels;
 };
 
+Number.prototype.mod = function(n) {
+return ((this%n)+n)%n;
+}
+
 Filters.newsobelfilter = function(pixels, strength, level){
 	var src = pixels.data;
 
@@ -124,16 +128,15 @@ Filters.newsobelfilter = function(pixels, strength, level){
 	for (var y=0; y<h; y++) {
 		for (var x=0; x<w; x++) {
 			var dstOff = (y*w+x)*4;
-	
-			tl = src[Math.min(Math.max(dstOff - 4 - w*4,0),max_size)];   // top left  
-			l  = src[Math.min(Math.max(dstOff - 4      ,0),max_size)];   // left  
-			bl = src[Math.min(Math.max(dstOff - 4 + w*4,0),max_size)];   // bottom left  
-			t  = src[Math.min(Math.max(dstOff - w*4    ,0),max_size)];   // top  
-			b  = src[Math.min(Math.max(dstOff + w*4    ,0),max_size)];   // bottom  
-			tr = src[Math.min(Math.max(dstOff + 4 - w*4,0),max_size)];   // top right  
-			r  = src[Math.min(Math.max(dstOff + 4      ,0),max_size)];   // right  
-			br = src[Math.min(Math.max(dstOff + 4 + w*4,0),max_size)];   // bottom right  
-    
+
+			tl = src[(dstOff - 4 - w*4).mod(max_size)];   // top left  
+			l  = src[(dstOff - 4      ).mod(max_size)];   // left  
+			bl = src[(dstOff - 4 + w*4).mod(max_size)];   // bottom left  
+			t  = src[(dstOff - w*4    ).mod(max_size)];   // top  
+			b  = src[(dstOff + w*4    ) % max_size];   // bottom  
+			tr = src[(dstOff + 4 - w*4).mod(max_size)];   // top right  
+			r  = src[(dstOff + 4      ) % max_size];   // right  
+			br = src[(dstOff + 4 + w*4) % max_size];   // bottom right  
    
 			dX = tr + 2.0*r + br -tl - 2.0*l - bl;
 			dY = bl + 2.0*b + br -tl - 2.0*t - tr;
