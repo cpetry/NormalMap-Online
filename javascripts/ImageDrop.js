@@ -71,14 +71,22 @@ var initRenderer = function(){
 	scene.add( model );
 	
 	// add subtle ambient lighting
-	var ambientLight = new THREE.AmbientLight(0xaaaaaa);
+	var ambientLight = new THREE.AmbientLight(0x808080 );
 	scene.add(ambientLight);
 	
 	// directional lighting
 	
-	var directionalLight = new THREE.DirectionalLight(0xdddddd);
-	directionalLight.position.set(2, 1, 1);
+	var directionalLight = new THREE.DirectionalLight(0xdddddd, 0.4 );
+	directionalLight.position.set(1, 1, 1);
 	scene.add(directionalLight);
+	
+	var dL2 = new THREE.DirectionalLight( 0xbbdbff, 0.3 );
+	dL2.position.set( 0, -1, 1 );
+	scene.add( dL2 );
+	
+	var dL2 = new THREE.DirectionalLight( 0xbbffff, 0.25 );
+	dL2.position.set( -3, 1, -1 );
+	scene.add( dL2 );
 	
 	
 	camera.position.z = 1.5;
