@@ -70,8 +70,8 @@ Filters.convoluteFloat32 = function(pixels, weights, opaque) {
 	  r=0, g=0, b=0, a=0;
 	  for (var cy=0; cy<side; cy++) {
 		for (var cx=0; cx<side; cx++) {
-		  scy = ((sy + cy - halfSide) % (sh-1)) % (sh-1);
-		  scx = ((sx + cx - halfSide) % (sh-1)) % (sw-1);
+		  scy = (sy + cy - halfSide).mod(sh-1);
+		  scx = (sx + cx - halfSide).mod(sw-1);
 		  srcOff = (scy*sw+scx)*4;
 		  wt = weights[cy*side+cx];
 		  r += src[srcOff] * wt;
