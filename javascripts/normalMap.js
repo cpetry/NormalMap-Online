@@ -1,7 +1,7 @@
-var invert_red = 0;
-var invert_green = 0;
-var invert_source = 0;
-var smoothing = 0;
+var invert_red = false;
+var invert_green = false;
+var invert_source = false;
+var smoothing = false;
 
 
 var getNextPowerOf2 = function(nmb){
@@ -19,11 +19,11 @@ var createNormalMap = function(){
 	var div_container = document.getElementById("normal_map");
 	var img = document.getElementById("normal_img");
 	
-	var grayscale = Filters.filterImage(Filters.grayscale, height_image, invert_source);
-	
 	// Note that ImageData values are clamped between 0 and 255, so we need
 	// to use a Float32Array for the gradient values because they
 	// range between -255 and 255.
+	var grayscale = Filters.filterImage(Filters.grayscale, height_image, invert_source);
+	
 	var img_data = Filters.newsobelfilter(grayscale, 
 			document.getElementById("strength_slider").value, 
 			document.getElementById("level_slider").value);
@@ -34,7 +34,7 @@ var createNormalMap = function(){
 		weight_array.push(1.0 / (smoothing * smoothing));
 	
 	if (smoothing >= 2)
-		img_data = Filters.convoluteFloat32(img_data,weight_array);
+		img_data = Filters.convoluteFloat32(img_data, weight_array);
 	
 	var idata = Filters.createImageData(img_data.width, img_data.height);
 	
@@ -80,30 +80,21 @@ var createNormalMap = function(){
 
 
 var invertRed = function(){
-	if (invert_red)
-		invert_red = 0;
-	else
-		invert_red = 1;
+	invert_red = !invert_red;
 	
 	if (auto_update)
 		createNormalMap();
 }
 
 var invertGreen = function(){
-	if (invert_green)
-		invert_green = 0;
-	else
-		invert_green = 1;
+	invert_green = !invert_green;
 	
 	if (auto_update)
 		createNormalMap();
 }
 
 var invertSource = function(){
-	if (invert_source)
-		invert_source = 0;
-	else
-		invert_source = 1;
+	invert_source = !invert_source;
 	
 	if (auto_update)
 		createNormalMap();

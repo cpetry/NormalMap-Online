@@ -88,30 +88,30 @@ Filters.convoluteFloat32 = function(pixels, weights, opaque) {
 	  dst[dstOff] = r;
 	  dst[dstOff+1] = g;
 	  dst[dstOff+2] = b;
-	  dst[dstOff+3] = a + alphaFac*(255-a);
+	  dst[dstOff+3] = a + alphaFac*(1.0-a);
 	}
   }
   return output;
 };
 
 
-Filters.grayscale = function(pixels, invert_height) {
+Filters.grayscale = function(pixels, invert) {
   var d = pixels.data;
-  for (var i=0; i<d.length; i+=4) {
+  for (var i=0; i<d.length; i += 4) {
 	var r = d[i];
 	var g = d[i+1];
 	var b = d[i+2];
 	// CIE luminance for the RGB
 	// The human eye is bad at seeing red and blue, so we de-emphasize them.
 	var v = 0.2126*r + 0.7152*g + 0.0722*b;
-	
-	d[i] = d[i+1] = d[i+2] = invert_height ? 255-v : v;
+	v = invert ? (255.0 - v) : v;
+	d[i] = d[i+1] = d[i+2] = v;
   }
   return pixels;
 };
 
 Number.prototype.mod = function(n) {
-return ((this%n)+n)%n;
+return ((this % n) + n) % n;
 }
 
 Filters.newsobelfilter = function(pixels, strength, level){
@@ -125,7 +125,7 @@ Filters.newsobelfilter = function(pixels, strength, level){
 	
 	var dst = output.data;
 	    
-	var max_size = w*h*4-1;
+	var max_size = w*h*4;
 	
 	var tl, l, bl, t, b, tr, r, br, dX,dY,dZ,l;
 	var dZ = 1.0 / strength * (1.0 + Math.pow(2.0, level)); // very costly operation!
@@ -142,10 +142,10 @@ Filters.newsobelfilter = function(pixels, strength, level){
 				l  = src[(dstOff - 4      ).mod(max_size)];   // left  
 				bl = src[(dstOff - 4 + wm4).mod(max_size)];   // bottom left  
 				t  = src[(dstOff - wm4    ).mod(max_size)];   // top  
-				b  = src[(dstOff + wm4    ) % max_size];   // bottom  
+				b  = src[(dstOff + wm4    ).mod(max_size)];   // bottom  
 				tr = src[(dstOff + 4 - wm4).mod(max_size)];   // top right  
-				r  = src[(dstOff + 4      ) % max_size];   // right  
-				br = src[(dstOff + 4 + wm4) % max_size];   // bottom right  
+				r  = src[(dstOff + 4      ).mod(max_size)];   // right  
+				br = src[(dstOff + 4 + wm4).mod(max_size)];   // bottom right  
 			}
 			else{
 				tl = src[(dstOff - 4 - wm4)];   // top left  
@@ -166,7 +166,7 @@ Filters.newsobelfilter = function(pixels, strength, level){
 			dst[dstOff] = (dX/l * 0.5 + 0.5); 	// red
 			dst[dstOff+1] = (dY/l * 0.5 + 0.5); 	// green
 			dst[dstOff+2] = dZ/l; 				// blue
-			dst[dstOff+3] = 1;
+			dst[dstOff+3] = 1.0;
 		}
 	}
 	
