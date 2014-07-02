@@ -55,8 +55,8 @@ var initRenderer = function(){
 	normal_map_preview.wrapT = THREE.RepeatWrapping;
 	
 	material = new THREE.MeshPhongMaterial ( { 
-		ambient: 0xbbbbbb, 
-        color: 0xbbbbbb,
+		ambient: 0x606060, 
+        color: 0xcccccc,
 		shininess: 25,
 		specular: 0x777777,
 		shading: THREE.SmoothShading,
@@ -71,7 +71,7 @@ var initRenderer = function(){
 	scene.add( model );
 	
 	// add subtle ambient lighting
-	var ambientLight = new THREE.AmbientLight(0x808080 );
+	var ambientLight = new THREE.AmbientLight(0x606060 );
 	scene.add(ambientLight);
 	
 	// directional lighting
