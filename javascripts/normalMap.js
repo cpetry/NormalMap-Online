@@ -24,13 +24,9 @@ var createNormalMap = function(){
 	// Note that ImageData values are clamped between 0 and 255, so we need
 	// to use a Float32Array for the gradient values because they
 	// range between -255 and 255.
-	var before, now;
-	before = Date.now();
 	var img_data = Filters.newsobelfilter(grayscale, 
 			document.getElementById("strength_slider").value, 
 			document.getElementById("level_slider").value);
-	now = Date.now();
-	console.log("" + (now-before));
 	
 	// smoothing
 	var weight_array = []
@@ -39,7 +35,6 @@ var createNormalMap = function(){
 	
 	if (smoothing >= 2)
 		img_data = Filters.convoluteFloat32(img_data,weight_array);
-	
 	
 	var idata = Filters.createImageData(img_data.width, img_data.height);
 	
