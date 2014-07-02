@@ -120,33 +120,48 @@ Filters.newsobelfilter = function(pixels, strength, level){
 	
 	var dst = output.data;
 	    
-	max_size = w*h*4-1;
+	var max_size = w*h*4-1;
 	
 	var tl, l, bl, t, b, tr, r, br, dX,dY,dZ,l;
 	var dZ = 1.0 / strength * (1.0 + Math.pow(2.0, level)); // very costly operation!
+	
+	var wm4 = w*4;
 	
 	for (var y=0; y<h; y++) {
 		for (var x=0; x<w; x++) {
 			var dstOff = (y*w+x)*4;
 
-			tl = src[(dstOff - 4 - w*4).mod(max_size)];   // top left  
-			l  = src[(dstOff - 4      ).mod(max_size)];   // left  
-			bl = src[(dstOff - 4 + w*4).mod(max_size)];   // bottom left  
-			t  = src[(dstOff - w*4    ).mod(max_size)];   // top  
-			b  = src[(dstOff + w*4    ) % max_size];   // bottom  
-			tr = src[(dstOff + 4 - w*4).mod(max_size)];   // top right  
-			r  = src[(dstOff + 4      ) % max_size];   // right  
-			br = src[(dstOff + 4 + w*4) % max_size];   // bottom right  
-   
+			// very costly operation!
+			if (x == 0 || x == w-1 || y == 0 || y == h-1){
+				tl = src[(dstOff - 4 - wm4).mod(max_size)];   // top left  
+				l  = src[(dstOff - 4      ).mod(max_size)];   // left  
+				bl = src[(dstOff - 4 + wm4).mod(max_size)];   // bottom left  
+				t  = src[(dstOff - wm4    ).mod(max_size)];   // top  
+				b  = src[(dstOff + wm4    ) % max_size];   // bottom  
+				tr = src[(dstOff + 4 - wm4).mod(max_size)];   // top right  
+				r  = src[(dstOff + 4      ) % max_size];   // right  
+				br = src[(dstOff + 4 + wm4) % max_size];   // bottom right  
+			}
+			else{
+				tl = src[(dstOff - 4 - wm4)];   // top left  
+				l  = src[(dstOff - 4      )];   // left  
+				bl = src[(dstOff - 4 + wm4)];   // bottom left  
+				t  = src[(dstOff - wm4    )];   // top  
+				b  = src[(dstOff + wm4    )];   // bottom  
+				tr = src[(dstOff + 4 - wm4)];   // top right  
+				r  = src[(dstOff + 4      )];   // right  
+				br = src[(dstOff + 4 + wm4)];   // bottom right  
+			}
+			
 			dX = tr + 2.0*r + br -tl - 2.0*l - bl;
 			dY = bl + 2.0*b + br -tl - 2.0*t - tr;
 
 			l = Math.sqrt((dX * dX) + (dY * dY) + (dZ * dZ));
 			
-			dst[dstOff] = (dX/l * 0.5 + 0.5) * 255.0; 	// red
-			dst[dstOff+1] = (dY/l * 0.5 + 0.5) * 255.0; 	// green
-			dst[dstOff+2] = dZ/l * 255.0; 				// blue
-			dst[dstOff+3] = 255.0;
+			dst[dstOff] = (dX/l * 0.5 + 0.5); 	// red
+			dst[dstOff+1] = (dY/l * 0.5 + 0.5); 	// green
+			dst[dstOff+2] = dZ/l; 				// blue
+			dst[dstOff+3] = 1;
 		}
 	}
 	

@@ -14,21 +14,23 @@ var getNextPowerOf2 = function(nmb){
 }
 
 var createNormalMap = function(){
+
+	
 	var div_container = document.getElementById("normal_map");
 	var img = document.getElementById("normal_img");
 	
 	var grayscale = Filters.filterImage(Filters.grayscale, height_image, invert_source);
 	
-	
 	// Note that ImageData values are clamped between 0 and 255, so we need
 	// to use a Float32Array for the gradient values because they
 	// range between -255 and 255.
-	
+	var before, now;
+	before = Date.now();
 	var img_data = Filters.newsobelfilter(grayscale, 
 			document.getElementById("strength_slider").value, 
 			document.getElementById("level_slider").value);
-	
-	
+	now = Date.now();
+	console.log("" + (now-before));
 	
 	// smoothing
 	var weight_array = []
@@ -41,14 +43,13 @@ var createNormalMap = function(){
 	
 	var idata = Filters.createImageData(img_data.width, img_data.height);
 	
-	
-		// invert colors if needed
+	// invert colors if needed
 	for (var i=0; i<img_data.data.length; i++){
 		if ((i % 4 == 0 && invert_red)
 		|| (i % 4 == 1 && invert_green))
-			idata.data[i] = 255.0 - img_data.data[i];
+			idata.data[i] = (1.0 - img_data.data[i]) * 255.0;
 		else
-			idata.data[i] = img_data.data[i];
+			idata.data[i] = img_data.data[i] * 255.0;
 	}
 	
 	var ctx_normal = normal_canvas.getContext("2d");
@@ -58,10 +59,11 @@ var createNormalMap = function(){
 	normal_canvas.height = height_image.height;
 		
 	ctx_normal.clearRect(0, 0, height_image.width, height_image.height);
-	ctx_normal.putImageData(idata, 0, 0, 0, 0, img_data.width, img_data.height);
+	
+	ctx_normal.putImageData(idata, 0, 0, 0, 0, img_data.width, img_data.height);	
 	
 	img.src = normal_canvas.toDataURL('image/jpeg');
-	
+		
 	
 	img.onload = function(){
 	

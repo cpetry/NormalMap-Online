@@ -40,7 +40,7 @@ var rotation_enabled = 1;
 var initRenderer = function(){
 
 	scene = new THREE.Scene();
-	camera = new THREE.PerspectiveCamera( 70, container_height / container_height, 0.1, 1000 );
+	camera = new THREE.PerspectiveCamera( 70, container_height / container_height, 0.1, 100 );
 
 	renderer = new THREE.WebGLRenderer({ alpha: false });
 	renderer.setSize( container_height, container_height );
@@ -55,10 +55,11 @@ var initRenderer = function(){
 	material = new THREE.MeshPhongMaterial ( { 
 		ambient: 0xbbbbbb, 
         color: 0xbbbbbb,
-		specular: 0x555555,
-		shininess: 30,
-		shading: THREE.SmoothShading,
+		shininess: 25,
+		specular: 0x777777,
+		shading: THREE.FlatShading,
 		normalMap: normal_map_preview,
+		bumpMap: texture,
 		metal: false,
         skining: true
 	} );
@@ -140,7 +141,6 @@ function animate() {
 
 function render() {
 	requestAnimationFrame(render);
-	renderer.setClearColor( 0x000000, 0);
 	renderer.render(scene, camera);
 	if(rotation_enabled){
 		model.rotation.x += 0.003;
