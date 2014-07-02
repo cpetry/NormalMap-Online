@@ -121,13 +121,13 @@
 				<div>
 					<div>
 						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left;">Strength</span>
-							<input id="strength_slider" onchange="createNormalMap()" 
+							<input id="strength_slider" onchange="if(auto_update)createNormalMap()" 
 									type="range"  min='0' max='5' value='2.5' step='0.1'/>
 						
 					</div>
 					<div>
 						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left">Level</span>
-						<input id="level_slider" onchange="createNormalMap()" 
+						<input id="level_slider" onchange="if(auto_update)createNormalMap()" 
 								type="range" value='7.0' min='4' max='10' step='0.1'/>
 					</div>
 					<div>
@@ -148,6 +148,10 @@
 					<img height=300 width=300 id="normal_img" name="normal_map"/>
 			</div>
 			
+			<div style="min-height:15px;margin-top:-10px;">
+				<input id="auto_update" type="checkbox" onclick="toggleAutoUpdate();document.getElementById('update').disabled = auto_update;" checked />Auto update
+				<input id="update" type="button" onclick="createNormalMap()" value="Update" disabled />
+			</div>
 			<div style="min-height:10px"></div>
 			<div>
 				Right-Click, "Save Image to..." or

@@ -1,6 +1,7 @@
 var height_image;
 var container_height = 300;
 var pic_height;
+var auto_update = true;
 var normal_canvas = document.createElement("canvas");
 var normal_canvas_preview = document.createElement("canvas");
 	
@@ -44,6 +45,7 @@ var initRenderer = function(){
 
 	renderer = new THREE.WebGLRenderer({ alpha: false });
 	renderer.setSize( container_height, container_height );
+	
 	document.getElementById('render_view').appendChild( renderer.domElement );
 
 	var height_canvas   = document.getElementById('height_canvas');
@@ -57,7 +59,7 @@ var initRenderer = function(){
         color: 0xbbbbbb,
 		shininess: 25,
 		specular: 0x777777,
-		shading: THREE.FlatShading,
+		shading: THREE.SmoothShading,
 		normalMap: normal_map_preview,
 		bumpMap: texture,
 		metal: false,
@@ -76,7 +78,7 @@ var initRenderer = function(){
 	
 	var directionalLight = new THREE.DirectionalLight(0xdddddd, 0.4 );
 	directionalLight.position.set(1, 1, 1);
-	scene.add(directionalLight);
+	scene.add(directionalLight);	
 	
 	var dL2 = new THREE.DirectionalLight( 0xbbdbff, 0.3 );
 	dL2.position.set( 0, -1, 1 );
@@ -129,6 +131,12 @@ function toggleRotation(){
 		rotation_enabled=0;
 	else
 		rotation_enabled=1;
+}
+
+function toggleAutoUpdate(){
+	auto_update = !auto_update;
+	if (auto_update)
+		createNormalMap();
 }
 
 function animate() {
@@ -211,7 +219,8 @@ require(["dojo/dom", "dojo/domReady!"], function(dom){
 			size_text += (!isPowerOf2(height_image.width) && !isPowerOf2(height_image.height)) ? " NOT POWER OF 2 !" : "";
 			document.getElementById("size").value = size_text;
 			
-			createNormalMap();
+			if (auto_update)
+				createNormalMap();
 		};
 		
 		height_image.src = source;

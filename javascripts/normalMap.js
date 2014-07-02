@@ -84,8 +84,9 @@ var invertRed = function(){
 		invert_red = 0;
 	else
 		invert_red = 1;
-		
-	createNormalMap();
+	
+	if (auto_update)
+		createNormalMap();
 }
 
 var invertGreen = function(){
@@ -93,8 +94,9 @@ var invertGreen = function(){
 		invert_green = 0;
 	else
 		invert_green = 1;
-		
-	createNormalMap();
+	
+	if (auto_update)
+		createNormalMap();
 }
 
 var invertSource = function(){
@@ -102,11 +104,14 @@ var invertSource = function(){
 		invert_source = 0;
 	else
 		invert_source = 1;
-		
-	createNormalMap();
+	
+	if (auto_update)
+		createNormalMap();
 }
 
 var setSmoothing = function(v){
 	smoothing = v;
-	createNormalMap();
+	
+	if (auto_update)
+		createNormalMap();
 }
