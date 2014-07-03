@@ -1,7 +1,10 @@
 var invert_red = false;
 var invert_green = false;
 var invert_source = false;
-var smoothing = false;
+var blur_sharp_mid = 32;
+var smoothing = blur_sharp_mid;
+var strength = 2.5;
+var level = 7;
 var auto_update = true;
 var normal_canvas = document.createElement("canvas");
 
@@ -26,12 +29,13 @@ var createNormalMap = function(){
 	var grayscale = Filters.filterImage(Filters.grayscale, height_image, invert_source);
 	
 	// smoothing
-	Filters.gaussianblur(grayscale, height_image.width, height_image.height, smoothing * smoothing );
+	if (smoothing > blur_sharp_mid)
+		Filters.gaussiansharpen(grayscale, height_image.width, height_image.height, smoothing - blur_sharp_mid);
+	else if (smoothing < blur_sharp_mid)
+		Filters.gaussianblur(grayscale, height_image.width, height_image.height, blur_sharp_mid - smoothing);
 		
 	
-	var img_data = Filters.newsobelfilter(grayscale, 
-			document.getElementById("strength_slider").value, 
-			document.getElementById("level_slider").value);
+	var img_data = Filters.newsobelfilter(grayscale, strength, level);
 	
 	
 	/*
@@ -85,6 +89,7 @@ var createNormalMap = function(){
 	
 }
 
+
 var invertRed = function(){
 	invert_red = !invert_red;
 	
@@ -106,11 +111,24 @@ var invertSource = function(){
 		createNormalMap();
 }
 
-var setSmoothing = function(v){
-	smoothing = v;
-	
-	if (auto_update)
+var timer = 0;
+
+var setNormalSetting = function(element, v){
+	if (element == "blur_sharp")
+		smoothing = v;
+	else if (element == "strength")
+		strength = v;
+	else if (element == "level")
+		level = v;
+		
+		
+	if(timer == 0)
+		timer = Date.now();
+		
+	if (auto_update && Date.now() - timer > 50){
 		createNormalMap();
+		timer = 0;
+	}
 }
 
 

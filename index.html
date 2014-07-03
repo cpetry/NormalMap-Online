@@ -121,20 +121,25 @@
 				<div>
 					<div>
 						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left;">Strength</span>
-							<input id="strength_slider" onchange="if(auto_update)createNormalMap()" 
+							<input id="strength_slider" 
+									onchange="setNormalSetting('strength', this.value)"
+									oninput="setNormalSetting('strength', this.value)"
 									type="range"  min='0' max='5' value='2.5' step='0.1'/>
 						
 					</div>
 					<div>
 						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left">Level</span>
-						<input id="level_slider" onchange="if(auto_update)createNormalMap()" 
+						<input id="level_slider" 
+								onchange="setNormalSetting('level', this.value)"
+								oninput="setNormalSetting('level', this.value)"
 								type="range" value='7.0' min='4' max='10' step='0.1'/>
 					</div>
 					<div>
-						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left">Smoothing</span>
+						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left">Blur/Sharp</span>
 						<input id="smooth_slider" 
-							onchange="setSmoothing(document.getElementById('smooth_slider').value)" 
-							type="range" value='0' min='1' max='8' step='1'/>
+							onchange="setNormalSetting('blur_sharp', this.value)"
+							oninput="setNormalSetting('blur_sharp', this.value)"
+							type="range" value='32' min='1' max='64' step='1'/>
 					</div>
 					<div>
 						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left">Invert</span>
@@ -169,9 +174,9 @@
 				<div>
 					<span style="width:50px;display:inline-block; text-align:right;">UV</span>
 					<div style="display: inline-block; width: 170px; text-align:left;margin-left:10px;">
-						x:<input style="width:50px;" id="repeat_sliderx" onchange="setRepeat(document.getElementById('repeat_sliderx').value, document.getElementById('repeat_slidery').value)" 
+						x:<input style="width:50px;" id="repeat_sliderx" onchange="setRepeat(this.value, this.value)" 
 							type="number"  min='1' max='3' value='1' step='1'/>
-						y:<input style="width:50px;" id="repeat_slidery" onchange="setRepeat(document.getElementById('repeat_sliderx').value, document.getElementById('repeat_slidery').value)" 
+						y:<input style="width:50px;" id="repeat_slidery" onchange="setRepeat(this.value, this.value)" 
 							type="number"  min='1' max='3' value='1' step='1'/>
 					</div>
 				</div>
