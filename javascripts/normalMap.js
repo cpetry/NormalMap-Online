@@ -2,7 +2,8 @@ var invert_red = false;
 var invert_green = false;
 var invert_source = false;
 var smoothing = false;
-
+var auto_update = true;
+var normal_canvas = document.createElement("canvas");
 
 var getNextPowerOf2 = function(nmb){
 	i = 2;
@@ -78,7 +79,6 @@ var createNormalMap = function(){
 	
 }
 
-
 var invertRed = function(){
 	invert_red = !invert_red;
 	
@@ -106,3 +106,14 @@ var setSmoothing = function(v){
 	if (auto_update)
 		createNormalMap();
 }
+
+
+function toggleAutoUpdate(){
+	auto_update = !auto_update;
+	
+	if (auto_update)
+		createNormalMap();
+}
+
+
+
