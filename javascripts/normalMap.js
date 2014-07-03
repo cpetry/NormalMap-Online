@@ -25,18 +25,23 @@ var createNormalMap = function(){
 	// range between -255 and 255.
 	var grayscale = Filters.filterImage(Filters.grayscale, height_image, invert_source);
 	
+	// smoothing
+	Filters.gaussianblur(grayscale, height_image.width, height_image.height, smoothing * smoothing );
+		
+	
 	var img_data = Filters.newsobelfilter(grayscale, 
 			document.getElementById("strength_slider").value, 
 			document.getElementById("level_slider").value);
 	
-	// smoothing
+	
+	/*
 	var weight_array = []
 	for( var i = 0; i < smoothing * smoothing; i++)
 		weight_array.push(1.0 / (smoothing * smoothing));
 	
 	if (smoothing >= 2)
 		img_data = Filters.convoluteFloat32(img_data, weight_array);
-	
+	*/
 	var idata = Filters.createImageData(img_data.width, img_data.height);
 	
 	// invert colors if needed
@@ -55,6 +60,7 @@ var createNormalMap = function(){
 	normal_canvas.height = height_image.height;
 		
 	ctx_normal.clearRect(0, 0, height_image.width, height_image.height);
+	
 	
 	ctx_normal.putImageData(idata, 0, 0, 0, 0, img_data.width, img_data.height);	
 	

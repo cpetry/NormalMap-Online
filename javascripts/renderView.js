@@ -1,7 +1,7 @@
 var scene;
 var camera;
 var renderer;
-var texture;
+var bump_map;
 var normal_map;
 var normal_map_preview;
 var material;
@@ -14,16 +14,30 @@ var initRenderer = function(){
 	scene = new THREE.Scene();
 	camera = new THREE.PerspectiveCamera( 70, container_height / container_height, 0.1, 100 );
 
-	renderer = new THREE.WebGLRenderer({ alpha: false });
+	renderer = new THREE.WebGLRenderer({ alpha: false, antialiasing: true  });
 	renderer.setSize( container_height, container_height );
+	
+	/*
+	var effectFXAA = new THREE.ShaderPass( THREE.FXAAShader );
+
+	effectFXAA.uniforms[ 'resolution' ].value.set( 1 / window.innerWidth, 1 / window.innerHeight );
+	effectFXAA.renderToScreen = true;
+	var renderModel = new THREE.RenderPass( scene, camera );
+	var composer = new THREE.EffectComposer( renderer );
+	composer.addPass( renderModel );
+	composer.addPass( effectFXAA );
+	*/
 	
 	document.getElementById('render_view').appendChild( renderer.domElement );
 
 	var height_canvas   = document.getElementById('height_canvas');
-	texture  				= new THREE.Texture( height_canvas );
+	bump_map  				= new THREE.Texture( height_canvas );
 	normal_map_preview  	= new THREE.Texture( normal_canvas_preview );
 	normal_map_preview.wrapS = THREE.RepeatWrapping;
 	normal_map_preview.wrapT = THREE.RepeatWrapping;
+	normal_map_preview.magFilter = THREE.LinearFilter;
+	normal_map_preview.minFilter = THREE.LinearMipMapNearestFilter;
+	normal_map_preview.anisotropy = 2;
 	
 	material = new THREE.MeshPhongMaterial ( { 
 		ambient: 0x606060, 
@@ -32,7 +46,7 @@ var initRenderer = function(){
 		specular: 0x777777,
 		shading: THREE.SmoothShading,
 		normalMap: normal_map_preview,
-		bumpMap: texture,
+		bumpMap: bump_map,
 		metal: false,
         skining: true
 	} );
@@ -80,7 +94,7 @@ function render() {
 		model.rotation.y += 0.003;
 	}
 	normal_map_preview.needsUpdate = true;
-	texture.needsUpdate = true;
+	bump_map.needsUpdate = true;
 }
 
 
