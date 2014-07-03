@@ -121,10 +121,10 @@
 				<div>
 					<div>
 						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left;">Strength</span>
-							<input id="strength_slider" 
-									onchange="setNormalSetting('strength', this.value)"
-									oninput="setNormalSetting('strength', this.value)"
-									type="range"  min='0' max='5' value='2.5' step='0.1'/>
+						<input id="strength_slider" 
+								onchange="setNormalSetting('strength', this.value)"
+								oninput="setNormalSetting('strength', this.value)"
+								type="range"  min='0' max='5' value='2.5' step='0.1'/>
 						
 					</div>
 					<div>
@@ -137,9 +137,9 @@
 					<div>
 						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left">Blur/Sharp</span>
 						<input id="smooth_slider" 
-							onchange="setNormalSetting('blur_sharp', this.value)"
-							oninput="setNormalSetting('blur_sharp', this.value)"
-							type="range" value='32' min='1' max='64' step='1'/>
+								onchange="setNormalSetting('blur_sharp', this.value)"
+								oninput="setNormalSetting('blur_sharp', this.value)"
+								type="range" value='32' min='1' max='64' step='1'/>
 					</div>
 					<div>
 						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left">Invert</span>
@@ -174,9 +174,9 @@
 				<div>
 					<span style="width:50px;display:inline-block; text-align:right;">UV</span>
 					<div style="display: inline-block; width: 170px; text-align:left;margin-left:10px;">
-						x:<input style="width:50px;" id="repeat_sliderx" onchange="setRepeat(this.value, this.value)" 
+						x:<input style="width:50px;" id="repeat_sliderx" onchange="setRepeat(this.value, document.getElementById('repeat_slidery').value)" 
 							type="number"  min='1' max='3' value='1' step='1'/>
-						y:<input style="width:50px;" id="repeat_slidery" onchange="setRepeat(this.value, this.value)" 
+						y:<input style="width:50px;" id="repeat_slidery" onchange="setRepeat(document.getElementById('repeat_sliderx').value, this.value)" 
 							type="number"  min='1' max='3' value='1' step='1'/>
 					</div>
 				</div>
