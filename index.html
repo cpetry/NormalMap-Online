@@ -6,11 +6,15 @@
 	<title>NormalMap-Online</title>
 	<link rel="icon" type="image/png" href="images/favicon.png" />
 	<link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:700"></link>
+	<meta charset="utf-8">
 	<meta name="description" content="Online NormalMap Generator">
 	<meta name="author" content="Christian Petry">
 	<meta name="language" CONTENT="english">
 	<meta name="keywords" content="Normalmap,Normal,Mapping,Online,cpetry,github,NormalMap-Generator,Heightmap,Javascript">
 	<meta name="date" content="2014-06-28">
+	<meta name="page-topic" content="Dienstleistung">
+	<meta name="robots" content="index,follow">
+	<meta http-equiv="reply-to" content="petry_christian@web.de">
 </head>
 
 <style type="text/css">
@@ -104,7 +108,7 @@
 				<canvas height=300 width=300 id="height_canvas"></canvas>
 			</div>
 			<div style="float:center; margin:-8px 15px 0 0; padding:0 0 0 0;">Size: 
-				<input style="border: none; color:white; background-color: transparent; border-color: transparent;" id="size" type="text" size="20" maxlength="20" readonly>
+				<input style="border: none; color:white; background-color: transparent; border-color: transparent;" id="size" type="text" size="30" maxlength="30" readonly>
 			</div>
 			
 			<div style="min-height:10px"></div>
@@ -121,20 +125,25 @@
 				<div>
 					<div>
 						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left;">Strength</span>
-							<input id="strength_slider" onchange="createNormalMap()" 
-									type="range"  min='0' max='5' value='2.5' step='0.1'/>
+						<input id="strength_slider" 
+								onchange="setNormalSetting('strength', this.value)"
+								oninput="setNormalSetting('strength', this.value)"
+								type="range"  min='0' max='5' value='2.5' step='0.1'/>
 						
 					</div>
 					<div>
 						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left">Level</span>
-						<input id="level_slider" onchange="createNormalMap()" 
+						<input id="level_slider" 
+								onchange="setNormalSetting('level', this.value)"
+								oninput="setNormalSetting('level', this.value)"
 								type="range" value='7.0' min='4' max='10' step='0.1'/>
 					</div>
 					<div>
-						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left">Smoothing</span>
+						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left">Blur/Sharp</span>
 						<input id="smooth_slider" 
-							onchange="setSmoothing(document.getElementById('smooth_slider').value)" 
-							type="range" value='0' min='1' max='8' step='1'/>
+								onchange="setNormalSetting('blur_sharp', this.value)"
+								oninput="setNormalSetting('blur_sharp', this.value)"
+								type="range" value='32' min='1' max='64' step='1'/>
 					</div>
 					<div>
 						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left">Invert</span>
@@ -148,6 +157,10 @@
 					<img height=300 width=300 id="normal_img" name="normal_map"/>
 			</div>
 			
+			<div style="min-height:15px;margin-top:-10px;">
+				<input id="auto_update" type="checkbox" onclick="toggleAutoUpdate();document.getElementById('update').disabled = auto_update;" checked />Auto update
+				<input id="update" type="button" onclick="createNormalMap()" value="Update" disabled />
+			</div>
 			<div style="min-height:10px"></div>
 			<div>
 				Right-Click, "Save Image to..." or
@@ -159,15 +172,15 @@
 		</div>
 		<div class="step" id="preview" <!--style="display: none;-->">
 			<div class="steptop">
-				<div style="display:inline-block; height:30px">
-				3D Preview
+				<div style="display:inline-block; height:45px">
+					3D Preview<br/> <i style="font-size:0.7em">(runs best on chrome)</i>
 				</div>
 				<div>
 					<span style="width:50px;display:inline-block; text-align:right;">UV</span>
 					<div style="display: inline-block; width: 170px; text-align:left;margin-left:10px;">
-						x:<input style="width:50px;" id="repeat_sliderx" onchange="setRepeat(document.getElementById('repeat_sliderx').value, document.getElementById('repeat_slidery').value)" 
+						x:<input style="width:50px;" id="repeat_sliderx" onchange="setRepeat(this.value, document.getElementById('repeat_slidery').value)" 
 							type="number"  min='1' max='3' value='1' step='1'/>
-						y:<input style="width:50px;" id="repeat_slidery" onchange="setRepeat(document.getElementById('repeat_sliderx').value, document.getElementById('repeat_slidery').value)" 
+						y:<input style="width:50px;" id="repeat_slidery" onchange="setRepeat(document.getElementById('repeat_sliderx').value, this.value)" 
 							type="number"  min='1' max='3' value='1' step='1'/>
 					</div>
 				</div>
@@ -185,8 +198,8 @@
 				<div>
 					<input id="input_rot" type="checkbox" value="rotation" onclick="toggleRotation()" checked> Rotation<br>
 				</div>
+				
 			</div>
-			
 			<div id="render_view"></div>
 			
 			
@@ -216,7 +229,9 @@
 <script type="text/javascript" src="javascripts/dojo.js"></script>
 <script type="text/javascript" src="javascripts/filters.js"></script>
 <script type="text/javascript" src="javascripts/ImageDrop.js"></script>
+<script type="text/javascript" src="javascripts/renderView.js"></script>
 <script type="text/javascript" src="javascripts/normalMap.js"></script>
+<script type="text/javascript" src="javascripts/gaussianblur.js"></script>
 <script type="text/javascript" src="javascripts/main.js"></script>
 <script type="text/javascript" src="javascripts/ganalytics.js"></script>
 

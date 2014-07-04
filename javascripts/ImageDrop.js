@@ -1,7 +1,5 @@
 var height_image;
 var container_height = 300;
-var pic_height;
-var normal_canvas = document.createElement("canvas");
 	
 
 var initHeightMap = function(){
@@ -26,123 +24,13 @@ var initHeightMap = function(){
 }
 
 
-var scene;
-var camera;
-var renderer;
-var model;
-var texture;
-var normal_map;
-var material;
-var rotation_enabled = 1;
 
-var initRenderer = function(){
-
-	scene = new THREE.Scene();
-	camera = new THREE.PerspectiveCamera( 70, container_height / container_height, 0.1, 1000 );
-
-	renderer = new THREE.WebGLRenderer({ alpha: false });
-	renderer.setSize( container_height, container_height );
-	document.getElementById('render_view').appendChild( renderer.domElement );
-
-	var height_canvas   = document.getElementById('height_canvas');
-	texture  		= new THREE.Texture( height_canvas );
-	normal_map  	= new THREE.Texture( normal_canvas );
-	normal_map.wrapS = THREE.RepeatWrapping;
-	normal_map.wrapT = THREE.RepeatWrapping;
-	
-	material = new THREE.MeshPhongMaterial ( { 
-		ambient: 0xbbbbbb, 
-        color: 0xbbbbbb,
-		specular: 0x555555,
-		shininess: 30,
-		shading: THREE.SmoothShading,
-		normalMap: normal_map,
-		metal: false,
-        skining: true
-	} );
-	
-	var geometry = new THREE.BoxGeometry(1,1,1);
-	model = new THREE.Mesh( geometry, material);
-	scene.add( model );
-	
-	// add subtle ambient lighting
-	var ambientLight = new THREE.AmbientLight(0x808080 );
-	scene.add(ambientLight);
-	
-	// directional lighting
-	
-	var directionalLight = new THREE.DirectionalLight(0xdddddd, 0.4 );
-	directionalLight.position.set(1, 1, 1);
-	scene.add(directionalLight);
-	
-	var dL2 = new THREE.DirectionalLight( 0xbbdbff, 0.3 );
-	dL2.position.set( 0, -1, 1 );
-	scene.add( dL2 );
-	
-	var dL2 = new THREE.DirectionalLight( 0xbbffff, 0.25 );
-	dL2.position.set( -3, 1, -1 );
-	scene.add( dL2 );
-	
-	
-	camera.position.z = 1.5;
+function isPowerOf2(val){
+	if((val & -val) == val)
+		return true;
+	else 
+		return false;
 }
-
-var setRepeat = function(v_x, v_y){
-	normal_map.repeat.set( v_x, v_y );
-}
-
-var setModel = function(type){
-	scene.remove( model );
-
-	if (type == "Cube"){
-		var geometry = new THREE.BoxGeometry(1,1,1);
-		model = new THREE.Mesh( geometry, material);
-		scene.add( model );
-	}
-	else if (type == "Sphere"){
-		var geometry = new THREE.SphereGeometry( 0.7, 32, 32);
-		model = new THREE.Mesh( geometry, material);
-		scene.add( model );
-	}
-	else if (type == "Cylinder"){
-		var geometry = new THREE.CylinderGeometry( 0.7, 0.5, 1, 32 );
-		model = new THREE.Mesh( geometry, material);
-		scene.add( model );
-	}
-	else if (type == "Plane"){
-		var geometry = new THREE.PlaneGeometry(2,2);
-		rotation_enabled = 0;
-		model.rotation.x = 0;
-		model.rotation.y = 0;
-		document.getElementById('input_rot').checked = false;
-		model = new THREE.Mesh( geometry, material);
-		scene.add( model );
-	}
-	
-}
-
-function toggleRotation(){
-	if(rotation_enabled)
-		rotation_enabled=0;
-	else
-		rotation_enabled=1;
-}
-
-
-function render() {
-	requestAnimationFrame(render);
-	renderer.setClearColor( 0x000000, 1);
-	renderer.render(scene, camera);
-	if(rotation_enabled){
-		model.rotation.x += 0.003;
-		model.rotation.y += 0.003;
-	}
-	normal_map.needsUpdate = true;
-	texture.needsUpdate = true;
-}
-
-
-
 
 require(["dojo/dom", "dojo/domReady!"], function(dom){
 	var height_map_drop = dom.byId("height_map"),
@@ -193,9 +81,12 @@ require(["dojo/dom", "dojo/domReady!"], function(dom){
 			height_image.width = height_image.naturalWidth;
 			height_image.height = height_image.naturalHeight;
 			
-			document.getElementById("size").value = "" +(height_image.width) + " x " + (height_image.height);
+			var size_text = "" + (height_image.width) + " x " + (height_image.height);
+			size_text += (!isPowerOf2(height_image.width) && !isPowerOf2(height_image.height)) ? " NOT POWER OF 2 !" : "";
+			document.getElementById("size").value = size_text;
 			
-			createNormalMap();
+			if (auto_update)
+				createNormalMap();
 		};
 		
 		height_image.src = source;
@@ -203,6 +94,7 @@ require(["dojo/dom", "dojo/domReady!"], function(dom){
 	
 	
 });
+
 
 
 var button = document.getElementById('download');
@@ -217,7 +109,7 @@ button.addEventListener('click', function (e) {
 	do{
 		pic = normal_canvas.toDataURL('image/jpeg', qual);
 		filesize = pic.length;
-		console.log("size of pic: " + filesize); 
+		//console.log("size of pic: " + filesize); 
 		qual -= 0.1;
 	}while(filesize >= 2000000);
 	//pic.src.replace("image/png", "image/octet-stream");

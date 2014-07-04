@@ -1,4 +1,3 @@
-
 initHeightMap();
 initRenderer();
 render();
