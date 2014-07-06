@@ -16,7 +16,7 @@ var initRenderer = function(){
 
 	renderer = new THREE.WebGLRenderer({ alpha: false, antialiasing: true  });
 	renderer.setSize( container_height, container_height );
-	
+	controls = new THREE.OrbitControls( camera, renderer.domElement );
 	/*
 	var effectFXAA = new THREE.ShaderPass( THREE.FXAAShader );
 
@@ -136,3 +136,31 @@ var setModel = function(type){
 function toggleRotation(){
 	rotation_enabled = !rotation_enabled;
 }
+
+function switchRenderView(){
+	
+}
+
+$(document).ready(function() {
+	$(".various").fancybox({
+		maxWidth	: 600,
+		maxHeight	: 600,
+		fitToView	: false,
+		width		: 600,
+		height		: 600,
+		autoSize	: false,
+		closeClick	: false,
+		openEffect	: 'none',
+		closeEffect	: 'none',
+		
+		afterShow: function(){
+			document.getElementById('renderBig').appendChild(renderer.domElement);
+			renderer.setSize( 600, 600 );
+
+		},
+		afterClose: function(){
+			document.getElementById('render_view').appendChild(renderer.domElement);
+			renderer.setSize(container_height, container_height );
+		}
+	});
+});
