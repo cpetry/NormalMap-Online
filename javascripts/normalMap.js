@@ -1,8 +1,7 @@
 var invert_red = false;
 var invert_green = false;
 var invert_source = false;
-var blur_sharp_mid = 32;
-var smoothing = blur_sharp_mid;
+var smoothing = 0;
 var strength = 2.5;
 var level = 7;
 var auto_update = true;
@@ -29,10 +28,10 @@ var createNormalMap = function(){
 	var grayscale = Filters.filterImage(Filters.grayscale, height_image, invert_source);
 	
 	// smoothing
-	if (smoothing > blur_sharp_mid)
-		Filters.gaussiansharpen(grayscale, height_image.width, height_image.height, smoothing - blur_sharp_mid);
-	else if (smoothing < blur_sharp_mid)
-		Filters.gaussianblur(grayscale, height_image.width, height_image.height, blur_sharp_mid - smoothing);
+	if (smoothing > 0)
+		Filters.gaussiansharpen(grayscale, height_image.width, height_image.height, Math.abs(smoothing));
+	else if (smoothing < 0)
+		Filters.gaussianblur(grayscale, height_image.width, height_image.height, Math.abs(smoothing));
 		
 	
 	var img_data = Filters.newsobelfilter(grayscale, strength, level);
@@ -116,11 +115,12 @@ var timer = 0;
 var setNormalSetting = function(element, v){
 	if (element == "blur_sharp")
 		smoothing = v;
+	
 	else if (element == "strength")
 		strength = v;
+	
 	else if (element == "level")
 		level = v;
-		
 		
 	if(timer == 0)
 		timer = Date.now();

@@ -50,7 +50,7 @@
 			vertical-align: top;
 			width:338px;
 		}
-		div.steptop {
+		.steptop {
 			margin-left: auto;
 			margin-right: auto;
 			height: 110px;
@@ -121,37 +121,62 @@
 		</div>
 		<div class="step">
 			<div class="steptop">
-				
-				<div>
-					<div>
+				<table class="steptop" style="border-spacing:0px">
+				<tr>
+					<td>
 						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left;">Strength</span>
+					</td>
+					<td>
 						<input id="strength_slider" 
-								onchange="setNormalSetting('strength', this.value)"
-								oninput="setNormalSetting('strength', this.value)"
+								onchange="setNormalSetting('strength', this.value); document.getElementById('strength_nmb').value = this.value;"
+								oninput="setNormalSetting('strength', this.value); document.getElementById('strength_nmb').value = this.value;"
+								style="width:100px;"
 								type="range"  min='0' max='5' value='2.5' step='0.1'/>
-						
-					</div>
-					<div>
+						<input id="strength_nmb" type="number" step="0.01" style="width:45px;vertical-align:top;" value='2.5' 
+								onchange="setNormalSetting('strength', this.value); document.getElementById('strength_slider').value = this.value;">
+					</td>
+				</tr>
+				<tr>
+					<td>
 						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left">Level</span>
+					</td>
+					<td>
 						<input id="level_slider" 
-								onchange="setNormalSetting('level', this.value)"
-								oninput="setNormalSetting('level', this.value)"
+								onchange="setNormalSetting('level', this.value);  document.getElementById('level_nmb').value = this.value;"
+								oninput="setNormalSetting('level', this.value);  document.getElementById('level_nmb').value = this.value;"
+								style="width:100px;"
 								type="range" value='7.0' min='4' max='10' step='0.1'/>
-					</div>
-					<div>
+						<input id="level_nmb" type="number" step="0.01" style="width:45px;vertical-align:top;" value='7.0'
+								onchange="setNormalSetting('level', this.value); document.getElementById('level_slider').value = this.value;">
+					</td>
+				</tr>
+				<tr>
+					<td>
 						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left">Blur/Sharp</span>
+					</td>
+					<td>
 						<input id="smooth_slider" 
-								onchange="setNormalSetting('blur_sharp', this.value)"
-								oninput="setNormalSetting('blur_sharp', this.value)"
-								type="range" value='32' min='1' max='64' step='1'/>
-					</div>
-					<div>
+								onchange="setNormalSetting('blur_sharp', this.value); document.getElementById('smooth_nmb').value = this.value;"
+								oninput="setNormalSetting('blur_sharp', this.value); document.getElementById('smooth_nmb').value = this.value;"
+								style="width:100px;"
+								type="range" value='0' min='-32' max='32' step='1'/>
+						<input id="smooth_nmb" type="number" step="0.01" style="width:45px;vertical-align:top;" value='0'
+								onchange="setNormalSetting('blur_sharp', this.value); document.getElementById('smooth_slider').value = this.value;">
+					</td>
+				</tr>
+				<tr>
+					<td>
 						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left">Invert</span>
-						<input id="invert_r" type="checkbox" onclick="invertRed()" />R
-						<input id="invert_g" type="checkbox" onclick="invertGreen()" />G
-						<input id="invert_height" type="checkbox" onclick="invertSource()" />Height
-					</div>
-				</div>
+					</td>
+					<td>
+						<div style="display:inline-block; width:156px;">
+							<input id="invert_r" type="checkbox" onclick="invertRed()" />R
+							<input id="invert_g" type="checkbox" onclick="invertGreen()" />G
+							<input id="invert_height" type="checkbox" onclick="invertSource()" />Height
+						</div>
+					</td>
+				</tr>
+				</table>
 			</div>
 			<div id="normal_map">
 					<img height=300 width=300 id="normal_img" name="normal_map"/>
