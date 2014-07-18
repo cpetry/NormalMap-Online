@@ -211,7 +211,7 @@
 				</div>
 				<div>
 					<span style="width:50px;display:inline-block;text-align:right;">Model</span>
-					<div style="display: inline-block; width: 170px; text-align:left;margin-left:10px;">
+					<div style="display: inline-block; width: 100px; text-align:left;margin-left:10px;">
 						<select id="model" onchange="setModel(document.getElementById('model').value)">
 							<option selected>Cube</option>
 							<option>Plane</option>
@@ -219,9 +219,10 @@
 							<option>Cylinder</option>
 						</select>
 					</div>
+					<input id="input_rot" type="checkbox" value="rotation" onclick="toggleRotation()" checked> Rotation<br>
 				</div>
 				<div>
-					<input id="input_rot" type="checkbox" value="rotation" onclick="toggleRotation()" checked> Rotation<br>
+					<input id="input_displacement" type="checkbox" value="displacement" onclick="toggleDisplacement()" checked> Displacement<br>
 				</div>
 				
 			</div>

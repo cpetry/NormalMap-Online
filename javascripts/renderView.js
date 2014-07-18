@@ -2,11 +2,16 @@ var scene;
 var camera;
 var renderer;
 var bump_map;
+var ao_map;
 var normal_map;
 var normal_map_preview;
 var material;
 var rotation_enabled = true;
+var displacement_enabled = true;
+var displacement_scale = 1;
+var displacement_bias = -1.0/11.0;
 var normal_canvas_preview = document.createElement("canvas");
+var ao_canvas = document.createElement("canvas");
 var model;
 
 var initRenderer = function(){
@@ -16,6 +21,10 @@ var initRenderer = function(){
 
 	renderer = new THREE.WebGLRenderer({ alpha: false, antialiasing: true  });
 	renderer.setSize( container_height, container_height );
+	renderer.physicallyBasedShading = true;
+	renderer.shadowMapEnabled = true;
+	renderer.shadowMapType = THREE.PCFShadowMap;
+				
 	controls = new THREE.OrbitControls( camera, renderer.domElement );
 	/*
 	var effectFXAA = new THREE.ShaderPass( THREE.FXAAShader );
@@ -32,6 +41,7 @@ var initRenderer = function(){
 
 	var height_canvas   = document.getElementById('height_canvas');
 	bump_map  				= new THREE.Texture( height_canvas );
+	ao_map  				= new THREE.Texture( ao_canvas );
 	normal_map_preview  	= new THREE.Texture( normal_canvas_preview );
 	normal_map_preview.wrapS = THREE.RepeatWrapping;
 	normal_map_preview.wrapT = THREE.RepeatWrapping;
@@ -51,8 +61,31 @@ var initRenderer = function(){
         skining: true
 	} );
 	
-	var geometry = new THREE.BoxGeometry(1,1,1);
-	model = new THREE.Mesh( geometry, material);
+	var shader = THREE.ShaderLib[ "normalmap" ];
+	
+	var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
+	//console.log(uniforms);
+	uniforms[ "enableDisplacement" ].value = true;
+	uniforms[ "enableDiffuse" ].value = false;
+	uniforms[ "enableAO" ].value = true;
+	
+	uniforms[ "diffuse" ].value = new THREE.Color(0xcccccc);
+	uniforms[ "specular" ].value = new THREE.Color(0x777777);
+	uniforms[ "ambient" ].value = new THREE.Color(0x606060);
+	uniforms[ "tDisplacement"].value = bump_map;
+	uniforms[ "tNormal" ].value = normal_map_preview;
+	uniforms[ "tAO" ].value = ao_map;
+	var parameters = { fragmentShader: shader.fragmentShader, vertexShader: shader.vertexShader, uniforms: uniforms, lights: true };
+	var NormalMaterial = new THREE.ShaderMaterial( parameters );
+	NormalMaterial.wrapAround = true;
+	//var geometry = new THREE.PlaneGeometry(16,16,128,128);
+	var geometry = new THREE.BoxGeometry(1,1,1, 128, 128, 128);
+	
+	geometry.computeTangents();
+	
+	model = new THREE.Mesh( geometry, NormalMaterial);
+	model.castShadow = true;
+	model.receiveShadow = true;
 	scene.add( model );
 	
 	// add subtle ambient lighting
@@ -63,6 +96,12 @@ var initRenderer = function(){
 	
 	var directionalLight = new THREE.DirectionalLight(0xdddddd, 0.4 );
 	directionalLight.position.set(1, 1, 1);
+	directionalLight.castShadow = true;
+	directionalLight.shadowCameraNear = 1;
+	directionalLight.shadowCameraFov = 70;
+	directionalLight.shadowBias = 1;
+	directionalLight.shadowMapWidth = 512;
+	directionalLight.shadowMapHeight = 512;
 	scene.add(directionalLight);	
 	
 	var dL2 = new THREE.DirectionalLight( 0xbbdbff, 0.3 );
@@ -95,6 +134,7 @@ function render() {
 	}
 	normal_map_preview.needsUpdate = true;
 	bump_map.needsUpdate = true;
+	ao_map.needsUpdate = true;
 }
 
 
@@ -108,6 +148,8 @@ var setModel = function(type){
 	if (type == "Cube"){
 		var geometry = new THREE.BoxGeometry(1,1,1);
 		model = new THREE.Mesh( geometry, material);
+		model.castShadow = true;
+		model.receiveShadow = true;
 		scene.add( model );
 	}
 	else if (type == "Sphere"){
@@ -132,9 +174,26 @@ var setModel = function(type){
 	
 }
 
+var setDisplacementStrength = function(st, lv){
+	var dZ =  0.01 * st * (1.0 + Math.pow(2.0, 0.5 * (10 - lv)));
+	var scale = 0;
+	if (invert_source)
+		scale = -dZ;
+	else
+		scale = dZ;
+	console.log(scale);
+	model.material.uniforms[ "uDisplacementScale" ].value = scale * displacement_scale;
+	model.material.uniforms[ "uDisplacementBias" ].value = displacement_bias;
+}
+
 
 function toggleRotation(){
 	rotation_enabled = !rotation_enabled;
+}
+
+function toggleDisplacement(){
+	displacement_enabled = !displacement_enabled;
+	model.material.uniforms[ "enableDisplacement" ].value = displacement_enabled;
 }
 
 function switchRenderView(){

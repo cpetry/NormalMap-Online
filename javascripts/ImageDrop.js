@@ -17,6 +17,7 @@ var initHeightMap = function(){
 		
 		document.getElementById("size").value = "" +(height_image.naturalWidth) + " x " + (height_image.naturalHeight);
 		
+		setDisplacementStrength(strength, level);
 		createNormalMap(); // height map was loaded... so create standard normal map!
     };
 	
