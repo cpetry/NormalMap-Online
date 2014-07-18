@@ -58,34 +58,13 @@ var createNormalMap = function(){
 	//ctx_normal.clearRect(0, 0, height_image.width, height_image.height);
 	ctx_normal.putImageData(height_map, 0, 0, 0, 0, img_data.width, img_data.height);	
 	
-	setTexturePreview(normal_canvas, img_data.width, img_data.height);
+	setTexturePreview(normal_canvas, normal_canvas_preview, "normal_img", img_data.width, img_data.height);
 	
 	console.log("w:" + normal_canvas.width + ", h:" + normal_canvas.height);
 	
 }
 
-function setTexturePreview(canvas, width, height){
-	var img = document.getElementById("normal_img");
-	
-	img.src = canvas.toDataURL('image/jpeg');
-	
-	// set preview canvas	
-	normal_canvas_preview.width  = getNextPowerOf2(canvas.width);
-	normal_canvas_preview.height = getNextPowerOf2(canvas.height);
-		
-	
-	img.onload = function(){
-	
-		var new_width  = getNextPowerOf2(width);
-		var new_height = getNextPowerOf2(height);
-		
-		var ctx_normal_preview = normal_canvas_preview.getContext("2d");
-		//ctx_normal_preview.clearRect(     0, 0, new_width, new_height);
-		ctx_normal_preview.drawImage(img, 0, 0, new_width, new_height);
-		
-		setRepeat(document.getElementById('repeat_sliderx').value, document.getElementById('repeat_slidery').value);
-	}
-}
+
 
 
 var invertRed = function(){

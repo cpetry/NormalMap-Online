@@ -6,6 +6,7 @@
 	<title>NormalMap-Online</title>
 	<link rel="icon" type="image/png" href="images/favicon.png" />
 	<link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:700"></link>
+	<link type="text/css" rel="stylesheet" href="./style.css"></link>
 	<meta charset="utf-8">
 	<meta name="description" content="Online NormalMap Generator FREE! Create a Normalmap directly inside your browser! No Uploads required, completely client-based">
 	<meta name="author" content="Christian Petry">
@@ -17,79 +18,6 @@
 	<meta http-equiv="reply-to" content="petry_christian@web.de">
 </head>
 
-<style type="text/css">
-		
-		#height_map, #normal_map, #render_view {
-			position: relative;
-			//background-color: #eee;
-			border: 1px solid #ccc;
-			text-align: center;
-			padding: 8px;
-			margin: 8px;
-		}
-		
-		body{
-			background: url('./images/background.jpg');
-			font-family:"Open Sans";
-		}
-
-		div.content {
-			padding: 10px 10px 10px 10px;
-			position: relative;
-			margin-left: auto;
-			margin-right: auto;
-			display: inline-block;
-			border-radius: 10px;
-			box-shadow: 2px 2px 10px #333;
-			background: none repeat scroll 0% 0% rgba(10,10,10,0.5);
-			color: #fff;
-		}
-		
-		div.step {
-			display: inline-block;
-			vertical-align: top;
-			width:338px;
-		}
-		.steptop {
-			margin-left: auto;
-			margin-right: auto;
-			height: 110px;
-		}
-		div.stepnumber {
-			display: inline-block;
-			vertical-align: top;
-			border: 1px solid;
-			border-radius: 10px;
-			width:30px;
-			margin-left: auto;
-			margin-right: auto;
-			//background-color:#aaaaaa;
-		}
-		div.imprint {
-			float:right;
-			margin-top: 80px;
-			border: 1px solid;
-			display: inline-block;
-			border-radius: 20px;
-			width:300px;
-		}
-		div.imprinttext {
-			width:60px;
-			margin-top:-10px;
-			margin-left:15px;
-			background:white;
-		}
-		
-		footer, footer p {
-			color: #fff;
-			text-align: left;
-			position: fixed;
-			bottom: 0;
-			left:0;
-			opacity: 0.9;
-			font-size: 12px;
-		}
-</style>
 	
 <body style="text-align: center">
 	<br/>
@@ -99,14 +27,21 @@
 	<div style="min-height:10px"></div>
 	
 	<div class="content">
-		<div class="step">
-			<div class="steptop">
+	
+	
+		<!-- Drop box %D -->
+		<div class="column">
+			
+			<div class="column_top" style="margin-top: 25px; height:105px;">
 				<img src="images/drag_drop.png" />
-					
 			</div>
-			<div id="height_map">
+			
+			
+			<div class="view" id="height_map">
 				<canvas height=300 width=300 id="height_canvas"></canvas>
 			</div>
+			
+			
 			<div style="float:center; margin:-8px 15px 0 0; padding:0 0 0 0;">Size: 
 				<input style="border: none; color:white; background-color: transparent; border-color: transparent;" id="size" type="text" size="30" maxlength="30" readonly>
 			</div>
@@ -119,57 +54,65 @@
 			</p>
 			
 		</div>
-		<div class="step">
-			<div class="steptop">
-				<table class="steptop" style="border-spacing:0px">
+		
+		
+		
+		
+		<!-- Texture -->
+		<div class="column">
+		
+		
+			<!-- Normal Settings -->
+			<div class="column_top" id="normal_settings" style="width:100%;">
+				<table style="border-spacing:0px; width:100%;" >
 				<tr>
-					<td>
-						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left;">Strength</span>
+					<td class="option_text">
+						<span> Strength</span>
 					</td>
-					<td>
+					<td class="options">
 						<input id="strength_slider" 
 								onchange="setNormalSetting('strength', this.value); document.getElementById('strength_nmb').value = this.value;"
 								oninput="setNormalSetting('strength', this.value); document.getElementById('strength_nmb').value = this.value;"
-								style="width:100px;"
+								style="width:60%;"
 								type="range"  value='2.5' min='0' max='5' step='0.1'/>
-						<input id="strength_nmb" type="number" step="0.01" style="width:45px;vertical-align:top;" value='2.5' 
+						<input id="strength_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='2.5' 
 								onchange="setNormalSetting('strength', this.value); document.getElementById('strength_slider').value = this.value;">
 					</td>
 				</tr>
 				<tr>
-					<td>
-						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left">Level</span>
+					<td class="option_text">
+						<span >Level</span>
 					</td>
-					<td>
+					<td class="options">
 						<input id="level_slider" 
 								onchange="setNormalSetting('level', this.value);  document.getElementById('level_nmb').value = this.value;"
 								oninput="setNormalSetting('level', this.value);  document.getElementById('level_nmb').value = this.value;"
-								style="width:100px;"
+								style="width:60%;"
 								type="range" value='7.0' min='4' max='10' step='0.1'/>
-						<input id="level_nmb" type="number" step="0.01" style="width:45px;vertical-align:top;" value='7.0'
+						<input id="level_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='7.0'
 								onchange="setNormalSetting('level', this.value); document.getElementById('level_slider').value = this.value;">
 					</td>
 				</tr>
 				<tr>
-					<td>
-						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left">Blur/Sharp</span>
+					<td class="option_text">
+						<span >Blur/Sharp</span>
 					</td>
-					<td>
+					<td class="options">
 						<input id="blur_sharp_slider" 
 								onchange="setNormalSetting('blur_sharp', this.value); document.getElementById('blur_sharp_nmb').value = this.value;"
 								oninput="setNormalSetting('blur_sharp', this.value); document.getElementById('blur_sharp_nmb').value = this.value;"
-								style="width:100px;"
+								style="width:60%;"
 								type="range" value='0' min='-32' max='32' step='1'/>
-						<input id="blur_sharp_nmb" type="number" step="0.01" style="width:45px;vertical-align:top;" value='0'
+						<input id="blur_sharp_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='0'
 								onchange="setNormalSetting('blur_sharp', this.value); document.getElementById('blur_sharp_slider').value = this.value;">
 					</td>
 				</tr>
 				<tr>
-					<td>
-						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left">Invert</span>
+					<td class="option_text">
+						<span>Invert</span>
 					</td>
-					<td>
-						<div style="display:inline-block; width:156px;">
+					<td class="options">
+						<div>
 							<input id="invert_r" type="checkbox" onclick="invertRed()" />R
 							<input id="invert_g" type="checkbox" onclick="invertGreen()" />G
 							<input id="invert_height" type="checkbox" onclick="invertSource()" />Height
@@ -178,10 +121,47 @@
 				</tr>
 				</table>
 			</div>
-			<div id="normal_map">
-					<img height=300 width=300 id="normal_img" name="normal_map"/>
+						
+			<!-- Displacement Settings -->
+			<div class="column_top" id="displacement_settings" style="display: none;">
+				<table class="steptop" style="border-spacing:0px">
+				<tr>
+					<td>
+						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left;">Displacement:</span>
+					</td>
+					<td>
+						<input id="input_displacement" type="checkbox" value="displacement" onclick="toggleDisplacement()" checked>
+						<input id="dm_strength_slider" 
+						onchange="setDisplaceSetting('strength', this.value); document.getElementById('dm_strength_nmb').value = this.value;"
+						oninput="setDisplaceSetting('strength', this.value); document.getElementById('dm_strength_nmb').value = this.value;"
+						style="width:80px;"
+						type="range" value='0.3' min='-1' max='1' step='0.01'/>
+					<input id="dm_strength_nmb" type="number" step="0.01" style="width:45px;vertical-align:top;" value='0.3'
+						onchange="setDisplaceSetting('strength', this.value); document.getElementById('dm_strength_slider').value = this.value;">
+					</td>
+				</tr>
+				</table>
 			</div>
 			
+			
+			<!-- Textures -->
+			<div class="texture_container">
+				<div class="tabs">
+					<input class="tab_button" id="tab_btn_normal" type="button" onclick="activate_texture('normal');" disabled value="Normal"/>
+					<input class="tab_button" id="tab_btn_displace" type="button" onclick="activate_texture('displace');" value="Displacement"/>
+				</div>
+				<!-- Normal Texture -->
+				<div class="view" id="normal_map">
+					<img height=300 width=300 id="normal_img" />
+				</div>
+				
+				<!-- Displacement Texture -->
+				<div class="view" id="displacement_map" style="display: none;">
+					<img height=300 width=300 id="displace_img" />
+				</div>
+			</div>
+			
+			<!-- Autoupdate stuff -->
 			<div style="min-height:15px;margin-top:-10px;">
 				<input id="auto_update" type="checkbox" onclick="toggleAutoUpdate();document.getElementById('update').disabled = auto_update;" checked />Auto update
 				<input id="update" type="button" onclick="createNormalMap()" value="Update" disabled />
@@ -195,8 +175,12 @@
 				</a>
 			</div>
 		</div>
-		<div class="step" id="preview" <!--style="display: none;-->">
-			<div class="steptop">
+		
+		
+		
+		<!-- Preview -->
+		<div class="column" id="preview" <!--style="display: none;-->">
+			<div class="column_top">
 				<div style="display:inline-block; height:25px">
 					3D Preview <i style="font-size:0.7em">(runs best on chrome)</i>
 				</div>
@@ -221,30 +205,18 @@
 					</div>
 					<input id="input_rot" type="checkbox" value="rotation" onclick="toggleRotation()" checked> Rotation
 				</div>
-				<div style="height:25px;">
-					<span style="width:120px;display:inline-block; text-align:right;">Displacement: </span>
-					<input id="input_displacement" type="checkbox" value="displacement" onclick="toggleDisplacement()" checked>
-					<input id="dm_strength_slider" 
-						onchange="setDisplaceSetting('strength', this.value); document.getElementById('dm_strength_nmb').value = this.value;"
-						oninput="setDisplaceSetting('strength', this.value); document.getElementById('dm_strength_nmb').value = this.value;"
-						style="width:80px;"
-						type="range" value='0.3' min='-1' max='1' step='0.01'/>
-					<input id="dm_strength_nmb" type="number" step="0.01" style="width:45px;vertical-align:top;" value='0.3'
-						onchange="setDisplaceSetting('strength', this.value); document.getElementById('dm_strength_slider').value = this.value;">
-				</div>
+				
 				
 			</div>
 	
-					<div id="render_view">
-						<a style="top: 15px; right: 15px; position: absolute;overflow:hidden;" class="various" href="#renderBig">
-							<img src="images/iconmonstr-magnifier-6-icon-16.png" />
-						</a>
-					</div>
-					
-					
-					<div id="renderBig" style="display:none;overflow:hidden;">
-						
-					</div>
+			<div class="view" id="render_view">
+				<a style="top: 15px; right: 15px; position: absolute;overflow:hidden;" class="various" href="#renderBig">
+					<img src="images/iconmonstr-magnifier-6-icon-16.png" />
+				</a>
+			</div>
+			
+			
+			<div id="renderBig" style="display:none;overflow:hidden;">	</div>
 				
 	
 			

@@ -10,7 +10,7 @@ var rotation_enabled = true;
 var displacement_enabled = true;
 var normal_canvas_preview = document.createElement("canvas");
 var ao_canvas = document.createElement("canvas");
-var displacement_canvas = document.createElement("canvas");
+var displacement_canvas_preview = document.createElement("canvas");
 var model;
 
 var initRenderer = function(){
@@ -22,8 +22,31 @@ var initRenderer = function(){
 	renderer.setSize( container_height, container_height );
 	//renderer.physicallyBasedShading = true;
 	renderer.shadowMapEnabled = true;
-	renderer.shadowMapType = THREE.PCFShadowMap;
-				
+	renderer.shadowMapType = THREE.PCFSoftShadowMap;
+	renderer.shadowMapSoft = true;
+	
+	// add subtle ambient lighting
+	var ambientLight = new THREE.AmbientLight(0x606060 );
+	scene.add(ambientLight);
+	
+	// directional lighting
+	var directionalLight = new THREE.DirectionalLight(0xdddddd, 0.4 );
+	directionalLight.position.set(1, 1, 1);
+	//directionalLight.castShadow = true;
+	//directionalLight.shadowDarkness = 1.0;
+	//directionalLight.shadowCameraVisible = true;
+	scene.add(directionalLight);	
+	
+	
+	
+	var dL2 = new THREE.DirectionalLight( 0xbbdbff, 0.3 );
+	dL2.position.set( 0, -1, 1 );
+	scene.add( dL2 );
+	
+	var dL2 = new THREE.DirectionalLight( 0xbbffff, 0.25 );
+	dL2.position.set( -3, 1, -1 );
+	scene.add( dL2 );
+	
 	controls = new THREE.OrbitControls( camera, renderer.domElement );
 	
 	
@@ -40,7 +63,7 @@ var initRenderer = function(){
 	displacement_map.anisotropy = 2;
 	bump_map  				= new THREE.Texture( height_canvas );
 	ao_map  				= new THREE.Texture( ao_canvas );
-	normal_map_preview  			= new THREE.Texture( normal_canvas_preview );
+	normal_map_preview  			= new THREE.Texture( normal_canvas );
 	normal_map_preview.wrapS 		= THREE.RepeatWrapping;
 	normal_map_preview.wrapT 		= THREE.RepeatWrapping;
 	normal_map_preview.magFilter 	= THREE.LinearFilter;
@@ -65,7 +88,13 @@ var initRenderer = function(){
 	uniforms[ "uDisplacementScale" ].value = 0.3;
 	uniforms[ "uDisplacementBias" ].value = 0;
 	
-	var parameters = { fragmentShader: shader.fragmentShader, vertexShader: shader.vertexShader, uniforms: uniforms, lights: true };
+	
+	var parameters = { 
+		fragmentShader: shader.fragmentShader, 
+		vertexShader: shader.vertexShader, 
+		uniforms: uniforms, 
+		lights: true 
+	};
 	material = new THREE.ShaderMaterial( parameters );
 	material.wrapAround = true;
 	//var geometry = new THREE.PlaneGeometry(16,16,128,128);
@@ -78,29 +107,7 @@ var initRenderer = function(){
 	model.receiveShadow = true;
 	scene.add( model );
 	
-	// add subtle ambient lighting
-	var ambientLight = new THREE.AmbientLight(0x606060 );
-	scene.add(ambientLight);
 	
-	// directional lighting
-	
-	var directionalLight = new THREE.DirectionalLight(0xdddddd, 0.4 );
-	directionalLight.position.set(1, 1, 1);
-	directionalLight.castShadow = true;
-	directionalLight.shadowCameraNear = 1;
-	directionalLight.shadowCameraFov = 70;
-	directionalLight.shadowBias = 1;
-	directionalLight.shadowMapWidth = 512;
-	directionalLight.shadowMapHeight = 512;
-	scene.add(directionalLight);	
-	
-	var dL2 = new THREE.DirectionalLight( 0xbbdbff, 0.3 );
-	dL2.position.set( 0, -1, 1 );
-	scene.add( dL2 );
-	
-	var dL2 = new THREE.DirectionalLight( 0xbbffff, 0.25 );
-	dL2.position.set( -3, 1, -1 );
-	scene.add( dL2 );
 	
 	
 	camera.position.z = 1.5;
