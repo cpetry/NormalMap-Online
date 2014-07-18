@@ -8,10 +8,9 @@ var normal_map_preview;
 var material;
 var rotation_enabled = true;
 var displacement_enabled = true;
-var displacement_scale = 1;
-var displacement_bias = -1.0/11.0;
 var normal_canvas_preview = document.createElement("canvas");
 var ao_canvas = document.createElement("canvas");
+var displacement_canvas = document.createElement("canvas");
 var model;
 
 var initRenderer = function(){
@@ -21,45 +20,33 @@ var initRenderer = function(){
 
 	renderer = new THREE.WebGLRenderer({ alpha: false, antialiasing: true  });
 	renderer.setSize( container_height, container_height );
-	renderer.physicallyBasedShading = true;
+	//renderer.physicallyBasedShading = true;
 	renderer.shadowMapEnabled = true;
 	renderer.shadowMapType = THREE.PCFShadowMap;
 				
 	controls = new THREE.OrbitControls( camera, renderer.domElement );
-	/*
-	var effectFXAA = new THREE.ShaderPass( THREE.FXAAShader );
-
-	effectFXAA.uniforms[ 'resolution' ].value.set( 1 / window.innerWidth, 1 / window.innerHeight );
-	effectFXAA.renderToScreen = true;
-	var renderModel = new THREE.RenderPass( scene, camera );
-	var composer = new THREE.EffectComposer( renderer );
-	composer.addPass( renderModel );
-	composer.addPass( effectFXAA );
-	*/
+	
+	
 	
 	document.getElementById('render_view').appendChild( renderer.domElement );
 
 	var height_canvas   = document.getElementById('height_canvas');
+	
+	displacement_map			= new THREE.Texture( displacement_canvas );
+	displacement_map.wrapS 		= THREE.RepeatWrapping;
+	displacement_map.wrapT 		= THREE.RepeatWrapping;
+	displacement_map.magFilter 	= THREE.LinearFilter;
+	displacement_map.minFilter 	= THREE.LinearMipMapNearestFilter;
+	displacement_map.anisotropy = 2;
 	bump_map  				= new THREE.Texture( height_canvas );
 	ao_map  				= new THREE.Texture( ao_canvas );
-	normal_map_preview  	= new THREE.Texture( normal_canvas_preview );
-	normal_map_preview.wrapS = THREE.RepeatWrapping;
-	normal_map_preview.wrapT = THREE.RepeatWrapping;
-	normal_map_preview.magFilter = THREE.LinearFilter;
-	normal_map_preview.minFilter = THREE.LinearMipMapNearestFilter;
-	normal_map_preview.anisotropy = 2;
+	normal_map_preview  			= new THREE.Texture( normal_canvas_preview );
+	normal_map_preview.wrapS 		= THREE.RepeatWrapping;
+	normal_map_preview.wrapT 		= THREE.RepeatWrapping;
+	normal_map_preview.magFilter 	= THREE.LinearFilter;
+	normal_map_preview.minFilter 	= THREE.LinearMipMapNearestFilter;
+	normal_map_preview.anisotropy 	= 2;
 	
-	material = new THREE.MeshPhongMaterial ( { 
-		ambient: 0x606060, 
-        color: 0xcccccc,
-		shininess: 25,
-		specular: 0x777777,
-		shading: THREE.SmoothShading,
-		normalMap: normal_map_preview,
-		bumpMap: bump_map,
-		metal: false,
-        skining: true
-	} );
 	
 	var shader = THREE.ShaderLib[ "normalmap" ];
 	
@@ -67,23 +54,26 @@ var initRenderer = function(){
 	//console.log(uniforms);
 	uniforms[ "enableDisplacement" ].value = true;
 	uniforms[ "enableDiffuse" ].value = false;
-	uniforms[ "enableAO" ].value = true;
+	uniforms[ "enableAO" ].value = false;
 	
 	uniforms[ "diffuse" ].value = new THREE.Color(0xcccccc);
 	uniforms[ "specular" ].value = new THREE.Color(0x777777);
 	uniforms[ "ambient" ].value = new THREE.Color(0x606060);
-	uniforms[ "tDisplacement"].value = bump_map;
+	uniforms[ "tDisplacement"].value = displacement_map;
 	uniforms[ "tNormal" ].value = normal_map_preview;
 	uniforms[ "tAO" ].value = ao_map;
-	var parameters = { fragmentShader: shader.fragmentShader, vertexShader: shader.vertexShader, uniforms: uniforms, lights: true };
-	var NormalMaterial = new THREE.ShaderMaterial( parameters );
-	NormalMaterial.wrapAround = true;
-	//var geometry = new THREE.PlaneGeometry(16,16,128,128);
-	var geometry = new THREE.BoxGeometry(1,1,1, 128, 128, 128);
+	uniforms[ "uDisplacementScale" ].value = 0.3;
+	uniforms[ "uDisplacementBias" ].value = 0;
 	
+	var parameters = { fragmentShader: shader.fragmentShader, vertexShader: shader.vertexShader, uniforms: uniforms, lights: true };
+	material = new THREE.ShaderMaterial( parameters );
+	material.wrapAround = true;
+	//var geometry = new THREE.PlaneGeometry(16,16,128,128);
+	//var geometry = new THREE.BoxGeometry(1,1,1, 128, 128, 128);
+	var geometry = new THREE.BoxGeometry(1,1,1, 128, 128, 128);
 	geometry.computeTangents();
 	
-	model = new THREE.Mesh( geometry, NormalMaterial);
+	model = new THREE.Mesh( geometry, material);
 	model.castShadow = true;
 	model.receiveShadow = true;
 	scene.add( model );
@@ -133,8 +123,10 @@ function render() {
 		model.rotation.y += 0.003;
 	}
 	normal_map_preview.needsUpdate = true;
+	displacement_map.needsUpdate = true;
 	bump_map.needsUpdate = true;
 	ao_map.needsUpdate = true;
+	
 }
 
 
@@ -146,7 +138,8 @@ var setModel = function(type){
 	scene.remove( model );
 
 	if (type == "Cube"){
-		var geometry = new THREE.BoxGeometry(1,1,1);
+		var geometry = new THREE.BoxGeometry(1,1,1, 128, 128, 128);
+		geometry.computeTangents();
 		model = new THREE.Mesh( geometry, material);
 		model.castShadow = true;
 		model.receiveShadow = true;
@@ -154,16 +147,19 @@ var setModel = function(type){
 	}
 	else if (type == "Sphere"){
 		var geometry = new THREE.SphereGeometry( 0.7, 32, 32);
+		geometry.computeTangents();
 		model = new THREE.Mesh( geometry, material);
 		scene.add( model );
 	}
 	else if (type == "Cylinder"){
 		var geometry = new THREE.CylinderGeometry( 0.7, 0.5, 1, 32 );
+		geometry.computeTangents();
 		model = new THREE.Mesh( geometry, material);
 		scene.add( model );
 	}
 	else if (type == "Plane"){
-		var geometry = new THREE.PlaneGeometry(2,2);
+		var geometry = new THREE.PlaneGeometry(1, 1, 128, 128);
+		geometry.computeTangents();
 		rotation_enabled = 0;
 		model.rotation.x = 0;
 		model.rotation.y = 0;
@@ -174,16 +170,9 @@ var setModel = function(type){
 	
 }
 
-var setDisplacementStrength = function(st, lv){
-	var dZ =  0.01 * st * (1.0 + Math.pow(2.0, 0.5 * (10 - lv)));
-	var scale = 0;
-	if (invert_source)
-		scale = -dZ;
-	else
-		scale = dZ;
-	console.log(scale);
-	model.material.uniforms[ "uDisplacementScale" ].value = scale * displacement_scale;
-	model.material.uniforms[ "uDisplacementBias" ].value = displacement_bias;
+function setDisplacementScale(scale){
+	model.material.uniforms[ "uDisplacementScale" ].value = scale * 0.5;
+	model.material.uniforms[ "uDisplacementBias" ].value = scale * 0.5 * -displacement_bias;
 }
 
 
@@ -194,6 +183,10 @@ function toggleRotation(){
 function toggleDisplacement(){
 	displacement_enabled = !displacement_enabled;
 	model.material.uniforms[ "enableDisplacement" ].value = displacement_enabled;
+	/*if (!displacement_enabled){
+		model.material.uniforms[ "uDisplacementScale" ].value = 0;
+		model.material.uniforms[ "uDisplacementBias" ].value = 0;
+	}*/
 }
 
 function switchRenderView(){

@@ -17,8 +17,14 @@ var initHeightMap = function(){
 		
 		document.getElementById("size").value = "" +(height_image.naturalWidth) + " x " + (height_image.naturalHeight);
 		
-		setDisplacementStrength(strength, level);
 		createNormalMap(); // height map was loaded... so create standard normal map!
+		createDisplacementMap();
+		
+		setNormalSetting('strength', document.getElementById('strength_nmb').value);
+		setNormalSetting('level', document.getElementById('level_nmb').value);
+		setNormalSetting('blur_sharp', document.getElementById('blur_sharp_nmb').value);
+		
+		setDisplaceSetting('strength', document.getElementById('dm_strength_nmb').value);
     };
 	
     height_image.src = './images/standard_height.png';	
@@ -88,6 +94,13 @@ require(["dojo/dom", "dojo/domReady!"], function(dom){
 			
 			if (auto_update)
 				createNormalMap();
+				createDisplacementMap();
+				
+				setNormalSetting('strength', document.getElementById('strength_nmb').value);
+				setNormalSetting('level', document.getElementById('level_nmb').value);
+				setNormalSetting('blur_sharp', document.getElementById('blur_sharp_nmb').value);
+				
+				setDisplaceSetting('strength', document.getElementById('dm_strength_nmb').value);
 		};
 		
 		height_image.src = source;
