@@ -11,6 +11,7 @@ var displacement_enabled = true;
 var normal_canvas_preview = document.createElement("canvas");
 var ao_canvas = document.createElement("canvas");
 var displacement_canvas_preview = document.createElement("canvas");
+var current_disp_scale;
 var model;
 
 var initRenderer = function(){
@@ -178,10 +179,32 @@ var setModel = function(type){
 }
 
 function setDisplacementScale(scale){
-	model.material.uniforms[ "uDisplacementScale" ].value = scale * 0.5;
-	model.material.uniforms[ "uDisplacementBias" ].value = scale * 0.5 * -displacement_bias;
+	current_disp_scale = scale;
+	updateDisplacementBias();
 }
 
+function updateDisplacementBias(){
+	model.material.uniforms[ "uDisplacementScale" ].value = current_disp_scale * 0.5;
+	model.material.uniforms[ "uDisplacementBias" ].value = current_disp_scale * 0.5 * -displacement_bias;
+}
+
+/*
+function setDisplacementResolution(res){
+	
+	scene.remove( model );
+	
+	
+	var geometry = new THREE.CylinderGeometry( 0.7, 0.5, 1, 32 );
+	geometry.computeTangents();
+	model = new THREE.Mesh( model.geometry.clone();, material);
+	scene.add( model );
+	g.widthSegments = res;
+	g.heightSegments = res;
+	g.depthSegments = res;
+	g.computeTangents();
+	model = new THREE.Mesh( g, material);
+}
+*/
 
 function toggleRotation(){
 	rotation_enabled = !rotation_enabled;

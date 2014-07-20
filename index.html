@@ -95,7 +95,7 @@
 				</tr>
 				<tr>
 					<td class="option_text">
-						<span >Blur/Sharp</span>
+						<span>Blur/Sharp</span>
 					</td>
 					<td class="options">
 						<input id="blur_sharp_slider" 
@@ -123,23 +123,39 @@
 			</div>
 						
 			<!-- Displacement Settings -->
-			<div class="column_top" id="displacement_settings" style="display: none;">
-				<table class="steptop" style="border-spacing:0px">
+			<div class="column_top" id="displacement_settings" style="display: none;width:100%;">
+				<table style="border-spacing:0px; width:100%;">
 				<tr>
-					<td>
-						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left;">Displacement:</span>
+					<td class="option_text">
+						<span>Contrast</span>
 					</td>
-					<td>
-						<input id="input_displacement" type="checkbox" value="displacement" onclick="toggleDisplacement()" checked>
-						<input id="dm_strength_slider" 
-						onchange="setDisplaceSetting('strength', this.value); document.getElementById('dm_strength_nmb').value = this.value;"
-						oninput="setDisplaceSetting('strength', this.value); document.getElementById('dm_strength_nmb').value = this.value;"
-						style="width:80px;"
-						type="range" value='0.3' min='-1' max='1' step='0.01'/>
-					<input id="dm_strength_nmb" type="number" step="0.01" style="width:45px;vertical-align:top;" value='0.3'
-						onchange="setDisplaceSetting('strength', this.value); document.getElementById('dm_strength_slider').value = this.value;">
+					<td class="options">
+						<input id="dm_contrast_slider" 
+							onchange="setDisplacementContrast(this.value); document.getElementById('dm_contrast_nmb').value = this.value;"
+							oninput="setDisplacementContrast(this.value); document.getElementById('dm_contrast_nmb').value = this.value;"
+							style="width:60%;"
+							type="range" value='0' min='-1' max='1' step='0.01'/>
+						<input id="dm_contrast_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='0'
+							onchange="setDisplacementContrast(this.value); document.getElementById('dm_contrast_slider').value = this.value;">
 					</td>
 				</tr>
+				<!--
+				<tr>
+					<td>
+						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left;">Resolution:</span>
+					</td>
+					<td>
+						<input id="dm_res_slider" 
+							onchange="setDisplacementResolution(this.value); document.getElementById('dm_res_nmb').value = Math.pow(2, this.value);"
+							oninput="setDisplacementResolution(this.value); document.getElementById('dm_res_nmb').value = Math.pow(2, this.value);"
+							style="width:80px;"
+							type="range" value='7' min='2' max='8' step='1'/>
+						<input id="dm_res_nmb" type="number" step="1" style="width:45px;vertical-align:top;" value='128'
+							onchange="setDisplaceSetting('strength', this.value); document.getElementById('dm_res_slider').value = Math.sqrt(this.value);">
+					</td>
+				
+				</tr>
+				-->
 				</table>
 			</div>
 			
@@ -205,8 +221,21 @@
 					</div>
 					<input id="input_rot" type="checkbox" value="rotation" onclick="toggleRotation()" checked> Rotation
 				</div>
-				
-				
+				<div style="height:25px;">
+					<span style="width:150px;display:inline-block;text-align:right;">Displacement</span>
+					<input id="input_displacement" type="checkbox" value="displacement" onclick="toggleDisplacement()" checked>
+					<input id="dm_strength_slider" 
+						onchange="setDisplaceStrength( this.value); document.getElementById('dm_strength_nmb').value = this.value;"
+						oninput="setDisplaceStrength( this.value); document.getElementById('dm_strength_nmb').value = this.value;"
+						style="width:80px;"
+						type="range" value='0.3' min='-1' max='1' step='0.01'/>
+					<input id="dm_strength_nmb" type="number" step="0.01" style="width:45px;vertical-align:top;" value='0.3'
+						onchange="setDisplaceStrength(this.value); document.getElementById('dm_strength_slider').value = this.value;">
+				</div>
+				<div style="height:25px;">
+					
+					
+				</div>
 			</div>
 	
 			<div class="view" id="render_view">
