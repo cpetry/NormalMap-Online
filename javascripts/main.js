@@ -51,3 +51,34 @@ function setTexturePreview(canvas, canvas_preview, img_id,  width, height){
 		setRepeat(document.getElementById('repeat_sliderx').value, document.getElementById('repeat_slidery').value);
 	}
 }
+
+
+var button = document.getElementById('download');
+button.addEventListener('click', function (e) {
+	
+	var filesize = 0;
+	var qual = 0.9;
+	var pic;
+	
+	var canvas;
+	if (document.getElementById('normal_map').style.cssText != "display: none;"){
+		canvas = normal_canvas;
+		button.download="NormalMap.jpg";
+	}
+	else if (document.getElementById('displacement_map').style.cssText != "display: none;"){
+		canvas = displacement_canvas;
+		button.download="DisplacementMap.jpg";
+	}
+	
+	
+	// reduce file size so that it can be downloaded
+	do{
+		pic = canvas.toDataURL('image/jpeg', qual);
+		filesize = pic.length;
+		//console.log("size of pic: " + filesize); 
+		qual -= 0.1;
+	}while(filesize >= 2000000);
+	//pic.src.replace("image/png", "image/octet-stream");
+	
+    button.href = pic;
+});

@@ -16,29 +16,41 @@ var model;
 
 var initRenderer = function(){
 
-	scene = new THREE.Scene();
-	camera = new THREE.PerspectiveCamera( 70, container_height / container_height, 0.1, 100 );
-
-	renderer = new THREE.WebGLRenderer({ alpha: false, antialiasing: true  });
+	camera = new THREE.PerspectiveCamera( 30, container_height / container_height, 0.1, 100000 );
+	//camera.position.x = 2000;
+    camera.position.z = 2900;
+	camera.lookAt({
+        x: 0,
+        y: 0,
+        z: 0
+    });
+	
+	renderer = new THREE.WebGLRenderer({ alpha: false });
 	renderer.setSize( container_height, container_height );
 	//renderer.physicallyBasedShading = true;
 	renderer.shadowMapEnabled = true;
 	renderer.shadowMapType = THREE.PCFSoftShadowMap;
-	renderer.shadowMapSoft = true;
+	
+	scene = new THREE.Scene();
 	
 	// add subtle ambient lighting
 	var ambientLight = new THREE.AmbientLight(0x606060 );
 	scene.add(ambientLight);
 	
 	// directional lighting
-	var directionalLight = new THREE.DirectionalLight(0xdddddd, 0.4 );
-	directionalLight.position.set(1, 1, 1);
-	//directionalLight.castShadow = true;
-	//directionalLight.shadowDarkness = 1.0;
+	var directionalLight = new THREE.DirectionalLight(0xdddddd, 0.5 );
+	directionalLight.position.set(2000, 2000, 2000);
+	scene.add(directionalLight);
+	directionalLight.castShadow = true;
+	directionalLight.shadowDarkness = 0.3;
 	//directionalLight.shadowCameraVisible = true;
-	scene.add(directionalLight);	
-	
-	
+	directionalLight.shadowMapWidth = 2048;
+    directionalLight.shadowMapHeight = 2048;
+	directionalLight.shadowCameraFar = 10000;
+	directionalLight.shadowCameraRight     =  5000;
+	directionalLight.shadowCameraLeft     = -5000;
+	directionalLight.shadowCameraTop      =  5000;
+	directionalLight.shadowCameraBottom   = -5000;
 	
 	var dL2 = new THREE.DirectionalLight( 0xbbdbff, 0.3 );
 	dL2.position.set( 0, -1, 1 );
@@ -57,16 +69,14 @@ var initRenderer = function(){
 	var height_canvas   = document.getElementById('height_canvas');
 	
 	displacement_map			= new THREE.Texture( displacement_canvas );
-	displacement_map.wrapS 		= THREE.RepeatWrapping;
-	displacement_map.wrapT 		= THREE.RepeatWrapping;
+	displacement_map.wrapS 		= displacement_map.wrapT = THREE.RepeatWrapping;
 	displacement_map.magFilter 	= THREE.LinearFilter;
 	displacement_map.minFilter 	= THREE.LinearMipMapNearestFilter;
 	displacement_map.anisotropy = 2;
-	bump_map  				= new THREE.Texture( height_canvas );
-	ao_map  				= new THREE.Texture( ao_canvas );
+	//bump_map  				= new THREE.Texture( height_canvas );
+	ao_map  					= new THREE.Texture( ao_canvas );
 	normal_map_preview  			= new THREE.Texture( normal_canvas );
-	normal_map_preview.wrapS 		= THREE.RepeatWrapping;
-	normal_map_preview.wrapT 		= THREE.RepeatWrapping;
+	normal_map_preview.wrapS 		= normal_map_preview.wrapT 		= THREE.RepeatWrapping;
 	normal_map_preview.magFilter 	= THREE.LinearFilter;
 	normal_map_preview.minFilter 	= THREE.LinearMipMapNearestFilter;
 	normal_map_preview.anisotropy 	= 2;
@@ -82,7 +92,8 @@ var initRenderer = function(){
 	
 	uniforms[ "diffuse" ].value = new THREE.Color(0xcccccc);
 	uniforms[ "specular" ].value = new THREE.Color(0x777777);
-	uniforms[ "ambient" ].value = new THREE.Color(0x606060);
+	uniforms[ "ambient" ].value = new THREE.Color(0x000000);
+
 	uniforms[ "tDisplacement"].value = displacement_map;
 	uniforms[ "tNormal" ].value = normal_map_preview;
 	uniforms[ "tAO" ].value = ao_map;
@@ -97,21 +108,31 @@ var initRenderer = function(){
 		lights: true 
 	};
 	material = new THREE.ShaderMaterial( parameters );
+	//material = new THREE.MeshPhongMaterial({
+    //    color: 0x6C6C6C
+    //});
 	material.wrapAround = true;
 	//var geometry = new THREE.PlaneGeometry(16,16,128,128);
 	//var geometry = new THREE.BoxGeometry(1,1,1, 128, 128, 128);
-	var geometry = new THREE.BoxGeometry(1,1,1, 128, 128, 128);
+	var geometry = new THREE.BoxGeometry(1000,1000,1000, 96, 96, 96);
 	geometry.computeTangents();
 	
 	model = new THREE.Mesh( geometry, material);
 	model.castShadow = true;
 	model.receiveShadow = true;
+	
+	
+	/*var secmodel = new THREE.Mesh(new THREE.BoxGeometry(500,500,500), new THREE.MeshLambertMaterial({
+		color: 'blue' 
+	}));
+	
+	secmodel.position.set(1000,1000,1000);
+	secmodel.castShadow = true;
+	secmodel.receiveShadow = true;
+	scene.add( secmodel );
+	*/
+	
 	scene.add( model );
-	
-	
-	
-	
-	camera.position.z = 1.5;
 }
 
 
@@ -130,23 +151,34 @@ function render() {
 		model.rotation.x += 0.003;
 		model.rotation.y += 0.003;
 	}
-	normal_map_preview.needsUpdate = true;
-	displacement_map.needsUpdate = true;
-	bump_map.needsUpdate = true;
-	ao_map.needsUpdate = true;
+	//bump_map.needsUpdate = true;
+	//ao_map.needsUpdate = true;
 	
 }
 
 
 var setRepeat = function(v_x, v_y){
-	normal_map_preview.repeat.set( v_x, v_y );
+	//bump_map.repeat.set( v_x, v_y );
+	//ao_map.repeat.set( v_x, v_y );
+	console.log("repeat set: " + v_x + v_y);
+	//normal_map_preview.repeat.set( v_x, v_y );
+	//displacement_map.repeat.set( v_x, v_y );
+	model.material.uniforms[ "uRepeat" ].value = new THREE.Vector2(v_x, v_y);
+    normal_map_preview.needsUpdate = true;
+	displacement_map.needsUpdate = true;
+	
+	if (model.material.uniforms[ "enableDisplacement" ].value == true)
+		model.geometry.computeTangents();
+	
+	
+	console.log("w: " + displacement_canvas.width + ", h: " +  displacement_canvas.height);
 }
 
 var setModel = function(type){
 	scene.remove( model );
 
 	if (type == "Cube"){
-		var geometry = new THREE.BoxGeometry(1,1,1, 128, 128, 128);
+		var geometry = new THREE.BoxGeometry(1000,1000,1000, 96, 96, 96);
 		geometry.computeTangents();
 		model = new THREE.Mesh( geometry, material);
 		model.castShadow = true;
@@ -154,25 +186,32 @@ var setModel = function(type){
 		scene.add( model );
 	}
 	else if (type == "Sphere"){
-		var geometry = new THREE.SphereGeometry( 0.7, 32, 32);
+		var geometry = new THREE.SphereGeometry( 700, 32, 32);
 		geometry.computeTangents();
 		model = new THREE.Mesh( geometry, material);
+		model.castShadow = true;
+		model.receiveShadow = true;
 		scene.add( model );
 	}
 	else if (type == "Cylinder"){
-		var geometry = new THREE.CylinderGeometry( 0.7, 0.5, 1, 32 );
+		var geometry = new THREE.CylinderGeometry( 700, 700, 1000, 128 );
 		geometry.computeTangents();
 		model = new THREE.Mesh( geometry, material);
+		model.castShadow = true;
+		model.receiveShadow = true;
 		scene.add( model );
 	}
 	else if (type == "Plane"){
-		var geometry = new THREE.PlaneGeometry(1, 1, 128, 128);
+		var geometry = new THREE.PlaneGeometry(1200, 1200, 128, 128);
 		geometry.computeTangents();
 		rotation_enabled = 0;
+		
 		model.rotation.x = 0;
 		model.rotation.y = 0;
 		document.getElementById('input_rot').checked = false;
 		model = new THREE.Mesh( geometry, material);
+		model.castShadow = true;
+		model.receiveShadow = true;
 		scene.add( model );
 	}
 	
@@ -184,8 +223,8 @@ function setDisplacementScale(scale){
 }
 
 function updateDisplacementBias(){
-	model.material.uniforms[ "uDisplacementScale" ].value = current_disp_scale * 0.5;
-	model.material.uniforms[ "uDisplacementBias" ].value = current_disp_scale * 0.5 * -displacement_bias;
+	model.material.uniforms[ "uDisplacementScale" ].value = current_disp_scale * 500;
+	model.material.uniforms[ "uDisplacementBias" ].value = current_disp_scale * 500 * -displacement_bias;
 }
 
 /*
