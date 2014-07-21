@@ -1,0 +1,142 @@
+div.view {
+	position: relative;
+	//background-color: #eee;
+	border: 1px solid #ccc;
+	text-align: center;
+	padding: 8px;
+	margin: 8px;
+	z-index: 1;
+}
+
+body{
+	background: url('./images/background.jpg');
+	font-family:"Open Sans";
+}
+
+div.content {
+	padding: 10px 10px 10px 10px;
+	position: relative;
+	margin-left: auto;
+	margin-right: auto;
+	display: inline-block;
+	border-radius: 10px;
+	box-shadow: 2px 2px 10px #333;
+	background: none repeat scroll 0% 0% rgba(10,10,10,0.5);
+	color: #fff;
+}
+
+div.column {
+	display: inline-block;
+	vertical-align: top;
+	width:338px;
+}
+div.column_top {
+	height: 130px;
+}
+
+td.option_text{
+	text-align: left;
+	padding-left:20px;
+	padding-right:10px;
+}
+
+td.options{
+	text-align: left;
+}
+
+div.tabs{
+	position: relative;
+	margin-top: -8px;
+	margin-bottom: -25px;
+	margin-left: 15px;
+	margin-right: auto;
+	text-align: left;
+	
+	height: 35px;
+	z-index: 2;
+}
+input.tab_button{
+	display:inline-block;
+	margin: 0px 0px 0px 0px;
+	width: auto;
+	height: 25px;
+	z-index: 2;
+}
+
+input.tab_button{
+	font-family:"Open Sans";
+	font-size: 12px;
+	font-color: #111111;
+	background: -moz-linear-gradient(
+		top,
+		#eeeeee,
+		#aaaaaa);
+	background: -webkit-gradient(
+		linear, left top, left bottom,
+		from(#eeeeee),
+		to(#aaaaaa));
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+	border: 2px solid #000000;
+}
+
+input.tab_button:disabled{
+	font-family:"Open Sans";
+	font-size: 12px;
+	font-color: #eeeeee;
+	color: #eeeeee;
+	background: -moz-linear-gradient(
+		top,
+		#555555,
+		#aaaaaa);
+	background: -webkit-gradient(
+		linear, left top, left bottom,
+		from(#555555),
+		to(#aaaaaa));
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
+	border-radius: 6px;
+	border: 2px solid #000000;
+}
+
+div.texture_container{
+	margin: 0px 0px 0px 0px;
+	padding: 0px 0px 0px 0px;
+}
+
+div.stepnumber {
+	display: inline-block;
+	vertical-align: top;
+	border: 1px solid;
+	border-radius: 10px;
+	width:30px;
+	margin-left: auto;
+	margin-right: auto;
+	//background-color:#aaaaaa;
+}
+
+div.imprint {
+	float:right;
+	margin-top: 80px;
+	border: 1px solid;
+	display: inline-block;
+	border-radius: 20px;
+	width:300px;
+}
+div.imprinttext {
+	width:60px;
+	margin-top:-10px;
+	margin-left:15px;
+	background:white;
+}
+
+footer, footer p {
+	color: #fff;
+	text-align: left;
+	position: fixed;
+	bottom: 0;
+	left:0;
+	opacity: 0.9;
+	font-size: 12px;
+}

@@ -18,6 +18,13 @@ var initHeightMap = function(){
 		document.getElementById("size").value = "" +(height_image.naturalWidth) + " x " + (height_image.naturalHeight);
 		
 		createNormalMap(); // height map was loaded... so create standard normal map!
+		
+		setNormalSetting('strength', document.getElementById('strength_nmb').value);
+		setNormalSetting('level', document.getElementById('level_nmb').value);
+		setNormalSetting('blur_sharp', document.getElementById('blur_sharp_nmb').value);
+		
+		createDisplacementMap(document.getElementById('dm_contrast_nmb').value);
+		setDisplaceStrength(document.getElementById('dm_strength_nmb').value);
     };
 	
     height_image.src = './images/standard_height.png';	
@@ -87,6 +94,13 @@ require(["dojo/dom", "dojo/domReady!"], function(dom){
 			
 			if (auto_update)
 				createNormalMap();
+				
+				setNormalSetting('strength', document.getElementById('strength_nmb').value);
+				setNormalSetting('level', document.getElementById('level_nmb').value);
+				setNormalSetting('blur_sharp', document.getElementById('blur_sharp_nmb').value);
+				
+				createDisplacementMap(document.getElementById('dm_contrast_nmb').value);
+				setDisplaceStrength(document.getElementById('dm_strength_nmb').value);
 		};
 		
 		height_image.src = source;
@@ -95,26 +109,6 @@ require(["dojo/dom", "dojo/domReady!"], function(dom){
 	
 });
 
-
-
-var button = document.getElementById('download');
-button.addEventListener('click', function (e) {
-	
-	var filesize = 0;
-	var qual = 0.9;
-	var pic;
-	
-	
-	// reduce file size so that it can be downloaded
-	do{
-		pic = normal_canvas.toDataURL('image/jpeg', qual);
-		filesize = pic.length;
-		//console.log("size of pic: " + filesize); 
-		qual -= 0.1;
-	}while(filesize >= 2000000);
-	//pic.src.replace("image/png", "image/octet-stream");
-    button.href = pic;
-});
 
 
 
