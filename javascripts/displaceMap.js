@@ -40,7 +40,7 @@ function createDisplacementMap(contrast){
 	ctx_displace.clearRect(0, 0, img_data.width, img_data.height);
 	ctx_displace.putImageData(displace_map, 0, 0, 0, 0, img_data.width, img_data.height);
 	
-	setTexturePreview(displacement_canvas, displacement_canvas_preview, "displace_img", img_data.width, img_data.height);
+	setTexturePreview(displacement_canvas, "displace_img", img_data.width, img_data.height);
 	
 	
 	updateDisplacementBias();

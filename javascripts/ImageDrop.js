@@ -25,6 +25,8 @@ var initHeightMap = function(){
 		
 		createDisplacementMap(document.getElementById('dm_contrast_nmb').value);
 		setDisplaceStrength(document.getElementById('dm_strength_nmb').value);
+		
+		createAmbientOcclusionTexture();
     };
 	
     height_image.src = './images/standard_height.png';	
@@ -101,6 +103,8 @@ require(["dojo/dom", "dojo/domReady!"], function(dom){
 				
 				createDisplacementMap(document.getElementById('dm_contrast_nmb').value);
 				setDisplaceStrength(document.getElementById('dm_strength_nmb').value);
+				
+				createAmbientOcclusionTexture();
 		};
 		
 		height_image.src = source;

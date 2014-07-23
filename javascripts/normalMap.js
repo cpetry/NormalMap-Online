@@ -21,16 +21,20 @@ var createNormalMap = function(){
 	// Note that ImageData values are clamped between 0 and 255, so we need
 	// to use a Float32Array for the gradient values because they
 	// range between -255 and 255.
+	var st = new Date().getTime();
 	var grayscale = Filters.filterImage(Filters.grayscale, height_image, invert_source);
-	
+	console.log("grayscale: " + (new Date().getTime() - st));
 	// smoothing
 	if (smoothing > 0)
 		Filters.gaussiansharpen(grayscale, height_image.width, height_image.height, Math.abs(smoothing));
 	else if (smoothing < 0)
 		Filters.gaussianblur(grayscale, height_image.width, height_image.height, Math.abs(smoothing));
 		
-	
+		
+	st = new Date().getTime();
 	var img_data = Filters.newsobelfilter(grayscale, strength, level);
+	console.log("sobelfilter: " + (new Date().getTime() - st));
+	//Filters.parallelSobelFilter(grayscale, strength, level);
 	
 	
 	/*
@@ -42,8 +46,12 @@ var createNormalMap = function(){
 		img_data = Filters.convoluteFloat32(img_data, weight_array);
 	*/	
 	
+	st = new Date().getTime();
 	var height_map = Filters.createImageData(img_data.width, img_data.height);
+	console.log("createImage: " + (new Date().getTime() - st));
 	
+	
+	st = new Date().getTime();
 	for (var i=0; i<img_data.data.length; i++){	
 		if ((i % 4 == 0 && invert_red)
 		|| (i % 4 == 1 && invert_green))
@@ -51,16 +59,19 @@ var createNormalMap = function(){
 		else
 			height_map.data[i] = img_data.data[i] * 255.0;
 	}
+	console.log("invertImage: " + (new Date().getTime() - st));
 	
+	
+	st = new Date().getTime();
 	var ctx_normal = normal_canvas.getContext("2d");
 	normal_canvas.width  = height_image.width; 	// important!
 	normal_canvas.height = height_image.height;
 	//ctx_normal.clearRect(0, 0, height_image.width, height_image.height);
 	ctx_normal.putImageData(height_map, 0, 0, 0, 0, img_data.width, img_data.height);	
 	
-	setTexturePreview(normal_canvas, normal_canvas_preview, "normal_img", img_data.width, img_data.height);
+	setTexturePreview(normal_canvas, "normal_img", img_data.width, img_data.height);
 	
-	console.log("w:" + normal_canvas.width + ", h:" + normal_canvas.height);
+	console.log("setTexturePreview: " + (new Date().getTime() - st));
 	
 }
 

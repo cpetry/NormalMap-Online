@@ -160,12 +160,15 @@
 				</table>
 			</div>
 			
+			<div class="column_top" id="ao_settings" style="display: none;width:100%;">
+			</div>
 			
 			<!-- Textures -->
 			<div class="texture_container">
 				<div class="tabs">
 					<input class="tab_button" id="tab_btn_normal" type="button" onclick="activate_texture('normal');" disabled value="Normal"/>
 					<input class="tab_button" id="tab_btn_displace" type="button" onclick="activate_texture('displace');" value="Displacement"/>
+					<input class="tab_button" id="tab_btn_ao" type="button" onclick="activate_texture('ao');" value="AmbientOcc"/>
 				</div>
 				<!-- Normal Texture -->
 				<div class="view" id="normal_map">
@@ -175,6 +178,10 @@
 				<!-- Displacement Texture -->
 				<div class="view" id="displacement_map" style="display: none;">
 					<img height=300 width=300 id="displace_img" />
+				</div>
+				<!-- Displacement Texture -->
+				<div class="view" id="ao_map" style="display: none;">
+					<img height=300 width=300 id="ao_img" />
 				</div>
 			</div>
 			
@@ -297,14 +304,16 @@
 <link rel="stylesheet" href="javascripts/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
 <script type="text/javascript" src="javascripts/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
 
+<script type="text/javascript" src="javascripts/parallel.js"></script>
 <script type="text/javascript" src="javascripts/three.min.js"></script>
 <script type="text/javascript" src="javascripts/OrbitControls.js"></script>
 <script type="text/javascript" src="javascripts/dojo.js"></script>
 <script type="text/javascript" src="javascripts/filters.js"></script>
 <script type="text/javascript" src="javascripts/ImageDrop.js"></script>
 <script type="text/javascript" src="javascripts/renderView.js"></script>
-<script type="text/javascript" src="javascripts/displaceMap.js"></script>
 <script type="text/javascript" src="javascripts/normalMap.js"></script>
+<script type="text/javascript" src="javascripts/displaceMap.js"></script>
+<script type="text/javascript" src="javascripts/ambientOccMap.js"></script>
 <script type="text/javascript" src="javascripts/gaussianblur.js"></script>
 <script type="text/javascript" src="javascripts/main.js"></script>
 <script type="text/javascript" src="javascripts/ganalytics.js"></script>

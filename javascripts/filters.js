@@ -104,6 +104,8 @@ Filters.grayscale = function(pixels, invert) {
 	// CIE luminance for the RGB
 	// The human eye is bad at seeing red and blue, so we de-emphasize them.
 	var v = 0.2126*r + 0.7152*g + 0.0722*b;
+	// converting to Luminance Y (YCbCr)
+	//var v = 0.299*r + 0.587*g + 0.114*b;
 	v = invert ? (255.0 - v) : v;
 	d[i] = d[i+1] = d[i+2] = v;
   }
@@ -128,10 +130,11 @@ Filters.newsobelfilter = function(pixels, strength, level){
 	var max_size = w*h*4;
 	
 	var tl, l, bl, t, b, tr, r, br, dX,dY,dZ,l;
+	// blue value of normal map
 	var dZ = 1.0 / strength * (1.0 + Math.pow(2.0, level)); // very costly operation!
+	var dZ2 = dZ * dZ;
 	
 	var wm4 = w*4;
-	
 	for (var y=0; y<h; y++) {
 		for (var x=0; x<w; x++) {
 			var dstOff = (y*w+x)*4;
@@ -148,20 +151,21 @@ Filters.newsobelfilter = function(pixels, strength, level){
 				br = src[(dstOff + 4 + wm4).mod(max_size)];   // bottom right  
 			}
 			else{
-				tl = src[(dstOff - 4 - wm4)];   // top left  
-				l  = src[(dstOff - 4      )];   // left  
-				bl = src[(dstOff - 4 + wm4)];   // bottom left  
-				t  = src[(dstOff - wm4    )];   // top  
-				b  = src[(dstOff + wm4    )];   // bottom  
-				tr = src[(dstOff + 4 - wm4)];   // top right  
-				r  = src[(dstOff + 4      )];   // right  
-				br = src[(dstOff + 4 + wm4)];   // bottom right  
+				tl = src[(dstOff - 4 - wm4)];   // top left
+				l  = src[(dstOff - 4      )];   // left
+				bl = src[(dstOff - 4 + wm4)];   // bottom left
+				t  = src[(dstOff - wm4    )];   // top
+				b  = src[(dstOff + wm4    )];   // bottom
+				tr = src[(dstOff + 4 - wm4)];   // top right
+				r  = src[(dstOff + 4      )];   // right
+				br = src[(dstOff + 4 + wm4)];   // bottom right
 			}
 			
-			dX = tr + 2.0*r + br -tl - 2.0*l - bl;
-			dY = bl + 2.0*b + br -tl - 2.0*t - tr;
+			// scharr
+			dX = tl*3.0 + l*10.0 + bl*3.0 - tr*3.0 - r*10.0 - br*3.0;
+			dY = tl*3.0 + t*10.0 + tr*3.0 - bl*3.0 - b*10.0 - br*3.0;
 
-			l = Math.sqrt((dX * dX) + (dY * dY) + (dZ * dZ));
+			l = Math.sqrt((dX * dX) + (dY * dY) + dZ2);
 			
 			dst[dstOff] = (dX/l * 0.5 + 0.5); 	// red
 			dst[dstOff+1] = (dY/l * 0.5 + 0.5); 	// green
@@ -172,3 +176,66 @@ Filters.newsobelfilter = function(pixels, strength, level){
 	
 	return output;
 }
+
+
+Filters.sobelfilter = function(pixels, strength, level){
+	var src = pixels.data;
+
+	var w = pixels.width;
+	var h = pixels.height;
+	var output = {
+		width: w, height: h, data: new Float32Array(w*h*4)
+	};
+	
+	var dst = output.data;
+	    
+	var max_size = w*h*4;
+	
+	var tl, l, bl, t, b, tr, r, br, dX,dY,dZ,l;
+	// blue value of normal map
+	var dZ = 1.0 / strength * (1.0 + Math.pow(2.0, level)); // very costly operation!
+	var dZ2 = dZ * dZ;
+	
+	var wm4 = w*4;
+	for (var y=0; y<h; y++) {
+		for (var x=0; x<w; x++) {
+			var dstOff = (y*w+x)*4;
+
+			// very costly operation!
+			if (x == 0 || x == w-1 || y == 0 || y == h-1){
+				tl = src[(dstOff - 4 - wm4).mod(max_size)];   // top left  
+				l  = src[(dstOff - 4      ).mod(max_size)];   // left  
+				bl = src[(dstOff - 4 + wm4).mod(max_size)];   // bottom left  
+				t  = src[(dstOff - wm4    ).mod(max_size)];   // top  
+				b  = src[(dstOff + wm4    ).mod(max_size)];   // bottom  
+				tr = src[(dstOff + 4 - wm4).mod(max_size)];   // top right  
+				r  = src[(dstOff + 4      ).mod(max_size)];   // right  
+				br = src[(dstOff + 4 + wm4).mod(max_size)];   // bottom right  
+			}
+			else{
+				tl = src[(dstOff - 4 - wm4)];   // top left
+				l  = src[(dstOff - 4      )];   // left
+				bl = src[(dstOff - 4 + wm4)];   // bottom left
+				t  = src[(dstOff - wm4    )];   // top
+				b  = src[(dstOff + wm4    )];   // bottom
+				tr = src[(dstOff + 4 - wm4)];   // top right
+				r  = src[(dstOff + 4      )];   // right
+				br = src[(dstOff + 4 + wm4)];   // bottom right
+			}
+			
+			// scharr
+			dX = tl*3.0 + l*10.0 + bl*3.0 - tr*3.0 - r*10.0 - br*3.0;
+			dY = tl*3.0 + t*10.0 + tr*3.0 - bl*3.0 - b*10.0 - br*3.0;
+
+			l = Math.sqrt((dX * dX) + (dY * dY));
+			v = ((dX/l * 0.5 + 0.5) + (dY/l * 0.5 + 0.5)) / 2.0;
+			dst[dstOff] = v; 	// red
+			dst[dstOff+1] = v; 	// green
+			dst[dstOff+2] = v; 	// blue
+			dst[dstOff+3] = 1.0;
+		}
+	}
+	
+	return output;
+}
+
