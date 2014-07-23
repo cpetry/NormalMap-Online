@@ -131,6 +131,7 @@ Filters.newsobelfilter = function(pixels, strength, level){
 	
 	var tl, l, bl, t, b, tr, r, br, dX,dY,dZ,l;
 	// blue value of normal map
+	strength = Math.max (strength, 0.0001);
 	var dZ = 1.0 / strength * (1.0 + Math.pow(2.0, level)); // very costly operation!
 	var dZ2 = dZ * dZ;
 	
@@ -167,10 +168,10 @@ Filters.newsobelfilter = function(pixels, strength, level){
 
 			l = Math.sqrt((dX * dX) + (dY * dY) + dZ2);
 			
-			dst[dstOff] = (dX/l * 0.5 + 0.5); 	// red
-			dst[dstOff+1] = (dY/l * 0.5 + 0.5); 	// green
-			dst[dstOff+2] = dZ/l; 				// blue
-			dst[dstOff+3] = 1.0;
+			dst[dstOff] = (dX/l * 0.5 + 0.5) * 255.0; 	// red
+			dst[dstOff+1] = (dY/l * 0.5 + 0.5) * 255.0; 	// green
+			dst[dstOff+2] = dZ/l * 255.0; 				// blue
+			dst[dstOff+3] = 1.0 * 255.0;
 		}
 	}
 	
@@ -226,12 +227,17 @@ Filters.sobelfilter = function(pixels, strength, level){
 			// scharr
 			dX = tl*3.0 + l*10.0 + bl*3.0 - tr*3.0 - r*10.0 - br*3.0;
 			dY = tl*3.0 + t*10.0 + tr*3.0 - bl*3.0 - b*10.0 - br*3.0;
-
-			l = Math.sqrt((dX * dX) + (dY * dY));
-			v = ((dX/l * 0.5 + 0.5) + (dY/l * 0.5 + 0.5)) / 2.0;
-			dst[dstOff] = v; 	// red
-			dst[dstOff+1] = v; 	// green
-			dst[dstOff+2] = v; 	// blue
+			dX = Math.abs(dX);
+			dY = Math.abs(dY);
+			l = Math.sqrt((dX * dX) + (dY * dY) + (dZ * dZ));
+			//v = (dX + dY) / l;
+			var div = l * 0.5;
+			var v = ((dX/div) + (dY/div)) / 2.0;
+			//v += 0.5;
+			//var v = Math.abs(dX / 255) + Math.abs(dY / 255) ;
+			dst[dstOff] = (1-v) * 255.0; 	// red
+			dst[dstOff+1] = (1-v) * 255.0; 	// green
+			dst[dstOff+2] = (1-v) * 255.0; 	// blue
 			dst[dstOff+3] = 1.0;
 		}
 	}

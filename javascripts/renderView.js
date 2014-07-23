@@ -6,7 +6,7 @@ var normal_map;
 var ao_map;
 var material;
 var rotation_enabled = true;
-var displacement_enabled = true;
+var normal_enabled = true;
 var ao_canvas = document.createElement("canvas");
 var displacement_canvas_preview = document.createElement("canvas");
 var current_disp_scale;
@@ -23,7 +23,7 @@ var initRenderer = function(){
         z: 0
     });
 	
-	renderer = new THREE.WebGLRenderer({ alpha: false });
+	renderer = new THREE.WebGLRenderer({ alpha: false,  antialias: true });
 	renderer.setSize( container_height, container_height );
 	//renderer.physicallyBasedShading = true;
 	renderer.shadowMapEnabled = true;
@@ -86,7 +86,7 @@ var initRenderer = function(){
 	//console.log(uniforms);
 	uniforms[ "enableDisplacement" ].value = true;
 	uniforms[ "enableDiffuse" ].value = false;
-	uniforms[ "enableAO" ].value = false;
+	uniforms[ "enableAO" ].value = true;
 	
 	uniforms[ "diffuse" ].value = new THREE.Color(0xcccccc);
 	uniforms[ "specular" ].value = new THREE.Color(0x777777);
@@ -161,12 +161,13 @@ function render() {
 
 var setRepeat = function(v_x, v_y){
 	//bump_map.repeat.set( v_x, v_y );
-	//ao_map.repeat.set( v_x, v_y );
 	//normal_map_preview.repeat.set( v_x, v_y );
 	//displacement_map.repeat.set( v_x, v_y );
 	model.material.uniforms[ "uRepeat" ].value = new THREE.Vector2(v_x, v_y);
     normal_map.needsUpdate = true;
 	displacement_map.needsUpdate = true;
+	ao_map.needsUpdate = true;
+	
 	
 	if (model.material.uniforms[ "enableDisplacement" ].value == true)
 		model.geometry.computeTangents();
@@ -250,12 +251,22 @@ function toggleRotation(){
 }
 
 function toggleDisplacement(){
-	displacement_enabled = !displacement_enabled;
-	model.material.uniforms[ "enableDisplacement" ].value = displacement_enabled;
-	/*if (!displacement_enabled){
-		model.material.uniforms[ "uDisplacementScale" ].value = 0;
-		model.material.uniforms[ "uDisplacementBias" ].value = 0;
-	}*/
+	if(model.material.uniforms[ "enableDisplacement" ].value == true)
+		model.material.uniforms[ "enableDisplacement" ].value = false;
+	else
+		model.material.uniforms[ "enableDisplacement" ].value = true;
+}
+
+function toggleNormal(){
+	normal_enabled = !normal_enabled;
+	createNormalMap();
+}
+
+function toggleAO(){
+	if(model.material.uniforms[ "enableAO" ].value == true)
+		model.material.uniforms[ "enableAO" ].value = false;
+	else
+		model.material.uniforms[ "enableAO" ].value = true;
 }
 
 function switchRenderView(){
