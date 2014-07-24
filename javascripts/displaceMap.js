@@ -40,21 +40,40 @@ function createDisplacementMap(contrast){
 	ctx_displace.clearRect(0, 0, img_data.width, img_data.height);
 	ctx_displace.putImageData(displace_map, 0, 0, 0, 0, img_data.width, img_data.height);
 	
-	setTexturePreview(displacement_canvas, displacement_canvas_preview, "displace_img", img_data.width, img_data.height);
+	setTexturePreview(displacement_canvas, "displace_img", img_data.width, img_data.height);
 	
 	
 	updateDisplacementBias();
 	//console.log("w:" + img_data.width + ", h:" + img_data.height);
+	if (model.material.uniforms[ "enableDisplacement" ].value == true){
+		model.geometry.computeTangents();
+	}
 	
 }
 
 
+	
+	
+
 function setDisplaceStrength(v){
-	setDisplacementScale(-v);
+	if(timer == 0)
+		timer = Date.now();
+		
+	if (auto_update && Date.now() - timer > 50){
+		setDisplacementScale(-v);
+		
+		timer = 0;
+	}
 }
 
 function setDisplacementContrast(v){
-	createDisplacementMap(v);
+	if(timer == 0)
+		timer = Date.now();
+		
+	if (auto_update && Date.now() - timer > 50){
+		createDisplacementMap(v);
+		timer = 0;
+	}
 }
 
 

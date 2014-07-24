@@ -2,13 +2,11 @@ var scene;
 var camera;
 var renderer;
 var bump_map;
-var ao_map;
 var normal_map;
-var normal_map_preview;
+var ao_map;
 var material;
 var rotation_enabled = true;
-var displacement_enabled = true;
-var normal_canvas_preview = document.createElement("canvas");
+var normal_enabled = true;
 var ao_canvas = document.createElement("canvas");
 var displacement_canvas_preview = document.createElement("canvas");
 var current_disp_scale;
@@ -25,7 +23,7 @@ var initRenderer = function(){
         z: 0
     });
 	
-	renderer = new THREE.WebGLRenderer({ alpha: false });
+	renderer = new THREE.WebGLRenderer({ alpha: false,  antialias: true });
 	renderer.setSize( container_height, container_height );
 	//renderer.physicallyBasedShading = true;
 	renderer.shadowMapEnabled = true;
@@ -75,11 +73,11 @@ var initRenderer = function(){
 	displacement_map.anisotropy = 2;
 	//bump_map  				= new THREE.Texture( height_canvas );
 	ao_map  					= new THREE.Texture( ao_canvas );
-	normal_map_preview  			= new THREE.Texture( normal_canvas );
-	normal_map_preview.wrapS 		= normal_map_preview.wrapT 		= THREE.RepeatWrapping;
-	normal_map_preview.magFilter 	= THREE.LinearFilter;
-	normal_map_preview.minFilter 	= THREE.LinearMipMapNearestFilter;
-	normal_map_preview.anisotropy 	= 2;
+	normal_map  			= new THREE.Texture( normal_canvas );
+	normal_map.wrapS 		= normal_map.wrapT 		= THREE.RepeatWrapping;
+	normal_map.magFilter 	= THREE.LinearFilter;
+	normal_map.minFilter 	= THREE.LinearMipMapNearestFilter;
+	normal_map.anisotropy 	= 2;
 	
 	
 	var shader = THREE.ShaderLib[ "normalmap" ];
@@ -88,14 +86,14 @@ var initRenderer = function(){
 	//console.log(uniforms);
 	uniforms[ "enableDisplacement" ].value = true;
 	uniforms[ "enableDiffuse" ].value = false;
-	uniforms[ "enableAO" ].value = false;
+	uniforms[ "enableAO" ].value = true;
 	
 	uniforms[ "diffuse" ].value = new THREE.Color(0xcccccc);
 	uniforms[ "specular" ].value = new THREE.Color(0x777777);
 	uniforms[ "ambient" ].value = new THREE.Color(0x000000);
 
 	uniforms[ "tDisplacement"].value = displacement_map;
-	uniforms[ "tNormal" ].value = normal_map_preview;
+	uniforms[ "tNormal" ].value = normal_map;
 	uniforms[ "tAO" ].value = ao_map;
 	uniforms[ "uDisplacementScale" ].value = 0.3;
 	uniforms[ "uDisplacementBias" ].value = 0;
@@ -114,9 +112,15 @@ var initRenderer = function(){
 	material.wrapAround = true;
 	//var geometry = new THREE.PlaneGeometry(16,16,128,128);
 	//var geometry = new THREE.BoxGeometry(1,1,1, 128, 128, 128);
+
+	
+	var st = new Date().getTime()
 	var geometry = new THREE.BoxGeometry(1000,1000,1000, 96, 96, 96);
 	geometry.computeTangents();
+	console.log("generate geometry: " + (new Date().getTime() - st));
 	
+	
+	st = new Date().getTime();
 	model = new THREE.Mesh( geometry, material);
 	model.castShadow = true;
 	model.receiveShadow = true;
@@ -133,20 +137,18 @@ var initRenderer = function(){
 	*/
 	
 	scene.add( model );
+	console.log("create model: " + (new Date().getTime() - st));
 }
 
 
-function animate() {
-    setTimeout( function() {
-        requestAnimationFrame( animate );
-    }, 1000 / 30 );
-    renderer.render();
-
-}
 
 function render() {
-	requestAnimationFrame(render);
+	setTimeout( function() {
+        requestAnimationFrame( render );
+    }, 1000 / 30 );
+	
 	renderer.render(scene, camera);
+	
 	if(rotation_enabled){
 		model.rotation.x += 0.003;
 		model.rotation.y += 0.003;
@@ -159,19 +161,9 @@ function render() {
 
 var setRepeat = function(v_x, v_y){
 	//bump_map.repeat.set( v_x, v_y );
-	//ao_map.repeat.set( v_x, v_y );
-	console.log("repeat set: " + v_x + v_y);
 	//normal_map_preview.repeat.set( v_x, v_y );
 	//displacement_map.repeat.set( v_x, v_y );
 	model.material.uniforms[ "uRepeat" ].value = new THREE.Vector2(v_x, v_y);
-    normal_map_preview.needsUpdate = true;
-	displacement_map.needsUpdate = true;
-	
-	if (model.material.uniforms[ "enableDisplacement" ].value == true)
-		model.geometry.computeTangents();
-	
-	
-	console.log("w: " + displacement_canvas.width + ", h: " +  displacement_canvas.height);
 }
 
 var setModel = function(type){
@@ -250,12 +242,22 @@ function toggleRotation(){
 }
 
 function toggleDisplacement(){
-	displacement_enabled = !displacement_enabled;
-	model.material.uniforms[ "enableDisplacement" ].value = displacement_enabled;
-	/*if (!displacement_enabled){
-		model.material.uniforms[ "uDisplacementScale" ].value = 0;
-		model.material.uniforms[ "uDisplacementBias" ].value = 0;
-	}*/
+	if(model.material.uniforms[ "enableDisplacement" ].value == true)
+		model.material.uniforms[ "enableDisplacement" ].value = false;
+	else
+		model.material.uniforms[ "enableDisplacement" ].value = true;
+}
+
+function toggleNormal(){
+	normal_enabled = !normal_enabled;
+	createNormalMap();
+}
+
+function toggleAO(){
+	if(model.material.uniforms[ "enableAO" ].value == true)
+		model.material.uniforms[ "enableAO" ].value = false;
+	else
+		model.material.uniforms[ "enableAO" ].value = true;
 }
 
 function switchRenderView(){
