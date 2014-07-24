@@ -1,5 +1,5 @@
 var ao_canvas = document.createElement("canvas");
-var ao_smoothing = 10;
+var ao_smoothing = -10;
 var ao_strength = 0.5;
 var ao_level = 7;
 
@@ -11,7 +11,10 @@ function createAmbientOcclusionTexture(){
 	
 	var ao_map = Filters.createImageData(height_image.width, height_image.height);
 	
-	Filters.gaussianblur(sobelfiltered, grayscale.width, grayscale.height, ao_smoothing);
+	if (ao_smoothing > 0)
+		Filters.gaussiansharpen(sobelfiltered, height_image.width, height_image.height, Math.abs(ao_smoothing));
+	else if (ao_smoothing < 0)
+		Filters.gaussianblur(sobelfiltered, height_image.width, height_image.height, Math.abs(ao_smoothing));
 	
 	var v = 0;
 	for (var i=0; i<sobelfiltered.data.length && i<grayscale.data.length; i += 4){
@@ -37,7 +40,7 @@ function createAmbientOcclusionTexture(){
 }
 
 
-var setAOSetting = function(element, v){
+var setAOSetting = function(element, v){	
 	if (element == "blur_sharp")
 		ao_smoothing = v;
 	

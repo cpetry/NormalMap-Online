@@ -45,16 +45,35 @@ function createDisplacementMap(contrast){
 	
 	updateDisplacementBias();
 	//console.log("w:" + img_data.width + ", h:" + img_data.height);
+	if (model.material.uniforms[ "enableDisplacement" ].value == true){
+		model.geometry.computeTangents();
+	}
 	
 }
 
 
+	
+	
+
 function setDisplaceStrength(v){
-	setDisplacementScale(-v);
+	if(timer == 0)
+		timer = Date.now();
+		
+	if (auto_update && Date.now() - timer > 50){
+		setDisplacementScale(-v);
+		
+		timer = 0;
+	}
 }
 
 function setDisplacementContrast(v){
-	createDisplacementMap(v);
+	if(timer == 0)
+		timer = Date.now();
+		
+	if (auto_update && Date.now() - timer > 50){
+		createDisplacementMap(v);
+		timer = 0;
+	}
 }
 
 

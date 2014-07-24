@@ -72,6 +72,10 @@ function setTexturePreview(canvas, img_id,  width, height){
 		ctx_preview.drawImage(img, 0, 0, new_width, new_height);
 		
 		setRepeat(document.getElementById('repeat_sliderx').value, document.getElementById('repeat_slidery').value);
+		
+		normal_map.needsUpdate = true;
+		ao_map.needsUpdate = true;
+		displacement_map.needsUpdate = true;		
 	}
 }
 
@@ -91,6 +95,10 @@ button.addEventListener('click', function (e) {
 	else if (document.getElementById('displacement_map').style.cssText != "display: none;"){
 		canvas = displacement_canvas;
 		button.download="DisplacementMap.jpg";
+	}
+	else if (document.getElementById('ao_map').style.cssText != "display: none;"){
+		canvas = ao_canvas;
+		button.download="AmbientOcclusionMap.jpg";
 	}
 	
 	

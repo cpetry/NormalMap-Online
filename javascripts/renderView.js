@@ -164,15 +164,6 @@ var setRepeat = function(v_x, v_y){
 	//normal_map_preview.repeat.set( v_x, v_y );
 	//displacement_map.repeat.set( v_x, v_y );
 	model.material.uniforms[ "uRepeat" ].value = new THREE.Vector2(v_x, v_y);
-    normal_map.needsUpdate = true;
-	displacement_map.needsUpdate = true;
-	ao_map.needsUpdate = true;
-	
-	
-	if (model.material.uniforms[ "enableDisplacement" ].value == true)
-		model.geometry.computeTangents();
-	
-	
 }
 
 var setModel = function(type){
