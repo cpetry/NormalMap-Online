@@ -73,6 +73,10 @@ var initRenderer = function(){
 	displacement_map.anisotropy = 2;
 	//bump_map  				= new THREE.Texture( height_canvas );
 	ao_map  					= new THREE.Texture( ao_canvas );
+	ao_map.wrapS 		= ao_map.wrapT = THREE.RepeatWrapping;
+	ao_map.magFilter 	= THREE.LinearFilter;
+	ao_map.minFilter 	= THREE.LinearMipMapNearestFilter;
+	ao_map.anisotropy = 2;
 	normal_map  			= new THREE.Texture( normal_canvas );
 	normal_map.wrapS 		= normal_map.wrapT 		= THREE.RepeatWrapping;
 	normal_map.magFilter 	= THREE.LinearFilter;

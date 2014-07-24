@@ -30,11 +30,11 @@ function createAmbientOcclusionTexture(){
 	
 	
 	// write out texture
-	var ctx_displace = ao_canvas.getContext("2d");
+	var ctx_ambient = ao_canvas.getContext("2d");
 	ao_canvas.width = grayscale.width;
 	ao_canvas.height = grayscale.height;
-	ctx_displace.clearRect(0, 0, grayscale.width, grayscale.height);
-	ctx_displace.putImageData(ao_map, 0, 0, 0, 0, grayscale.width, grayscale.height);
+	ctx_ambient.clearRect(0, 0, grayscale.width, grayscale.height);
+	ctx_ambient.putImageData(ao_map, 0, 0, 0, 0, grayscale.width, grayscale.height);
 	
 	setTexturePreview(ao_canvas, "ao_img", grayscale.width, grayscale.height);
 }
