@@ -198,12 +198,60 @@
 				</table>
 			</div>
 			
+			<!-- Ambient Occlusion Settings -->
+			<div class="column_top" id="ao_settings" style="display: none;width:100%;">
+				<table style="border-spacing:0px; width:100%;" >
+				<tr>
+					<td class="option_text">
+						<span> Strength</span>
+					</td>
+					<td class="options">
+						<input id="ao_strength_slider" 
+								onchange="setAOSetting('strength', this.value); document.getElementById('ao_strength_nmb').value = this.value;"
+								oninput="setAOSetting('strength', this.value); document.getElementById('ao_strength_nmb').value = this.value;"
+								style="width:60%;"
+								type="range"  value='0.5' min='0' max='5' step='0.1'/>
+						<input id="ao_strength_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='2.5' 
+								onchange="setAOSetting('strength', this.value); document.getElementById('ao_strength_slider').value = this.value;">
+					</td>
+				</tr>
+				<tr>
+					<td class="option_text">
+						<span >Level</span>
+					</td>
+					<td class="options">
+						<input id="ao_level_slider" 
+								onchange="setAOSetting('level', this.value);  document.getElementById('ao_level_nmb').value = this.value;"
+								oninput="setAOSetting('level', this.value);  document.getElementById('ao_level_nmb').value = this.value;"
+								style="width:60%;"
+								type="range" value='7.0' min='4' max='10' step='0.1'/>
+						<input id="ao_level_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='7.0'
+								onchange="setAOSetting('level', this.value); document.getElementById('ao_level_slider').value = this.value;">
+					</td>
+				</tr>
+				<tr>
+					<td class="option_text">
+						<span>Blur/Sharp</span>
+					</td>
+					<td class="options">
+						<input id="ao_blur_sharp_slider" 
+								onchange="setAOSetting('blur_sharp', this.value); document.getElementById('ao_blur_sharp_nmb').value = this.value;"
+								oninput="setAOSetting('blur_sharp', this.value); document.getElementById('ao_blur_sharp_nmb').value = this.value;"
+								style="width:60%;"
+								type="range" value='-10' min='-32' max='32' step='1'/>
+						<input id="ao_blur_sharp_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='0'
+								onchange="setAOSetting('blur_sharp', this.value); document.getElementById('ao_blur_sharp_slider').value = this.value;">
+					</td>
+				</tr>
+				</table>
+			</div>
 			
 			<!-- Textures -->
 			<div class="texture_container">
 				<div class="tabs">
 					<input class="tab_button" id="tab_btn_normal" type="button" onclick="activate_texture('normal');" disabled value="Normal"/>
 					<input class="tab_button" id="tab_btn_displace" type="button" onclick="activate_texture('displace');" value="Displacement"/>
+					<input class="tab_button" id="tab_btn_ao" type="button" onclick="activate_texture('ao');" value="AmbientOcc"/>
 				</div>
 				<!-- Normal Texture -->
 				<div class="view" id="normal_map">
@@ -213,6 +261,10 @@
 				<!-- Displacement Texture -->
 				<div class="view" id="displacement_map" style="display: none;">
 					<img height=300 width=300 id="displace_img" />
+				</div>
+				<!-- Displacement Texture -->
+				<div class="view" id="ao_map" style="display: none;">
+					<img height=300 width=300 id="ao_img" />
 				</div>
 			</div>
 			
@@ -244,7 +296,7 @@
 				<tr/>
 				<tr>
 					<td class="option_text">
-						<span>UV</span>
+						<span>Model</span>
 					</td>
 					<td class="options">
 						x:<input style="width:50px;" id="repeat_sliderx" onchange="setRepeat(this.value, document.getElementById('repeat_slidery').value)" 
@@ -253,11 +305,10 @@
 							type="number"  min='1' max='3' value='1' step='1'/>
 					<td/>
 				<tr/>
-				<tr>
 					<td class="option_text">
-						<span>Model</span>
+						<span>UV</span>
 					</td>
-					<td  class="options">
+					<td class="options">
 						<select id="model" onchange="setModel(document.getElementById('model').value)">
 							<option selected>Cube</option>
 							<option>Plane</option>
@@ -265,21 +316,30 @@
 							<option>Cylinder</option>
 						</select>
 						<input id="input_rot" type="checkbox" value="rotation" onclick="toggleRotation()" checked> Rotation
-					</td>
-					
+					<td/>
 				<tr>
 					<td class="option_text">
-						<span>Displacement</span>
+						<span>Show</span>
 					</td>
-					<td  class="options">
-						<input id="input_displacement" type="checkbox" value="displacement" onclick="toggleDisplacement()" checked>
+					<td class="options" style="font-size: small;">
+						<input id="input_normal" type="checkbox" value="normal" onclick="toggleNormal()" checked>Normal
+						<input id="input_ao" type="checkbox" value="ao" onclick="toggleAO()" checked>AO
+						<input id="input_displacement" type="checkbox" value="displacement" onclick="toggleDisplacement()" checked>Displace				</td>
+					
+				</tr>
+				<tr>					
+					<!--<td class="option_text">
+						<span>Displacement</span>
+					</td>-->
+					<td class="options" colspan="2" style="text-align: right">
 						<input id="dm_strength_slider" 
 							onchange="setDisplaceStrength( this.value); document.getElementById('dm_strength_nmb').value = this.value;"
 							oninput="setDisplaceStrength( this.value); document.getElementById('dm_strength_nmb').value = this.value;"
-							style="width:80px;"
+							style="width:70px;"
 							type="range" value='0.3' min='-1' max='1' step='0.01'/>
-						<input id="dm_strength_nmb" type="number" step="0.01" style="width:45px;vertical-align:top;" value='0.3'
+						<input id="dm_strength_nmb" type="number" step="0.01" style="width:40px;vertical-align:top;" value='0.3'
 							onchange="setDisplaceStrength(this.value); document.getElementById('dm_strength_slider').value = this.value;">
+						
 					</td>
 				</tr>
 				</table>
@@ -335,14 +395,16 @@
 <link rel="stylesheet" href="javascripts/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
 <script type="text/javascript" src="javascripts/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
 
+<script type="text/javascript" src="javascripts/parallel.js"></script>
 <script type="text/javascript" src="javascripts/three.min.js"></script>
 <script type="text/javascript" src="javascripts/OrbitControls.js"></script>
 <script type="text/javascript" src="javascripts/dojo.js"></script>
 <script type="text/javascript" src="javascripts/filters.js"></script>
 <script type="text/javascript" src="javascripts/ImageDrop.js"></script>
 <script type="text/javascript" src="javascripts/renderView.js"></script>
-<script type="text/javascript" src="javascripts/displaceMap.js"></script>
 <script type="text/javascript" src="javascripts/normalMap.js"></script>
+<script type="text/javascript" src="javascripts/displaceMap.js"></script>
+<script type="text/javascript" src="javascripts/ambientOccMap.js"></script>
 <script type="text/javascript" src="javascripts/gaussianblur.js"></script>
 <script type="text/javascript" src="javascripts/main.js"></script>
 <script type="text/javascript" src="javascripts/ganalytics.js"></script>

@@ -24,7 +24,9 @@ var initHeightMap = function(){
 		setNormalSetting('blur_sharp', document.getElementById('blur_sharp_nmb').value);
 		
 		createDisplacementMap(document.getElementById('dm_contrast_nmb').value);
-		setDisplaceStrength(document.getElementById('dm_strength_nmb').value);
+		setDisplacementScale(-document.getElementById('dm_strength_nmb').value);
+		
+		createAmbientOcclusionTexture();
     };
 	
     height_image.src = './images/standard_height.png';	
@@ -100,7 +102,9 @@ require(["dojo/dom", "dojo/domReady!"], function(dom){
 				setNormalSetting('blur_sharp', document.getElementById('blur_sharp_nmb').value);
 				
 				createDisplacementMap(document.getElementById('dm_contrast_nmb').value);
-				setDisplaceStrength(document.getElementById('dm_strength_nmb').value);
+				setDisplacementScale(-document.getElementById('dm_strength_nmb').value);
+				
+				createAmbientOcclusionTexture();
 		};
 		
 		height_image.src = source;
