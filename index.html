@@ -34,6 +34,44 @@
 			
 			<div class="column_top" style="margin-top: 25px; height:105px;">
 				<img src="images/drag_drop.png" />
+				
+				<a style="top: -85px; right: 15px; position: relative; overflow:hidden;" class="various" href="#drag_drop_help">
+					<img src="images/help.png" />
+				</a>
+			</div>
+			
+			<div id="drag_drop_help" style="display:none;overflow:hidden;font-family:Georgia" align="left">					
+				<h1>Height map</h1>
+				
+				<p>
+				This texture contains the distance "height" from "floor".<br/>
+				The brighter the pixel, the further away (more depth).<br/>
+				In this application it doesn't matter if it's inverted,
+				the most important thing is the difference between the pixels.
+
+				Ideally, a texture with a power of 2 inside (2,4,8,16 etc.)<br/>
+				</p>
+				<img src="images/description_height.png" style="display: block; margin-left: auto; margin-right: auto;" /><br/>
+
+				<p>
+				An example:
+				</p>
+
+				<img src="images/example_height.png" style="display: block; margin-left: auto; margin-right: auto;"/><br/>
+
+				<p>
+				Using the height map as displacement, you can see the effect.
+				Here are the bumps going inside:
+				</p>
+				<img src="images/height_goesin.png" style="display: block; margin-left: auto; margin-right: auto;" /><br/>
+				
+				<p>
+				Here are the bumps standing out:
+				</p>
+				<img src="images/height_standsout.png" style="display: block; margin-left: auto; margin-right: auto;" /><br/>
+
+				</p>
+				
 			</div>
 			
 			
