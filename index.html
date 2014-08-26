@@ -23,7 +23,53 @@
 	<br/>
 	<div align="center" >
 		<img src="images/nmap_logo_trans_small.png" /><br/>
+
+		<a style="top: -180px; right: -220px; position: relative; overflow:hidden;" class="various" href="#normalmaponline_help">
+			<img src="images/help.png" />
+		</a>
 	</div>
+
+	<!-- DESCRIPTION -->
+	<div id="normalmaponline_help" style="display:none;overflow:hidden;font-family:Georgia" align="left">		
+				<h1>NormalMap-Online</h1>
+				<p>
+					This website lets you create normal maps from height maps <b>for free</b>.<br/>
+					All normal map textures you create are <b>your own</b>.<br/>
+					Textures are <b>not</b> saved on the server and all scripts are running on your Browser.<br/>
+					<br/>
+					Just <b>drag & drop</b> a heightmap in the specified field and adjust settings.<br/>
+					Afterwards check the preview window and download your own normalmap.<br/>
+					Additionally you can adjust and download displacement and ambient occlusion maps<br/>
+					<br/>
+					The preview window shows a 3D-model with several different maps.<br/>
+					Each map can be enabled/disabled and the preview model can be adjusted.<br/>
+					<br/>
+					If you have further questions, just give feedback to the mail-adress on the webpage.<br/>
+				</p>			
+
+				<h2>Normal Maps</h2>
+				<p>
+					<img src="images/normal_description.png" style="display: block; 
+						margin-left: auto; margin-right: auto; padding-left: 10px;" align="right" />
+
+					Normal Maps are textures that inherit depth information of a surface.<br/>
+					They don't change the structure of the model and have <b>nearly no impact on performance</b>.<br/>
+					Each pixel represents a <b>normal vector</b> and is composed of three colors.<br/>
+					These colors are representing the direction of the normal vector.<br/>
+					<br/>
+					They can enhance the optical illusion of depth significantly and 
+					are escpacially useful on flat surfaces, that have several <b>bumps or
+					cracks</b>.<br/>
+					As shown on the right, the elevation described by the height map can be converted to a normal map, that can be read from your graphics card inside the shader units.<br/>
+					When aiming for a more drastical illusion in depth, where parts could be occluding the model, you should try displacement maps<br/>
+					These maps really alter polygons but could decrease performance significantly!<br/>
+				</p>
+				
+				
+
+			</div>
+	
+
 	<div style="min-height:10px"></div>
 	
 	<div class="content">
@@ -35,12 +81,14 @@
 			<div class="column_top" style="margin-top: 25px; height:105px;">
 				<img src="images/drag_drop.png" />
 				
-				<a style="top: -85px; right: 15px; position: relative; overflow:hidden;" class="various" href="#drag_drop_help">
+				<a style="top: -85px; right: 15px; position: relative; overflow:hidden;" class="various" href="#heightmap_help">
 					<img src="images/help.png" />
 				</a>
 			</div>
 			
-			<div id="drag_drop_help" style="display:none;overflow:hidden;font-family:Georgia" align="left">					
+			<!-- DESCRIPTION HEIGHT MAP -->
+
+			<div id="heightmap_help" style="display:none;overflow:hidden;font-family:Georgia" align="left">					
 				<h1>Height map</h1>
 				
 				<p>
