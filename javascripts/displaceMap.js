@@ -1,4 +1,5 @@
 var displacement_bias = 0;
+var invert_displacement = false;
 
 var displacement_canvas = document.createElement("canvas");
 
@@ -13,6 +14,8 @@ function createDisplacementMap(contrast){
 	for (var i=0; i<img_data.data.length; i += 4){
 		v = (img_data.data[i] + img_data.data[i+1] + img_data.data[i+2]) * 0.333333;
 		v = v < 1.0 || v > 255.0 ? 0 : v;
+		if (invert_displacement)
+			v = 255.0 - v;
 		displace_map.data[i]   = v;
 		displace_map.data[i+1] = v;
 		displace_map.data[i+2] = v;
@@ -53,6 +56,12 @@ function createDisplacementMap(contrast){
 
 
 	
+var invertDisplacement = function(){
+	invert_displacement = !invert_displacement;
+	
+	if (auto_update && Date.now() - timer > 50)
+		createDisplacementMap(document.getElementById('dm_contrast_nmb').value);
+}
 	
 
 function setDisplaceStrength(v){

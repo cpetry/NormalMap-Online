@@ -224,6 +224,16 @@
 							onchange="setDisplacementContrast(this.value); document.getElementById('dm_contrast_slider').value = this.value;">
 					</td>
 				</tr>
+				<tr>
+					<td class="option_text">
+						<span>Invert</span>
+					</td>
+					<td class="options">
+						<div>
+							<input id="invert_height" type="checkbox" onclick="invertDisplacement(); setDisplacementContrast(document.getElementById('dm_contrast_nmb').value);" />
+						</div>
+					</td>
+				</tr>
 
 				<!--
 				<tr>
