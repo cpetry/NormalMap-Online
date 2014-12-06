@@ -111,7 +111,7 @@ var setNormalSetting = function(element, v){
 	if(timer == 0)
 		timer = Date.now();
 		
-	if (auto_update && Date.now() - timer > 50){
+	if (auto_update && Date.now() - timer > 150){
 		createNormalMap();
 		timer = 0;
 	}
