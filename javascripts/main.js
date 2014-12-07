@@ -85,31 +85,22 @@ button.addEventListener('click', function (e) {
 	
 	var filesize = 0;
 	var qual = 0.9;
-	var pic;
-	
+	var file_name;
 	var canvas;
 	if (document.getElementById('normal_map').style.cssText != "display: none;"){
 		canvas = normal_canvas;
-		button.download="NormalMap.jpg";
+		file_name="NormalMap.jpg";
 	}
 	else if (document.getElementById('displacement_map').style.cssText != "display: none;"){
 		canvas = displacement_canvas;
-		button.download="DisplacementMap.jpg";
+		file_name="DisplacementMap.jpg";
 	}
 	else if (document.getElementById('ao_map').style.cssText != "display: none;"){
 		canvas = ao_canvas;
-		button.download="AmbientOcclusionMap.jpg";
+		file_name="AmbientOcclusionMap.jpg";
 	}
 	
-	
-	// reduce file size so that it can be downloaded
-	do{
-		pic = canvas.toDataURL('image/jpeg', qual);
-		filesize = pic.length;
-		//console.log("size of pic: " + filesize); 
-		qual -= 0.1;
-	}while(filesize >= 2000000);
-	//pic.src.replace("image/png", "image/octet-stream");
-	
-    button.href = pic;
+	canvas.toBlob(function(blob) {
+    	saveAs(blob, "pretty image.png");
+	});
 });

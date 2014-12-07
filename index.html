@@ -67,7 +67,7 @@
 				
 				
 
-			</div>
+	</div>
 	
 
 	<div style="min-height:10px"></div>
@@ -78,7 +78,7 @@
 		<!-- Drop box %D -->
 		<div class="column">
 			
-			<div class="column_top" style="margin-top: 25px; height:105px;">
+			<div class="column_top" style="margin-top: 47px; height:105px;">
 				<img src="images/drag_drop.png" />
 				
 				<a style="top: -30px; right: 20px; position: relative; overflow:hidden;" class="various" href="#heightmap_help">
@@ -194,6 +194,19 @@
 				</tr>
 				<tr>
 					<td class="option_text">
+						<span>Filter</span>
+					</td>
+					<td class="options">
+						<div>
+							<select onchange="setNormalSetting('type', this.options[this.selectedIndex].value);">
+								<option value="sobel">Sobel</option>
+								<option value="scharr">Scharr</option>
+							</select>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="option_text">
 						<span>Invert</span>
 					</td>
 					<td class="options">
@@ -204,6 +217,7 @@
 						</div>
 					</td>
 				</tr>
+				
 				</table>
 			</div>
 						
@@ -331,6 +345,7 @@
 				<input id="update" type="button" onclick="createNormalMap()" value="Update" disabled />
 			</div>
 			<div style="min-height:10px"></div>
+			<!-- Download Button -->
 			<div>Choose Map-type above, <br/>
 				Right-Click, "Save Image to..." or
 				<div style="min-height:5px"></div>
@@ -460,6 +475,9 @@
 <link rel="stylesheet" href="javascripts/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
 <script type="text/javascript" src="javascripts/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
 
+<script src="javascripts/blob.js"></script>
+<script src="javascripts/canvas-toBlob.js"></script>
+<script src="javascripts/filesaver.min.js"></script>
 <script type="text/javascript" src="javascripts/parallel.js"></script>
 <script type="text/javascript" src="javascripts/three.min.js"></script>
 <script type="text/javascript" src="javascripts/OrbitControls.js"></script>
@@ -473,8 +491,4 @@
 <script type="text/javascript" src="javascripts/gaussianblur.js"></script>
 <script type="text/javascript" src="javascripts/main.js"></script>
 <script type="text/javascript" src="javascripts/ganalytics.js"></script>
-
-
-
-
 </html>

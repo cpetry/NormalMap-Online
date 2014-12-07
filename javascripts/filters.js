@@ -116,7 +116,7 @@ Number.prototype.mod = function(n) {
 return ((this % n) + n) % n;
 }
 
-Filters.newsobelfilter = function(pixels, strength, level){
+Filters.newsobelfilter = function(pixels, strength, level, type){
 	var src = pixels.data;
 
 	var w = pixels.width;
@@ -135,6 +135,12 @@ Filters.newsobelfilter = function(pixels, strength, level){
 	var dZ = 1.0 / strength * (1.0 + Math.pow(2.0, level)); // very costly operation!
 	var dZ2 = dZ * dZ;
 	
+	var filter_type = 0;
+	if (type == "sobel")
+		filter_type = 0;
+	else if (type == "scharr")
+		filter_type = 1;
+
 	var wm4 = w*4;
 	for (var y=0; y<h; y++) {
 		for (var x=0; x<w; x++) {
@@ -163,8 +169,15 @@ Filters.newsobelfilter = function(pixels, strength, level){
 			}
 			
 			// scharr
-			dX = tl*3.0 + l*10.0 + bl*3.0 - tr*3.0 - r*10.0 - br*3.0;
-			dY = tl*3.0 + t*10.0 + tr*3.0 - bl*3.0 - b*10.0 - br*3.0;
+			if (filter_type == 0){ // "sobel"
+				dX = tl*1.0 + l*2.0 + bl*1.0 - tr*1.0 - r*2.0 - br*1.0;
+				dY = tl*1.0 + t*2.0 + tr*1.0 - bl*1.0 - b*2.0 - br*1.0;
+			}
+			// sobel
+			else if (filter_type == 1){  // "scharr"
+				dX = tl*3.0 + l*10.0 + bl*3.0 - tr*3.0 - r*10.0 - br*3.0;
+				dY = tl*3.0 + t*10.0 + tr*3.0 - bl*3.0 - b*10.0 - br*3.0;
+			}
 
 			l = Math.sqrt((dX * dX) + (dY * dY) + dZ2);
 			
