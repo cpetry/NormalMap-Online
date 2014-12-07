@@ -87,20 +87,21 @@ button.addEventListener('click', function (e) {
 	var qual = 0.9;
 	var file_name;
 	var canvas;
+	
 	if (document.getElementById('normal_map').style.cssText != "display: none;"){
 		canvas = normal_canvas;
-		file_name="NormalMap.jpg";
+		file_name="NormalMap";
 	}
 	else if (document.getElementById('displacement_map').style.cssText != "display: none;"){
 		canvas = displacement_canvas;
-		file_name="DisplacementMap.jpg";
+		file_name="DisplacementMap";
 	}
 	else if (document.getElementById('ao_map').style.cssText != "display: none;"){
 		canvas = ao_canvas;
-		file_name="AmbientOcclusionMap.jpg";
+		file_name="AmbientOcclusionMap";
 	}
 	
 	canvas.toBlob(function(blob) {
-    	saveAs(blob, file_name);
+    	saveAs(blob, file_name + ".png");
 	});
 });
