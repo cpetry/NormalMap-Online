@@ -101,6 +101,6 @@ button.addEventListener('click', function (e) {
 	}
 	
 	canvas.toBlob(function(blob) {
-    	saveAs(blob, "pretty image.png");
+    	saveAs(blob, file_name);
 	});
 });
