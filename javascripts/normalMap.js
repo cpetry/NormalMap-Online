@@ -4,7 +4,7 @@ var invert_source = false;
 var smoothing = 0;
 var strength = 2.5;
 var level = 7;
-var type = "sobel";
+var normal_type = "sobel";
 var auto_update = true;
 var normal_canvas = document.createElement("canvas");
 
@@ -32,9 +32,9 @@ var createNormalMap = function(){
 	
 	var img_data;
 	if (normal_enabled)	
-		img_data = Filters.newsobelfilter(grayscale, strength, level, type);
+		img_data = Filters.newsobelfilter(grayscale, strength, level, normal_type);
 	else
-		img_data = Filters.newsobelfilter(grayscale, 0, level, type);
+		img_data = Filters.newsobelfilter(grayscale, 0, level, normal_type);
 	console.log("sobelfilter: " + (new Date().getTime() - st));
 	
 	
@@ -97,7 +97,7 @@ var invertSource = function(){
 	}
 }
 
-var timer = 0;
+var timer = Date.now();
 
 var setNormalSetting = function(element, v){
 	if (element == "blur_sharp")
@@ -110,14 +110,12 @@ var setNormalSetting = function(element, v){
 		level = v;
 
 	else if (element == "type")
-		type = v;
-		
-	if(timer == 0)
-		timer = Date.now();
+		normal_type = v;
 		
 	if (auto_update && Date.now() - timer > 150){
+		timer = Date.now();
 		createNormalMap();
-		timer = 0;
+		
 	}
 }
 
