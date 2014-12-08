@@ -75,8 +75,6 @@ var loadHeightmap = function(source){
 		
 		var context = height_canvas.getContext("2d");
 		context.clearRect(0, 0, height_canvas.width, height_canvas.height);
-		height_map_drop.width = height_image.width;
-		height_map_drop.height = height_image.height;
 		
 		height_canvas.width = height_image.width;
 		height_canvas.height = height_image.height;

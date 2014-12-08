@@ -58,14 +58,14 @@ function setTexturePreview(canvas, img_id,  width, height){
 	img.src = canvas.toDataURL('image/jpeg');
 	
 	// set preview canvas	
-	canvas.width  = getNextPowerOf2(canvas.width);
-	canvas.height = getNextPowerOf2(canvas.height);
+	//canvas.width  = getNextPowerOf2(canvas.width);
+	//canvas.height = getNextPowerOf2(canvas.height);
 		
 	
 	img.onload = function(){
 	
-		var new_width  = getNextPowerOf2(width);
-		var new_height = getNextPowerOf2(height);
+		var new_width  = width;//getNextPowerOf2(width);
+		var new_height = height;//getNextPowerOf2(height);
 		
 		var ctx_preview = canvas.getContext("2d");
 		//ctx_normal_preview.clearRect(     0, 0, new_width, new_height);
