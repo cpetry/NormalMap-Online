@@ -113,6 +113,9 @@ button.addEventListener('click', function (e) {
 		file_name="AmbientOcclusionMap";
 	}
 	
+	if (document.getElementById('file_name').value != "")
+		file_name = document.getElementById('file_name').value;
+	
 	var file_type = getImageType();
 	var image_type = "image/png";
 	if (file_type == "jpg")
