@@ -79,13 +79,25 @@ function setTexturePreview(canvas, img_id,  width, height){
 	}
 }
 
+function getImageType(){
+	var select_file_type = document.getElementById('file_type');
+	var file_type = select_file_type.options[select_file_type.selectedIndex].value;
+	return file_type;
+}
+
+function switchJPGQual(){
+	if (getImageType() != 'jpg')
+		document.getElementById('file_jpg_qual').style.cssText = "display: none;";
+	else
+		document.getElementById('file_jpg_qual').style.cssText = "width:40px";
+}
 
 var button = document.getElementById('download');
 button.addEventListener('click', function (e) {
 	
 	var filesize = 0;
 	var qual = 0.9;
-	var file_name;
+	var file_name = "download";
 	var canvas;
 	
 	if (document.getElementById('normal_map').style.cssText != "display: none;"){
@@ -101,7 +113,14 @@ button.addEventListener('click', function (e) {
 		file_name="AmbientOcclusionMap";
 	}
 	
+	var file_type = getImageType();
+	var image_type = "image/png";
+	if (file_type == "jpg")
+		image_type = "image/jpeg";
+		
+	var qual = parseFloat( document.getElementById('file_jpg_qual').value);
+	
 	canvas.toBlob(function(blob) {
-    	saveAs(blob, file_name + ".png");
-	});
+    	saveAs(blob, file_name + "." + file_type);
+	}, image_type, qual);
 });

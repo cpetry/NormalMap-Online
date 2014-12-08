@@ -348,12 +348,18 @@
 				<input id="auto_update" type="checkbox" onclick="toggleAutoUpdate();document.getElementById('update').disabled = auto_update;" checked />Auto update
 				<input id="update" type="button" onclick="createNormalMap()" value="Update" disabled />
 			</div>
-			<div style="min-height:10px"></div>
+			<div style="min-height:20px"></div>
 			<!-- Download Button -->
-			<div>Choose Map-type above, <br/>
-				Right-Click, "Save Image to..." or
-				<div style="min-height:5px"></div>
-					<button id="download" class="download" style="width: 8em;  height: 2em;"><b>Download</b></button><!--<img src="images/Download_NormalMap_128.png"/>-->
+			<div>
+				<input id="file_name" type="text" size="12">
+				<select id="file_type" onChange="switchJPGQual();">
+					<option value="png" selected>PNG</option>
+					<option value="jpg">JPG</option>
+				</select>
+				<input id="file_jpg_qual" type="number" step="0.01" min='0.5' max='1' value="0.95" size="4" style="display:none;">
+				<div style="min-height:10px"></div>
+					<button id="download" class="download" style="width: 8em;  height: 2em;"><b>Download</b></button>
+					<!--<img src="images/Download_NormalMap_128.png"/>-->
 			</div>
 		</div>
 		
@@ -487,7 +493,6 @@
 <script type="text/javascript" src="javascripts/three.min.js"></script>
 <script type="text/javascript" src="javascripts/OrbitControls.js"></script>
 <script type="text/javascript" src="javascripts/filters.js"></script>
-<script type="text/javascript" src="javascripts/ImageDrop.js"></script>
 <script type="text/javascript" src="javascripts/renderView.js"></script>
 <script type="text/javascript" src="javascripts/normalMap.js"></script>
 <script type="text/javascript" src="javascripts/displaceMap.js"></script>
