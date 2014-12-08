@@ -77,8 +77,12 @@
 	
 		<!-- Drop box %D -->
 		<div class="column">
-			
-			<div class="column_top" style="margin-top: 47px; height:105px;">
+			<div id="file_zone">
+				<input id="select_file" type="file" accept="image/*" onpropertychange="handleFileSelect()" style="position:absolute;visibility:hidden;"/>
+				<input type="button" id="browseButton" value="Select image..." onclick="select_file.click()">
+				or
+			</div>
+			<div class="column_top" style="margin-top: 25px; height:105px;">
 				<img src="images/drag_drop.png" />
 				
 				<a style="top: -30px; right: 20px; position: relative; overflow:hidden;" class="various" href="#heightmap_help">
@@ -233,8 +237,8 @@
 							onchange="setDisplacementContrast(this.value); document.getElementById('dm_contrast_nmb').value = this.value;"
 							oninput="setDisplacementContrast(this.value); document.getElementById('dm_contrast_nmb').value = this.value;"
 							style="width:60%;"
-							type="range" value='0' min='-1' max='1' step='0.01'/>
-						<input id="dm_contrast_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='0'
+							type="range" value='-0.5' min='-1' max='1' step='0.01'/>
+						<input id="dm_contrast_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='-0.5'
 							onchange="setDisplacementContrast(this.value); document.getElementById('dm_contrast_slider').value = this.value;">
 					</td>
 				</tr>
@@ -467,7 +471,7 @@
 	
 	
 <!-- Add jQuery library -->
-<script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script type="text/javascript" src="javascripts/jquery-2.1.1.min.js"></script>
 
 <!-- Add fancyBox -->
 <link rel="stylesheet" href="javascripts/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
@@ -476,10 +480,12 @@
 <script src="javascripts/blob.js"></script>
 <script src="javascripts/canvas-toBlob.js"></script>
 <script src="javascripts/filesaver.min.js"></script>
+<script src="javascripts/filedrop-min.js"></script>
+
+<script type="text/javascript" src="javascripts/filedrop.js"></script>
 <script type="text/javascript" src="javascripts/parallel.js"></script>
 <script type="text/javascript" src="javascripts/three.min.js"></script>
 <script type="text/javascript" src="javascripts/OrbitControls.js"></script>
-<script type="text/javascript" src="javascripts/dojo.js"></script>
 <script type="text/javascript" src="javascripts/filters.js"></script>
 <script type="text/javascript" src="javascripts/ImageDrop.js"></script>
 <script type="text/javascript" src="javascripts/renderView.js"></script>
@@ -488,5 +494,6 @@
 <script type="text/javascript" src="javascripts/ambientOccMap.js"></script>
 <script type="text/javascript" src="javascripts/gaussianblur.js"></script>
 <script type="text/javascript" src="javascripts/main.js"></script>
+
 <script type="text/javascript" src="javascripts/ganalytics.js"></script>
 </html>
