@@ -1,11 +1,27 @@
 div.view {
-	position: relative;
+	//position: relative;
 	//background-color: #eee;
 	border: 1px solid #ccc;
+	white-space: nowrap;
 	text-align: center;
 	padding: 8px;
 	margin: 8px;
 	z-index: 1;
+	min-height: 300px;
+    min-width: 300px;
+}
+
+.helper {
+    display: inline-block;
+    min-height: 300px;
+    vertical-align: middle;
+}
+
+img.preview_img {
+    /*background: #3A6F9A;*/
+    vertical-align: middle;
+    max-height: 300px;
+    max-width: 300px;
 }
 
 body{
@@ -140,3 +156,4 @@ footer, footer p {
 	opacity: 0.9;
 	font-size: 12px;
 }
+

@@ -78,7 +78,7 @@ function activate_texture(type){
 function setTexturePreview(canvas, img_id,  width, height){
 	var img = document.getElementById(img_id);
 	
-	img.src = canvas.toDataURL('image/jpeg');
+
 	
 	// set preview canvas	
 	//canvas.width  = getNextPowerOf2(canvas.width);
@@ -100,6 +100,13 @@ function setTexturePreview(canvas, img_id,  width, height){
 		ao_map.needsUpdate = true;
 		displacement_map.needsUpdate = true;		
 	}
+	img.src = canvas.toDataURL('image/jpeg');
+	var ratio = width / height;
+	//console.log('width' + width);
+	//console.log('height' + height);
+	img.width = ratio >= 1 ? container_height : (container_height * ratio );
+	img.height = ratio >= 1 ? (container_height / ratio ) : container_height;
+	
 }
 
 function getImageType(){

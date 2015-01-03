@@ -86,7 +86,7 @@ function BlurStack()
 	this.next = null;
 }
 
-Filters.gaussiansharpen = function(imageData, width, height, radius){
+gaussiansharpen = function(imageData, width, height, radius){
 
 	var gaussian = {
 		width:  width, height: height, data: new Float32Array(width*height*4)
@@ -96,14 +96,14 @@ Filters.gaussiansharpen = function(imageData, width, height, radius){
 		gaussian.data[i] = imageData.data[i];
 	}
 	
-	Filters.gaussianblur(gaussian, width, height, radius )
+	gaussianblur(gaussian, width, height, radius )
 
 	for (var i=0; i<imageData.data.length; i++){
 		imageData.data[i] += imageData.data[i] - gaussian.data[i];
 	}
 }
 
-Filters.gaussianblur = function (imageData /* call by ref because its an object*/, width, height, radius )
+gaussianblur = function (imageData /* call by ref because its an object*/, width, height, radius )
 {
 	if ( isNaN(radius) || radius < 1 ) return;
 	radius |= 0;

@@ -35,9 +35,9 @@ function createAmbientOcclusionTexture(){
 	var ao_map = Filters.createImageData(height_image.width, height_image.height);
 	
 	if (ao_smoothing > 0)
-		Filters.gaussiansharpen(sobelfiltered, height_image.width, height_image.height, Math.abs(ao_smoothing));
+		gaussiansharpen(sobelfiltered, height_image.width, height_image.height, Math.abs(ao_smoothing));
 	else if (ao_smoothing < 0)
-		Filters.gaussianblur(sobelfiltered, height_image.width, height_image.height, Math.abs(ao_smoothing));
+		gaussianblur(sobelfiltered, height_image.width, height_image.height, Math.abs(ao_smoothing));
 	
 	var v = 0;
 	for (var i=0; i<sobelfiltered.data.length && i<grayscale.data.length; i += 4){

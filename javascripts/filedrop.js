@@ -87,10 +87,10 @@ var readImage = function(imgFile){
 
 var loadHeightmap = function(source){
 	height_image = new Image();
-	console.log("reading: ", source.type);
+	//console.log("reading: ", source.type);
 		
 	height_image.onload = function(){
-		console.log("creating height image");
+		//console.log("creating height image");
 		
 		height_image.width = container_height;
 		height_image.height = container_height;
@@ -101,7 +101,12 @@ var loadHeightmap = function(source){
 		height_canvas.width = height_image.width;
 		height_canvas.height = height_image.height;
 		
-		context.drawImage(height_image, 0, 0, height_canvas.width, height_canvas.height);
+		var ratio = height_image.naturalWidth / height_image.naturalHeight;
+		var draw_width = ratio > 1 ? height_canvas.width : (height_canvas.width * ratio);
+		var draw_height = ratio > 1 ? (height_canvas.height / ratio) : height_canvas.height;
+		context.drawImage(height_image, container_height/2 - draw_width/2, container_height/2 - draw_height/2 , draw_width, draw_height);
+		//console.log('draw_width' + draw_width);
+		//console.log('draw_height' + draw_height);
 		height_image.width = height_image.naturalWidth;
 		height_image.height = height_image.naturalHeight;
 		

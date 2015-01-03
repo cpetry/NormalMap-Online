@@ -48,7 +48,7 @@ var createNormalMap = function(){
 		
 	var st = new Date().getTime();
 	var grayscale = Filters.filterImage(Filters.grayscale, height_image, invert_source);
-	console.log("grayscale: " + (new Date().getTime() - st));
+	//console.log("grayscale: " + (new Date().getTime() - st));
 	// smoothing
 		
 	st = new Date().getTime();
@@ -58,7 +58,7 @@ var createNormalMap = function(){
 		img_data = Filters.newsobelfilter(grayscale, strength, level, normal_type);
 	else
 		img_data = Filters.newsobelfilter(grayscale, 0, level, normal_type);
-	console.log("sobelfilter: " + (new Date().getTime() - st));
+	//console.log("sobelfilter: " + (new Date().getTime() - st));
 	
 	
 	
@@ -72,13 +72,13 @@ var createNormalMap = function(){
 		else
 			normal.data[i] = img_data.data[i];
 	}
-	console.log("invertImage: " + (new Date().getTime() - st));
+	//console.log("invertImage: " + (new Date().getTime() - st));
 	
 	
 	if (smoothing > 0)
-		Filters.gaussiansharpen(normal, height_image.width, height_image.height, Math.abs(smoothing));
+		gaussiansharpen(normal, height_image.width, height_image.height, Math.abs(smoothing));
 	else if (smoothing < 0)
-		Filters.gaussianblur(normal, height_image.width, height_image.height, Math.abs(smoothing));
+		gaussianblur(normal, height_image.width, height_image.height, Math.abs(smoothing));
 		
 	
 	
@@ -87,11 +87,10 @@ var createNormalMap = function(){
 	normal_canvas.width  = height_image.width; 	// important!
 	normal_canvas.height = height_image.height;
 	//ctx_normal.clearRect(0, 0, height_image.width, height_image.height);
-	ctx_normal.putImageData(normal, 0, 0, 0, 0, img_data.width, img_data.height);	
-	
+	ctx_normal.putImageData(normal, 0, 0, 0, 0, img_data.width, img_data.height);
 	setTexturePreview(normal_canvas, "normal_img", img_data.width, img_data.height);
 	
-	console.log("setTexturePreview: " + (new Date().getTime() - st));
+	//console.log("setTexturePreview: " + (new Date().getTime() - st));
 	
 }
 
