@@ -25,6 +25,15 @@ initHeightMap();
 initRenderer();
 render();
 
+TextureEnum = {
+    NORMAL : 0,
+    DISPLACEMENT : 1,
+    AMBIENT : 2,
+    SPECULAR : 3
+}
+
+var auto_update = true;
+var current_texture = TextureEnum.NORMAL;
 
 function activate_texture(type){
 	if (type == "normal"){
@@ -41,6 +50,7 @@ function activate_texture(type){
 		document.getElementById('ao_map').style.cssText = "display: none;";
 		document.getElementById('ao_settings').style.cssText = "display: none;";
 		document.getElementById('file_name').placeholder = "NormalMap";
+		current_texture = TextureEnum.NORMAL;
 	}
 	
 	else if (type == "displace"){
@@ -57,6 +67,7 @@ function activate_texture(type){
 		document.getElementById('ao_map').style.cssText = "display: none;";
 		document.getElementById('ao_settings').style.cssText = "display: none;";
 		document.getElementById('file_name').placeholder = "DisplacementMap";
+		current_texture = TextureEnum.DISPLACEMENT;
 		//console.log("displace!");
 	}
 	else if (type == "ao"){
@@ -73,6 +84,7 @@ function activate_texture(type){
 		document.getElementById('ao_map').style.cssText = "";
 		document.getElementById('ao_settings').style.cssText = "";
 		document.getElementById('file_name').placeholder = "AmbientOcclusionMap";
+		current_texture = TextureEnum.AMBIENT;
 		//console.log("displace!");
 	}
 }
@@ -123,6 +135,25 @@ function switchJPGQual(){
 		document.getElementById('file_jpg_qual').style.cssText = "display: none;";
 	else
 		document.getElementById('file_jpg_qual').style.cssText = "width:40px";
+}
+
+
+function toggleAutoUpdate(){
+	auto_update = !auto_update;
+	
+	if (auto_update)
+		createNormalMap();
+		createDisplacementMap();
+		createAmbientOcclusionTexture();
+}
+
+function updateCurrentTexture(){
+	if (current_texture == TextureEnum.NORMAL)
+		createNormalMap();
+	else if (current_texture == TextureEnum.DISPLACEMENT)
+		createDisplacementMap();
+	else if (current_texture == TextureEnum.AMBIENT)
+		createAmbientOcclusionTexture();
 }
 
 var button = document.getElementById('download');

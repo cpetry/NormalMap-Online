@@ -28,7 +28,6 @@ var smoothing = 0;
 var strength = 2.5;
 var level = 7;
 var normal_type = "sobel";
-var auto_update = true;
 var normal_canvas = document.createElement("canvas");
 
 var getNextPowerOf2 = function(nmb){
@@ -141,13 +140,6 @@ var setNormalSetting = function(element, v){
 }
 
 
-function toggleAutoUpdate(){
-	auto_update = !auto_update;
-	
-	if (auto_update)
-		createNormalMap();
-		createDisplacementMap();
-}
 
 
 

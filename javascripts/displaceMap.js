@@ -25,11 +25,12 @@ var invert_displacement = false;
 
 var displacement_canvas = document.createElement("canvas");
 
-function createDisplacementMap(contrast){
+function createDisplacementMap(){
 
 	var img_data = Filters.filterImage(Filters.grayscale, height_image);
-	
 	var displace_map = Filters.createImageData(img_data.width, img_data.height);
+
+	var contrast = document.getElementById('dm_contrast_nmb').value;
 	
 	// invert colors if needed
 	var v = 0;
@@ -82,7 +83,7 @@ var invertDisplacement = function(){
 	invert_displacement = !invert_displacement;
 	
 	if (auto_update && Date.now() - timer > 50)
-		createDisplacementMap(document.getElementById('dm_contrast_nmb').value);
+		createDisplacementMap();
 }
 	
 
@@ -97,12 +98,12 @@ function setDisplaceStrength(v){
 	}
 }
 
-function setDisplacementContrast(v){
+function setDisplacementContrast(){
 	if(timer == 0)
 		timer = Date.now();
 		
 	if (auto_update && Date.now() - timer > 50){
-		createDisplacementMap(v);
+		createDisplacementMap();
 		timer = 0;
 	}
 }

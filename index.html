@@ -256,12 +256,12 @@
 					</td>
 					<td class="options">
 						<input id="dm_contrast_slider" 
-							onchange="setDisplacementContrast(this.value); document.getElementById('dm_contrast_nmb').value = this.value;"
-							oninput="setDisplacementContrast(this.value); document.getElementById('dm_contrast_nmb').value = this.value;"
+							onchange="document.getElementById('dm_contrast_nmb').value = this.value; setDisplacementContrast();"
+							oninput="document.getElementById('dm_contrast_nmb').value = this.value; setDisplacementContrast();"
 							style="width:60%;"
 							type="range" value='-0.5' min='-1' max='1' step='0.01'/>
 						<input id="dm_contrast_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='-0.5'
-							onchange="setDisplacementContrast(this.value); document.getElementById('dm_contrast_slider').value = this.value;">
+							onchange="document.getElementById('dm_contrast_slider').value = this.value; setDisplacementContrast();">
 					</td>
 				</tr>
 				<tr>
@@ -368,7 +368,7 @@
 			<!-- Autoupdate stuff -->
 			<div style="min-height:15px;margin-top:-10px;">
 				<input id="auto_update" type="checkbox" onclick="toggleAutoUpdate();document.getElementById('update').disabled = auto_update;" checked />Auto update
-				<input id="update" type="button" onclick="createNormalMap()" value="Update" disabled />
+				<input id="update" type="button" onclick="updateCurrentTexture();" value="Update" disabled />
 			</div>
 			<div style="min-height:20px"></div>
 			<!-- Download Button -->
