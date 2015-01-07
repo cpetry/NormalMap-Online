@@ -40,6 +40,7 @@ function activate_texture(type){
 		
 		document.getElementById('ao_map').style.cssText = "display: none;";
 		document.getElementById('ao_settings').style.cssText = "display: none;";
+		document.getElementById('file_name').placeholder = "NormalMap";
 	}
 	
 	else if (type == "displace"){
@@ -55,6 +56,7 @@ function activate_texture(type){
 		
 		document.getElementById('ao_map').style.cssText = "display: none;";
 		document.getElementById('ao_settings').style.cssText = "display: none;";
+		document.getElementById('file_name').placeholder = "DisplacementMap";
 		//console.log("displace!");
 	}
 	else if (type == "ao"){
@@ -70,6 +72,7 @@ function activate_texture(type){
 		
 		document.getElementById('ao_map').style.cssText = "";
 		document.getElementById('ao_settings').style.cssText = "";
+		document.getElementById('file_name').placeholder = "AmbientOcclusionMap";
 		//console.log("displace!");
 	}
 }
