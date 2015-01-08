@@ -64,7 +64,7 @@ div.tabs{
 	position: relative;
 	margin-top: -8px;
 	margin-bottom: -25px;
-	margin-left: 15px;
+	margin-left: 5px;
 	margin-right: auto;
 	text-align: left;
 	
@@ -74,6 +74,7 @@ div.tabs{
 input.tab_button{
 	display:inline-block;
 	margin: 0px 0px 0px 0px;
+	padding: 1px 5px;
 	width: auto;
 	height: 25px;
 	z-index: 2;

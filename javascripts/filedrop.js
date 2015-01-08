@@ -125,6 +125,7 @@ var loadHeightmap = function(source){
 			setDisplacementScale(-document.getElementById('dm_strength_nmb').value);
 			
 			createAmbientOcclusionTexture();
+			createSpecularTexture();
 	};
 	
 	height_image.src = source;
@@ -155,6 +156,7 @@ var initHeightMap = function(){
 		setDisplacementScale(-document.getElementById('dm_strength_nmb').value);
 		
 		createAmbientOcclusionTexture();
+		createSpecularTexture();
     };
 	
     height_image.src = './images/standard_height.png';	

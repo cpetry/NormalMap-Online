@@ -27,6 +27,7 @@ var renderer;
 var bump_map;
 var normal_map;
 var ao_map;
+var specular_map;
 var material;
 var rotation_enabled = true;
 var normal_enabled = true;
@@ -96,33 +97,42 @@ var initRenderer = function(){
 	displacement_map.anisotropy = 2;
 	//bump_map  				= new THREE.Texture( height_canvas );
 	ao_map  					= new THREE.Texture( ao_canvas );
-	ao_map.wrapS 		= ao_map.wrapT = THREE.RepeatWrapping;
-	ao_map.magFilter 	= THREE.LinearFilter;
-	ao_map.minFilter 	= THREE.LinearMipMapNearestFilter;
-	ao_map.anisotropy = 2;
+	ao_map.wrapS 				= ao_map.wrapT = THREE.RepeatWrapping;
+	ao_map.magFilter 			= THREE.LinearFilter;
+	ao_map.minFilter 			= THREE.LinearMipMapNearestFilter;
+	ao_map.anisotropy 			= 2;
 	normal_map  			= new THREE.Texture( normal_canvas );
 	normal_map.wrapS 		= normal_map.wrapT 		= THREE.RepeatWrapping;
 	normal_map.magFilter 	= THREE.LinearFilter;
 	normal_map.minFilter 	= THREE.LinearMipMapNearestFilter;
 	normal_map.anisotropy 	= 2;
+	specular_map  			= new THREE.Texture( specular_canvas );
+	specular_map.wrapS 		= specular_map.wrapT = THREE.RepeatWrapping;
+	specular_map.magFilter 	= THREE.LinearFilter;
+	specular_map.minFilter 	= THREE.LinearMipMapNearestFilter;
+	specular_map.anisotropy = 2;
 	
 	
 	var shader = THREE.ShaderLib[ "normalmap" ];
 	
+	// see ShaderLib (https://github.com/mrdoob/three.js/blob/master/src/renderers/shaders/ShaderLib.js)
 	var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
 	//console.log(uniforms);
 	uniforms[ "enableDisplacement" ].value = true;
 	uniforms[ "enableDiffuse" ].value = false;
 	uniforms[ "enableAO" ].value = true;
+	uniforms[ "enableSpecular" ].value = true;
 	
-	uniforms[ "diffuse" ].value = new THREE.Color(0xcccccc);
+	uniforms[ "diffuse" ].value = new THREE.Color(0xbbbbbb);
 	uniforms[ "specular" ].value = new THREE.Color(0x777777);
+	//uniforms[ "shininess" ].value = new THREE.Color(0x777777);
 	uniforms[ "ambient" ].value = new THREE.Color(0x000000);
 
 	uniforms[ "tDisplacement"].value = displacement_map;
 	uniforms[ "tNormal" ].value = normal_map;
+	uniforms[ "tSpecular" ].value = specular_map;
 	uniforms[ "tAO" ].value = ao_map;
-	uniforms[ "uDisplacementScale" ].value = 0.3;
+	uniforms[ "uDisplacementScale" ].value = -0.3;
 	uniforms[ "uDisplacementBias" ].value = 0;
 	
 	
@@ -237,7 +247,7 @@ var setModel = function(type){
 }
 
 function setDisplacementScale(scale){
-	current_disp_scale = scale;
+	current_disp_scale = -scale;
 	updateDisplacementBias();
 }
 
@@ -285,6 +295,13 @@ function toggleAO(){
 		model.material.uniforms[ "enableAO" ].value = false;
 	else
 		model.material.uniforms[ "enableAO" ].value = true;
+}
+
+function toggleSpecular(){
+	if(model.material.uniforms[ "enableSpecular" ].value == true)
+		model.material.uniforms[ "enableSpecular" ].value = false;
+	else
+		model.material.uniforms[ "enableSpecular" ].value = true;
 }
 
 function switchRenderView(){

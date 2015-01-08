@@ -40,6 +40,7 @@ function activate_texture(type){
 		document.getElementById('tab_btn_normal').disabled = true;
 		document.getElementById('tab_btn_displace').disabled = false;
 		document.getElementById('tab_btn_ao').disabled = false;
+		document.getElementById('tab_btn_specular').disabled = false;
 		//console.log("normal!");
 		document.getElementById('normal_map').style.cssText = "";
 		document.getElementById('normal_settings').style.cssText = "";
@@ -49,6 +50,10 @@ function activate_texture(type){
 		
 		document.getElementById('ao_map').style.cssText = "display: none;";
 		document.getElementById('ao_settings').style.cssText = "display: none;";
+
+		document.getElementById('specular_map').style.cssText = "display: none;";
+		document.getElementById('specular_settings').style.cssText = "display: none;";
+
 		document.getElementById('file_name').placeholder = "NormalMap";
 		current_texture = TextureEnum.NORMAL;
 	}
@@ -57,6 +62,7 @@ function activate_texture(type){
 		document.getElementById('tab_btn_normal').disabled = false;
 		document.getElementById('tab_btn_displace').disabled = true;
 		document.getElementById('tab_btn_ao').disabled = false;
+		document.getElementById('tab_btn_specular').disabled = false;
 		
 		document.getElementById('normal_map').style.cssText = "display: none;";
 		document.getElementById('normal_settings').style.cssText = "display: none;";
@@ -66,6 +72,10 @@ function activate_texture(type){
 		
 		document.getElementById('ao_map').style.cssText = "display: none;";
 		document.getElementById('ao_settings').style.cssText = "display: none;";
+
+		document.getElementById('specular_map').style.cssText = "display: none;";
+		document.getElementById('specular_settings').style.cssText = "display: none;";
+
 		document.getElementById('file_name').placeholder = "DisplacementMap";
 		current_texture = TextureEnum.DISPLACEMENT;
 		//console.log("displace!");
@@ -74,6 +84,7 @@ function activate_texture(type){
 		document.getElementById('tab_btn_normal').disabled = false;
 		document.getElementById('tab_btn_displace').disabled = false;
 		document.getElementById('tab_btn_ao').disabled = true;
+		document.getElementById('tab_btn_specular').disabled = false;
 		
 		document.getElementById('normal_map').style.cssText = "display: none;";
 		document.getElementById('normal_settings').style.cssText = "display: none;";
@@ -83,8 +94,34 @@ function activate_texture(type){
 		
 		document.getElementById('ao_map').style.cssText = "";
 		document.getElementById('ao_settings').style.cssText = "";
+
+		document.getElementById('specular_map').style.cssText = "display: none;";
+		document.getElementById('specular_settings').style.cssText = "display: none;";
+
 		document.getElementById('file_name').placeholder = "AmbientOcclusionMap";
 		current_texture = TextureEnum.AMBIENT;
+		//console.log("displace!");
+	}
+	else if (type == "specular"){
+		document.getElementById('tab_btn_normal').disabled = false;
+		document.getElementById('tab_btn_displace').disabled = false;
+		document.getElementById('tab_btn_ao').disabled = false;
+		document.getElementById('tab_btn_specular').disabled = true;
+		
+		document.getElementById('normal_map').style.cssText = "display: none;";
+		document.getElementById('normal_settings').style.cssText = "display: none;";
+		
+		document.getElementById('displacement_map').style.cssText = "display: none;";
+		document.getElementById('displacement_settings').style.cssText = "display: none;";
+
+		document.getElementById('ao_map').style.cssText = "display: none;";
+		document.getElementById('ao_settings').style.cssText = "display: none;";
+		
+		document.getElementById('specular_map').style.cssText = "";
+		document.getElementById('specular_settings').style.cssText = "";
+
+		document.getElementById('file_name').placeholder = "SpecularMap";
+		current_texture = TextureEnum.SPECULAR;
 		//console.log("displace!");
 	}
 }
@@ -113,7 +150,8 @@ function setTexturePreview(canvas, img_id,  width, height){
 		
 		normal_map.needsUpdate = true;
 		ao_map.needsUpdate = true;
-		displacement_map.needsUpdate = true;		
+		displacement_map.needsUpdate = true;
+		specular_map.needsUpdate = true;
 	}
 	img.src = canvas.toDataURL('image/jpeg');
 	var ratio = width / height;
@@ -145,6 +183,7 @@ function toggleAutoUpdate(){
 		createNormalMap();
 		createDisplacementMap();
 		createAmbientOcclusionTexture();
+		createSpecularTexture();
 }
 
 function updateCurrentTexture(){
@@ -154,6 +193,8 @@ function updateCurrentTexture(){
 		createDisplacementMap();
 	else if (current_texture == TextureEnum.AMBIENT)
 		createAmbientOcclusionTexture();
+	else if (current_texture == TextureEnum.SPECULAR)
+		createSpecularTexture();
 }
 
 var button = document.getElementById('download');
@@ -175,6 +216,10 @@ button.addEventListener('click', function (e) {
 	else if (document.getElementById('ao_map').style.cssText != "display: none;"){
 		canvas = ao_canvas;
 		file_name="AmbientOcclusionMap";
+	}
+	else if (document.getElementById('specular_map').style.cssText != "display: none;"){
+		canvas = specular_canvas;
+		file_name="SpecularMap";
 	}
 	
 	if (document.getElementById('file_name').value != "")

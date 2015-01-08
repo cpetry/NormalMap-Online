@@ -340,6 +340,64 @@
 								onchange="setAOSetting('blur_sharp', this.value); document.getElementById('ao_blur_sharp_slider').value = this.value;">
 					</td>
 				</tr>
+				<tr>
+					<td class="option_text">
+						<span>Invert</span>
+					</td>
+					<td class="options">
+						<div>
+							<input id="invert_AO" type="checkbox" onclick="invertAO();" />
+						</div>
+					</td>
+				</tr>
+				</table>
+			</div>
+
+			<!-- Specular Settings -->
+			<div class="column_top" id="specular_settings" style="display: none;width:100%;">
+				<table style="border-spacing:0px; width:100%;" >
+				<tr>
+					<td class="option_text">
+						<span>Mean</span>
+					</td>
+					<td class="options">
+						<input id="specular_mean_slider" 
+								onchange="setSpecularSetting('spec_mean', this.value); document.getElementById('specular_mean_nmb').value = this.value;"
+								oninput="setSpecularSetting('spec_mean', this.value); document.getElementById('specular_mean_nmb').value = this.value;"
+								style="width:60%;"
+								type="range"  value='1' min='0' max='1' step='0.01'/>
+						<input id="specular_mean_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='1' 
+								onchange="setSpecularSetting('spec_mean', this.value); document.getElementById('specular_mean_slider').value = this.value;">
+					</td>
+				</tr>
+				<tr>
+					<td class="option_text">
+						<span>Range</span>
+					</td>
+					<td class="options">
+						<input id="specular_range_slider" 
+								onchange="setSpecularSetting('spec_range', this.value); document.getElementById('specular_range_nmb').value = this.value;"
+								oninput="setSpecularSetting('spec_range', this.value); document.getElementById('specular_range_nmb').value = this.value;"
+								style="width:60%;"
+								type="range" value='1' min='0' max='1' step='0.01'/>
+						<input id="specular_range_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='1' 
+								onchange="setSpecularSetting('spec_range', this.value); document.getElementById('specular_range_slider').value = this.value;">
+					</td>
+				</tr>
+				<tr>
+					<td class="option_text">
+						<span>Falloff</span>
+					</td>
+					<td class="options">
+						<div>
+							<select onChange="setSpecularSetting('spec_falloff', this.options[this.selectedIndex].value)">
+								<option value="no">No</option>
+								<option value="linear" selected>Linear</option>
+								<option value="square">Square</option>
+							</select>
+						</div>
+					</td>
+				</tr>
 				</table>
 			</div>
 			
@@ -349,6 +407,7 @@
 					<input class="tab_button" id="tab_btn_normal" type="button" onclick="activate_texture('normal');" disabled value="Normal"/>
 					<input class="tab_button" id="tab_btn_displace" type="button" onclick="activate_texture('displace');" value="Displacement"/>
 					<input class="tab_button" id="tab_btn_ao" type="button" onclick="activate_texture('ao');" value="AmbientOcc"/>
+					<input class="tab_button" id="tab_btn_specular" type="button" onclick="activate_texture('specular');" value="Specular"/>
 				</div>
 				<!-- Normal Texture -->
 				<div class="view" id="normal_map">
@@ -359,9 +418,15 @@
 				<div class="view" id="displacement_map" style="display: none;">
 					<span class="helper"></span><img class="preview_img" height=300 width=300 id="displace_img" />
 				</div>
-				<!-- Displacement Texture -->
+				
+				<!-- Ambient Occlusion Texture -->
 				<div class="view" id="ao_map" style="display: none;">
 					<span class="helper"></span><img class="preview_img" height=300 width=300 id="ao_img" />
+				</div>
+
+				<!-- Specular Texture -->
+				<div class="view" id="specular_map" style="display: none;">
+					<span class="helper"></span><img class="preview_img" height=300 width=300 id="specular_img" />
 				</div>
 			</div>
 			
@@ -391,12 +456,12 @@
 		<div class="column" id="preview" <!--style="display: none;-->">
 			<div class="column_top" style="width:100%;">
 				<table style="border-spacing:0px; width:100%;" >
-				<tr>
+				<tr style="height:30px;">
 					<td align="center" class="option_text" colspan="2" style="text-align:center">
-						<span>3D Preview<i style="font-size:0.7em">(runs best on chrome)</i></span>
+						<span >3D Preview<i style="font-size:0.7em">(runs best on chrome)</i></span>
 					</td>
 				<tr/>
-				<tr>
+				<tr style="height:30px;">
 					<td class="option_text">
 						<span>Model</span>
 					</td>
@@ -407,6 +472,7 @@
 							type="number"  min='1' max='3' value='1' step='1'/>
 					<td/>
 				<tr/>
+				<tr style="height:30px;">
 					<td class="option_text">
 						<span>UV</span>
 					</td>
@@ -419,29 +485,30 @@
 						</select>
 						<input id="input_rot" type="checkbox" value="rotation" onclick="toggleRotation()" checked> Rotation
 					<td/>
-				<tr>
+				</tr>
+				<tr style="height:30px;">					
 					<td class="option_text">
-						<span>Show</span>
+						<span>Displacement</span>
+					</td>
+					<td class="options">
+						<input id="input_displacement" type="checkbox" value="displacement" onclick="toggleDisplacement()" style="vertical-align: middle;" checked >
+						<input id="dm_strength_slider" style="width:70px; vertical-align: middle;" 
+							onchange="setDisplaceStrength( this.value); document.getElementById('dm_strength_nmb').value = this.value;"
+							oninput="setDisplaceStrength( this.value); document.getElementById('dm_strength_nmb').value = this.value;"
+							type="range" value='0.3' min='-1' max='1' step='0.01'/>
+						<input id="dm_strength_nmb" type="number" step="0.01" style="width:40px;vertical-align: middle;" value='0.3'
+							onchange="setDisplaceStrength(this.value); document.getElementById('dm_strength_slider').value = this.value;">
+						
+					</td>
+				</tr>
+				<tr style="height:30px;">
+					<td class="option_text">
+						<span>Use Map</span>
 					</td>
 					<td class="options" style="font-size: small;">
 						<input id="input_normal" type="checkbox" value="normal" onclick="toggleNormal()" checked>Normal
 						<input id="input_ao" type="checkbox" value="ao" onclick="toggleAO()" checked>AO
-						<input id="input_displacement" type="checkbox" value="displacement" onclick="toggleDisplacement()" checked>Displace				</td>
-					
-				</tr>
-				<tr>					
-					<!--<td class="option_text">
-						<span>Displacement</span>
-					</td>-->
-					<td class="options" colspan="2" style="text-align: right">
-						<input id="dm_strength_slider" 
-							onchange="setDisplaceStrength( this.value); document.getElementById('dm_strength_nmb').value = this.value;"
-							oninput="setDisplaceStrength( this.value); document.getElementById('dm_strength_nmb').value = this.value;"
-							style="width:70px;"
-							type="range" value='0.3' min='-1' max='1' step='0.01'/>
-						<input id="dm_strength_nmb" type="number" step="0.01" style="width:40px;vertical-align:top;" value='0.3'
-							onchange="setDisplaceStrength(this.value); document.getElementById('dm_strength_slider').value = this.value;">
-						
+						<input id="input_specular" type="checkbox" value="specular" onclick="toggleSpecular()" checked>Specular
 					</td>
 				</tr>
 				</table>
@@ -519,6 +586,7 @@
 <script type="text/javascript" src="javascripts/normalMap.js"></script>
 <script type="text/javascript" src="javascripts/displaceMap.js"></script>
 <script type="text/javascript" src="javascripts/ambientOccMap.js"></script>
+<script type="text/javascript" src="javascripts/specularMap.js"></script>
 <script type="text/javascript" src="javascripts/gaussianblur.js"></script>
 <script type="text/javascript" src="javascripts/main.js"></script>
 

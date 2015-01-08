@@ -25,6 +25,7 @@ var ao_canvas = document.createElement("canvas");
 var ao_smoothing = -10;
 var ao_strength = 0.5;
 var ao_level = 7;
+var invert_ao = false;
 
 function createAmbientOcclusionTexture(){
 	
@@ -44,6 +45,7 @@ function createAmbientOcclusionTexture(){
 		v = (sobelfiltered.data[i] + sobelfiltered.data[i+1]) * 0.5;
 		v -= grayscale.data[i] * 0.5 - 0.5 * 255.0;
 		v = Math.max(0, Math.min(255, v));
+		v = invert_ao ? 255-v : v;
 		ao_map.data[i]   = v;
 		ao_map.data[i+1] = v;
 		ao_map.data[i+2] = v;
@@ -62,6 +64,14 @@ function createAmbientOcclusionTexture(){
 	setTexturePreview(ao_canvas, "ao_img", grayscale.width, grayscale.height);
 }
 
+
+	
+var invertAO = function(){
+	invert_ao = !invert_ao;
+	
+	if (auto_update && Date.now() - timer > 50)
+		createAmbientOcclusionTexture();
+}
 
 var setAOSetting = function(element, v){	
 	if (element == "blur_sharp")

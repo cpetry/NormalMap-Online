@@ -46,7 +46,7 @@ var createNormalMap = function(){
 	// range between -255 and 255.
 		
 	var st = new Date().getTime();
-	var grayscale = Filters.filterImage(Filters.grayscale, height_image, invert_source);
+	var grayscale = Filters.filterImage(Filters.grayscale, height_image, !invert_source);
 	//console.log("grayscale: " + (new Date().getTime() - st));
 	// smoothing
 		
