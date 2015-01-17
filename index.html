@@ -105,11 +105,10 @@
 				or
 			</div>
 			<div class="column_top" style="margin-top: 25px; height:105px;">
+				<a style="top: -30px; right: -10px; position: relative; overflow:hidden;" class="various" href="#heightmap_help"><img src="images/help.png" /></a>
 				<img src="images/drag_drop.png" />
 				
-				<a style="top: -30px; right: 20px; position: relative; overflow:hidden;" class="various" href="#heightmap_help">
-					<img src="images/help.png" />
-				</a>
+				<a style="top: -10px; right: -25px; position: relative; overflow:hidden;" class="various" href="#photo_help"><img src="images/help.png" /></a>
 			</div>
 			
 			<!-- DESCRIPTION HEIGHT MAP -->
@@ -146,8 +145,29 @@
 				
 				
 			</div>
-			
-			
+
+			<div id="photo_help" style="display:none;overflow:hidden;font-family:Georgia" align="left">					
+				<h1>NormalMap from photos</h1>
+				<p style="width:500px">
+					It is normally not really possible to get normalmaps directly from pictures taken with a camera.
+				</p>
+				<img src="images/normalfromphoto.png" style="display: block; margin-left: auto; margin-right: auto;" />
+				<p style="width:500px">
+					But because <b>many</b> of you are interested in this, I considered searching for good methods to still achieve reasonable results from photos.
+					There seem to be some techniques that can create decent normalmaps.<br/>
+					Still it would take me a lot of time to learn about these techniques.
+					<br/>
+					<br/>
+					Right now I'm studying a master's degree, working part-time and giving lessons in programming.<br/>
+					If you would like me to invest more time on finding and implementing a solution for this, <b>please consider donating</b>!<br/><br/>
+					I could work more on this project and include more features you want!
+				</p>
+			</div>
+			<div class="tabs" style="margin-right:10px; text-align:right;">
+				<input class="tab_button" id="tab_btn_heightmap" type="button" disabled value="HeightMap"/>
+				<input class="tab_button" style="color: #888888; border: 2px solid #666666;" id="tab_btn_photo" type="button" value="Photo"/>
+				
+			</div>			
 			<div class="view" id="height_map">
 				<canvas height=300 width=300 id="height_canvas"></canvas>
 			</div>
