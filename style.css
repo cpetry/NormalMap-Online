@@ -74,7 +74,7 @@ div.tabs{
 input.tab_button{
 	display:inline-block;
 	margin: 0px 0px 0px 0px;
-	padding: 1px 5px;
+	padding: 1px 2px;
 	width: auto;
 	height: 25px;
 	z-index: 2;
