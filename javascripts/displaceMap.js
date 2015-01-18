@@ -42,6 +42,7 @@ function createDisplacementMap(){
 		displace_map.data[i]   = v;
 		displace_map.data[i+1] = v;
 		displace_map.data[i+2] = v;
+		//displace_map.data[i+3] = img_data.data[i+3];
 		displace_map.data[i+3] = 255;
 	}
 	

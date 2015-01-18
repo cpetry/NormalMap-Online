@@ -153,7 +153,7 @@ function setTexturePreview(canvas, img_id,  width, height){
 		displacement_map.needsUpdate = true;
 		specular_map.needsUpdate = true;
 	}
-	img.src = canvas.toDataURL('image/jpeg');
+	img.src = canvas.toDataURL('image/png');
 	var ratio = width / height;
 	//console.log('width' + width);
 	//console.log('height' + height);

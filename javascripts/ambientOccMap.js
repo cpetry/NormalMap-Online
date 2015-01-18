@@ -49,7 +49,8 @@ function createAmbientOcclusionTexture(){
 		ao_map.data[i]   = v;
 		ao_map.data[i+1] = v;
 		ao_map.data[i+2] = v;
-		ao_map.data[i+3] = 255;
+		//ao_map.data[i+3] = 255;
+		ao_map.data[i+3] = grayscale.data[i+3];
 	}
 	
 	

@@ -206,7 +206,7 @@ Filters.newsobelfilter = function(pixels, strength, level, type){
 			dst[dstOff] = (dX/l * 0.5 + 0.5) * 255.0; 	// red
 			dst[dstOff+1] = (dY/l * 0.5 + 0.5) * 255.0; 	// green
 			dst[dstOff+2] = dZ/l * 255.0; 				// blue
-			dst[dstOff+3] = 1.0 * 255.0;
+			dst[dstOff+3] = src[dstOff+3];
 		}
 	}
 	

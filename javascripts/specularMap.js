@@ -80,7 +80,8 @@ function createSpecularTexture(){
 		specular_map.data[i]   = v;
 		specular_map.data[i+1] = v;
 		specular_map.data[i+2] = v;
-		specular_map.data[i+3] = 255;
+		//specular_map.data[i+3] = 255;
+		specular_map.data[i+3] = img_data.data[i+3];
 	}
 
 
