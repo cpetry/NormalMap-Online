@@ -93,4 +93,8 @@ function createSpecularTexture(){
 	ctx_specular.putImageData(specular_map, 0, 0, 0, 0, img_data.width, img_data.height);
 	
 	setTexturePreview(specular_canvas, "specular_img", img_data.width, img_data.height);
+
+
+
+	reconstruct_depth();
 }
