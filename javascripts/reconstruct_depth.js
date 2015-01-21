@@ -97,27 +97,28 @@ function reconstruct_depth()
 
 	var IMG_SIZE = width;
     
-  //printf("Number of iterations for Pentland's algorithm:");
-  var iIter = 20; //paper
+	//printf("Number of iterations for Pentland's algorithm:");
+	var iIter = 75; //8 paper
     
-  //printf("Input the light source direction:\n");
-  var vI = new Array(-0.1,-0.1,1);
+	//printf("Input the light source direction:\n");
+	var vI = new Array(0.1,0.1,1);
 
-  var len = Math.sqrt((vI[0] * vI[0]) + (vI[1] * vI[1]) + (vI[2] * vI[2]));
-  vI[0] /= len;
-  vI[1] /= len;
-  vI[2] /= len;
-  pentland(iIter, vI, width, src, width, height);
-  //console.log(d);
+	var len = Math.sqrt((vI[0] * vI[0]) + (vI[1] * vI[1]) + (vI[2] * vI[2]));
+	vI[0] /= len;
+	vI[1] /= len;
+	vI[2] /= len;
+	pentland(iIter, vI, width, src, width, height);
+	//console.log(d);
 
 	// write out texture
-	var ctx_specular = specular_canvas.getContext("2d");
-	specular_canvas.width = srcData.width;
-	specular_canvas.height = srcData.height;
-	ctx_specular.clearRect(0, 0, srcData.width, srcData.height);
-	ctx_specular.putImageData(srcData, 0, 0, 0, 0, srcData.width, srcData.height);
+	var canvas = document.createElement("canvas");
+	var context = canvas.getContext('2d');
+	canvas.width = srcData.width;
+	canvas.height = srcData.height;
+	context.clearRect(0, 0, srcData.width, srcData.height);
+	context.putImageData(srcData, 0, 0, 0, 0, srcData.width, srcData.height);
 	
-	setTexturePreview(specular_canvas, "specular_img", srcData.width, srcData.height);
+	height_image.src = canvas.toDataURL();
 }  
 
 
@@ -130,7 +131,7 @@ function reconstruct_depth()
 // Basic routines for shape from shading 
 // Author:  Martin Bichsel               
 
-function DirectionalSlope(dz, Pic, nCol, nRow, vI)
+function DirectionalSlope(surface_height, Pic, nCol, nRow, vI)
 {
 // dz[0..nRow-1][0..nCol-1][0..7]: change of surface height step in       
 //                                 direction i*45 degrees, i in [0..7],   
@@ -147,7 +148,7 @@ function DirectionalSlope(dz, Pic, nCol, nRow, vI)
 
   var i, j;
   var sq05=Math.sqrt(0.5), e3, i1 = new Array(8), i2 = new Array(8), sina, Det, temp, nom;
-  var eps = 0.00247875217; //eps=1.0e-6 = 0.00247875217
+  var eps =1.0e-6;//0.00247875217; //eps=1.0e-6 = 0.00247875217
 
   for (var iDir = 0;  iDir < 8;  iDir++){
     i1[iDir] = -Math.cos(iDir * Math.PI / 4.0) * vI[0] - Math.sin(iDir * Math.PI / 4.0) * vI[1];
@@ -162,23 +163,22 @@ function DirectionalSlope(dz, Pic, nCol, nRow, vI)
       {
         temp = Pic[j][i] * Pic[j][i] - i2[iDir] * i2[iDir];
         Det = (1.0 - Pic[j][i] * Pic[j][i]) * temp;
-        dz[j][i][iDir] = -22026.4657948;//-1.0e10; // default 
+        surface_height.dz[j][i][iDir] = -1.0e10;//-22026.4657948;//-1.0e10; // default 
         if (Det >= 0.0)
         {
-          nom = temp - i1[iDir] * i1[iDir] + 0.00004539992;//1.0e-10;
+          nom = temp - i1[iDir] * i1[iDir] + 1.0e-10;//0.00004539992;//
           if ( (nom > 0.0) || (i1[iDir] < eps) )
           {
-            dz[j][i][iDir] = (-i1[iDir] * vI[2] - Math.sqrt(Det)) / nom;
+            surface_height.dz[j][i][iDir] = (-i1[iDir] * vI[2] - Math.sqrt(Det)) / nom;
           }
         }
-        if ((iDir % 2) == 1)
+        if ((iDir.mod(2)) == 1)
         {
-          dz[j][i][iDir] *= sq05; // diagonal move 
+          surface_height.dz[j][i][iDir] *= sq05; // diagonal move 
         }
       }
     }
   }
-  return dz;
 } // end of DirectionalSlope 
 
 
@@ -189,7 +189,7 @@ var djS = new Array(new Array(0,0), new Array(0,1), new Array(1,0), new Array(1,
 
 
 
-function GetHeight(Height, iIter, dz, nCol, nRow)
+function GetHeight(Height_Obj, iIter, surface_height, nCol, nRow)
 {
 // Height[-1..nRow][-1..nCol]:  Local surface height in image coordinates.
 //                              The initial Height has to be a large      
@@ -212,7 +212,7 @@ function GetHeight(Height, iIter, dz, nCol, nRow)
   //console.log(Height);
   for (var j2 = 0;  j2 < nRow;  j2++)
   {
-    if ( ((iIter % 4) == 0) || ((iIter % 4) == 1) )
+    if ( ((iIter.mod(4)) == 0) || ((iIter.mod(4)) == 1) )
     {
       j = j2;
     }
@@ -222,7 +222,7 @@ function GetHeight(Height, iIter, dz, nCol, nRow)
     }
     for (var i2 = 0;  i2 < nCol;  i2++)
     {
-      if ( ((iIter % 2) == 1) )
+      if ( ((iIter.mod(2)) == 1) )
       {
         i = i2;
       }
@@ -234,33 +234,33 @@ function GetHeight(Height, iIter, dz, nCol, nRow)
       {
         dj = djS[iStep]; //[0]
         di = diS[iStep]; //[0] // hv-neighbors
-        var dz_v = dz[j][i][iStep];
+        var dz_v = surface_height.dz[j][i][iStep];
         var dj_v = (j+dj[0]).mod(nCol); //j+dj[0]
         var di_v = (i+di[0]).mod(nCol); //i+di[0]
         //console.log(iStep);
         //console.log(dj[1]);
         //console.log(di[1]);
 
-        var h = Height[dj_v][di_v];
+        var h = Height_Obj.Height[dj_v][di_v];
         var z = h + dz_v;
-        if (z > Height[j][i] + eps)
+        if (z > Height_Obj.Height[j][i] + eps)
         {
-          DisplTot += z - Height[j][i];
-          Height[j][i] = z;
+          DisplTot += z - Height_Obj.Height[j][i];
+          Height_Obj.Height[j][i] = z;
         }
         dj = djS[iStep+1];//[0];
         di = diS[iStep+1];//[0]; // diagnal neighbors
-        var h1 = Height[dj_v][di_v];
+        var h1 = Height_Obj.Height[dj_v][di_v];
         var dx = (j+dj[1]).mod(nCol); //j + dj[1]
         var dy = (i+di[1]).mod(nCol); //i + di[1]
         //console.log(dx , dy);
-        h2 = Height[dx][dy];
-        dz_v = dz[j][i][iStep+1];
+        h2 = Height_Obj.Height[dx][dy];
+        dz_v = surface_height.dz[j][i][iStep+1];
         z = 0.5 * ( h1 + h2 ) + dz_v; // longerpolate z in diagnal 
-        if (z > Height[j][i] + eps)
+        if (z > Height_Obj.Height[j][i] + eps)
         {
-          DisplTot += z - Height[j][i];
-          Height[j][i] = z;
+          DisplTot += z - Height_Obj.Height[j][i];
+          Height_Obj.Height[j][i] = z;
         }
       }
     }
@@ -274,14 +274,13 @@ function pentland(iIter, vI, IMG_SIZE, s, width, height)
 {
   var ARRAY_SIZE       =IMG_SIZE;
 
-  var dz = createArray(ARRAY_SIZE, ARRAY_SIZE, 8);  //[ARRAY_SIZE][ARRAY_SIZE][8];                //eight directions
+  //var dz = createArray(ARRAY_SIZE, ARRAY_SIZE, 8);  //[ARRAY_SIZE][ARRAY_SIZE][8];                //eight directions
+  var surface_height = { dz: createArray(ARRAY_SIZE, ARRAY_SIZE, 8) };  //[ARRAY_SIZE][ARRAY_SIZE][8];   
   var Pic = createArray(ARRAY_SIZE, ARRAY_SIZE); //[ARRAY_SIZE][ARRAY_SIZE];
-  var Height = createArray(ARRAY_SIZE, ARRAY_SIZE);// [ARRAY_SIZE][ARRAY_SIZE]
+  //var // [ARRAY_SIZE][ARRAY_SIZE]
+  var Height_Obj = { Height: createArray(ARRAY_SIZE, ARRAY_SIZE) };
   var Height1 = createArray(ARRAY_SIZE, ARRAY_SIZE);
-  var SC2=2.0, Center=170.0,Xang,Yang,Zang;
 
-  var C = new Array( new Array(0.0001, 0.0000), 
-                new Array(0.0000, 0.0001));
   //var iIter;
   //var vI[3];
 
@@ -362,25 +361,25 @@ function pentland(iIter, vI, IMG_SIZE, s, width, height)
   for (var i = 0; i < IMG_SIZE; i++) { 
     for (var j = 0; j < IMG_SIZE; j++) { 
       if (Math.abs(Pic[i][j] - 1.0) < 0.01 ) {
-        Height[i][j] = 255.0; // 55
+        Height_Obj.Height[i][j] = 255.0 * 55; // 55.0
         k = 1;
       }
       else
       {
-        Height[i][j] = -1.0e10;
+        Height_Obj.Height[i][j] = -1.0e10;
       }  
     }
   }   
   if (k == 0)
   {
     console.log("No singular points found?");
-    Height[IMG_SIZE/2][IMG_SIZE/2] = 55.0;
+    Height_Obj.Height[IMG_SIZE/2][IMG_SIZE/2] = 255.0 * 55; // 55.0
   }
 
-  dz = DirectionalSlope(dz, Pic, IMG_SIZE, IMG_SIZE, vI2);
+  DirectionalSlope(surface_height, Pic, IMG_SIZE, IMG_SIZE, vI2);
   old_disp = 9.0e9;
   for(var k=0;  k<=iIter; k++) {
-    DisplTot = GetHeight(Height, k, dz, IMG_SIZE, IMG_SIZE);
+    DisplTot = GetHeight(Height_Obj, k, surface_height, IMG_SIZE, IMG_SIZE);
     console.log(k + "Total Displacement = " + DisplTot);
     if ( (Math.abs(old_disp - DisplTot) < 1.0) && (old_disp > DisplTot) ) 
       break;
@@ -393,8 +392,8 @@ function pentland(iIter, vI, IMG_SIZE, s, width, height)
       Height1[i][j] = 0.0;
     }
   }
-  max_depth = 0;
-  min_depth = 1000000;
+  max_depth = -100000000;
+  min_depth = 1000000000;
   for (var i = 0; i < IMG_SIZE; i++) { 
     for (var j = 0; j < IMG_SIZE; j++) { 
       // rotate and make x aligns with (cos(phi), sin(phi)) 
@@ -412,7 +411,8 @@ function pentland(iIter, vI, IMG_SIZE, s, width, height)
         continue;
       }
 
-      Height1[i][j] = ( (Height[i1][j1] < 0.0) ? 0.0 : Height[i1][j1] );
+      Height1[i][j] = ( (Height_Obj.Height[i1][j1] < 0.0) ? 0.0 : Height_Obj.Height[i1][j1] );
+	  //Height1[i][j] = Height_Obj.Height[i1][j1];
       max_depth = Math.max(max_depth, Height1[i][j]);
       min_depth = Math.min(min_depth, Height1[i][j]);
     }   // for j 
@@ -424,7 +424,7 @@ function pentland(iIter, vI, IMG_SIZE, s, width, height)
   for (var i = 0; i < IMG_SIZE; i++) { 
     for (var j = 0; j < IMG_SIZE; j++) { 
       pos = (i*IMG_SIZE + j)*4;
-      s[pos] = s[pos+1] = s[pos+2] = (Height1[i][j]-min_depth) / (max_depth - min_depth) * 255;//fprintf(out_fp, "%lf\n", Height1[i][j]);
+      s[pos] = s[pos+1] = s[pos+2] = (Height1[i][j] - min_depth) / (max_depth - min_depth) * 255;//fprintf(out_fp, "%lf\n", Height1[i][j]);
       s[pos+3] = 255;      
       //console.log(Height1[i][j]);
     }

@@ -161,12 +161,16 @@
 				</p>
 			</div>
 			<div class="tabs" style="margin-right:10px; text-align:right;">
-				<input class="tab_button" id="tab_btn_heightmap" type="button" disabled value="HeightMap"/>
-				<input class="tab_button" style="color: #888888; border: 2px solid #666666;" id="tab_btn_photo" type="button" value="Photo"/>
+				<input class="tab_button" id="tab_btn_heightmap" type="button" disabled value="HeightMap" onclick="activate_height_tab('height')"/>
+				<input class="tab_button" id="tab_btn_photo"     type="button" value="Photo" onclick="activate_height_tab('photo'); reconstruct_depth();"/>
+				<!-- style="color: #888888; border: 2px solid #666666;" -->
 				
-			</div>			
+			</div>
 			<div class="view" id="height_map">
 				<canvas height=300 width=300 id="height_canvas"></canvas>
+			</div>
+			<div class="view" id="photo_map" style="display: none;">
+				<canvas height=300 width=300 id="photo_canvas"></canvas>
 			</div>
 			
 			
