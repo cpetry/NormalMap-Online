@@ -35,6 +35,18 @@ TextureEnum = {
 var auto_update = true;
 var current_texture = TextureEnum.NORMAL;
 
+function activate_height_tab(type){
+	if (type == "height"){
+		document.getElementById('height_canvas').disabled = false;
+		document.getElementById('photo_canvas').disabled = true;
+		
+	}
+	else if (type == "photo"){
+		document.getElementById('photo_canvas').disabled = false;
+		document.getElementById('height_canvas').disabled = true;
+	}
+}
+	
 function activate_texture(type){
 	if (type == "normal"){
 		document.getElementById('tab_btn_normal').disabled = true;
