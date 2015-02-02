@@ -203,10 +203,14 @@ Filters.newsobelfilter = function(pixels, strength, level, type){
 
 			l = Math.sqrt((dX * dX) + (dY * dY) + dZ2);
 			
-			dst[dstOff] = (dX/l * 0.5 + 0.5) * 255.0; 	// red
+			dst[dstOff] = dX/l; 	// red
+			dst[dstOff+1] = dY/l; 	// green
+			dst[dstOff+2] = dZ/l; 	// blue
+			dst[dstOff+3] = src[dstOff+3];
+			/*dst[dstOff] = (dX/l * 0.5 + 0.5) * 255.0; 	// red
 			dst[dstOff+1] = (dY/l * 0.5 + 0.5) * 255.0; 	// green
 			dst[dstOff+2] = dZ/l * 255.0; 				// blue
-			dst[dstOff+3] = src[dstOff+3];
+			dst[dstOff+3] = src[dstOff+3];*/
 		}
 	}
 	

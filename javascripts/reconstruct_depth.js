@@ -94,21 +94,21 @@ function reconstruct_depth()
 	var imgData = Filters.createImageData(srcData.width, srcData.height);
 	var d = imgData.data;
 
-
-	var IMG_SIZE = width;
-    
-	//printf("Number of iterations for Pentland's algorithm:");
-	var iIter = 75; //8 paper
-    
-	//printf("Input the light source direction:\n");
-	var vI = new Array(0.1,0.1,1);
-
-	var len = Math.sqrt((vI[0] * vI[0]) + (vI[1] * vI[1]) + (vI[2] * vI[2]));
-	vI[0] /= len;
-	vI[1] /= len;
-	vI[2] /= len;
-	pentland(iIter, vI, width, src, width, height);
+	// switch to YcbCr
+	var grayscale = Filters.filterImage(Filters.grayscale, height_image, false);
+	
+	//var img_data = Filters.newsobelfilter(grayscale, 1, 1, "sobel");
+	
+	var img_data = bertholdhorn(grayscale, width, height, grayscale);
+	//pentland(width, d, width, height);
 	//console.log(d);
+
+
+	var dstData = Filters.createImageData(height_image.width, height_image.height);
+			
+	for (var i=0; i<dstData.data.length; i++){	
+		dstData.data[i] = img_data.data[i];
+	}
 
 	// write out texture
 	var canvas = document.createElement("canvas");
@@ -116,7 +116,7 @@ function reconstruct_depth()
 	canvas.width = srcData.width;
 	canvas.height = srcData.height;
 	context.clearRect(0, 0, srcData.width, srcData.height);
-	context.putImageData(srcData, 0, 0, 0, 0, srcData.width, srcData.height);
+	context.putImageData(dstData, 0, 0, 0, 0, srcData.width, srcData.height);
 	
 	height_image.src = canvas.toDataURL();
 }  
@@ -270,8 +270,20 @@ function GetHeight(Height_Obj, iIter, surface_height, nCol, nRow)
 
 
 
-function pentland(iIter, vI, IMG_SIZE, s, width, height)
+function pentland(s, width, height)
 {
+	var IMG_SIZE = width;
+    
+	//printf("Number of iterations for Pentland's algorithm:");
+	var iIter = 75; //8 paper
+    
+	//printf("Input the light source direction:\n");
+	var vI = new Array(0.1,0.1,1);
+
+	var len = Math.sqrt((vI[0] * vI[0]) + (vI[1] * vI[1]) + (vI[2] * vI[2]));
+	vI[0] /= len;
+	vI[1] /= len;
+	vI[2] /= len;
   var ARRAY_SIZE       =IMG_SIZE;
 
   //var dz = createArray(ARRAY_SIZE, ARRAY_SIZE, 8);  //[ARRAY_SIZE][ARRAY_SIZE][8];                //eight directions
@@ -361,7 +373,7 @@ function pentland(iIter, vI, IMG_SIZE, s, width, height)
   for (var i = 0; i < IMG_SIZE; i++) { 
     for (var j = 0; j < IMG_SIZE; j++) { 
       if (Math.abs(Pic[i][j] - 1.0) < 0.01 ) {
-        Height_Obj.Height[i][j] = 255.0 * 55; // 55.0
+        Height_Obj.Height[i][j] = 200; // 55.0
         k = 1;
       }
       else
@@ -373,7 +385,7 @@ function pentland(iIter, vI, IMG_SIZE, s, width, height)
   if (k == 0)
   {
     console.log("No singular points found?");
-    Height_Obj.Height[IMG_SIZE/2][IMG_SIZE/2] = 255.0 * 55; // 55.0
+    Height_Obj.Height[IMG_SIZE/2][IMG_SIZE/2] = 55; // 55.0
   }
 
   DirectionalSlope(surface_height, Pic, IMG_SIZE, IMG_SIZE, vI2);
@@ -433,111 +445,181 @@ function pentland(iIter, vI, IMG_SIZE, s, width, height)
     //create_image(in_file, Height1);
 }   // end of pentland
 
-/*
-#ifdef DO_NOT_COMPILE
+//ftp://publications.ai.mit.edu/ai-publications/pdf/AIM-1105.pdf
+function bertholdhorn(src, srcWidth, srcHeight, edge){
 
-///////////////////////////////////////////////////////////////////
-//                                                             
-//  Multiplies M1 by M2 (4 x 4 X 4 x 4) and puts result in R   
-//                                                             
-//////////////////////////////////////////////////////////////////
+	var ISIZE = srcWidth;
+	  
+	var row = new Array(3);   
+	var A = createArray(3, 6);  
+	    
 
-Matrix_Multiply(M1,M2,R)
-double *M1,*M2,*R;
+	var argc;  	// 2 parameters
+	var argv;	// [1] image file to read
 
-{
-long x,y,z;
-double f;
+	//var pic1,edge;
+	var Mx = createArray(ISIZE, ISIZE),My = createArray(ISIZE, ISIZE),Mz = createArray(ISIZE, ISIZE),  
+	      Nx = createArray(ISIZE, ISIZE),Ny = createArray(ISIZE, ISIZE),Nz = createArray(ISIZE, ISIZE),  
+	      TZ = createArray(ISIZE, ISIZE);
+	var d,lam,Sx,Sy,Sz,ss,Sxx,Syy,Szz,ns,mm,
+	      deg,ENx,ENy,ENz,nx,ny,nz,ee,max,min,dd,at1;
+	var I,J,K,i,j,k,E,X,flag=0,maxI;
+	var R=52.0,err = 1;
+	  
+	X = 1;
 
-   for (z=0; z<16; z++) 
-       R[z] =  0.0;
-
-   for (z=0; z<4; z++)    // next column 
-   for (x=0; x<4; x++)   // row    
-   for (y=0; y<4; y++)  // column 
-   {
-      f = M1[y+z*4]*M2[y*4+x];
-      if (f>0.0) R[x+z*4] =  R[x+z*4] + f;
-      else  R[x+z*4] =  R[x+z*4] + f;
-
+	//pic1  = src;// photo
+	  
+	lam = 0.25;	
+	console.log("Input lambda (0.25) = " + lam);
+	  
+	E = 1.0;	
+	console.log("Input E (1.0) = " + E);  
+	  
+	maxI = 50;
+	console.log("Max Iteration = " + maxI);  
+		  
+	Sx = 0.1; //?!
+	console.log("Input Sx = " + Sx);  
+	  
+	Sy = 0.1; //?!
+	console.log("Input Sy = " + Sy);  
+	  
+	Sz = 1; //?!
+	console.log("Input Sz = " + Sz);  
+	  
+	dd = Math.sqrt(Sx*Sx+Sy*Sy+Sz*Sz);  
+	Sx = Sx/dd;  
+	Sy = Sy/dd;  
+	Sz = Sz/dd;  
+	  
+	Sxx = Sx;  
+	Syy = Sy;  
+	Szz = Sz;  
+	  
+	// edge map?!
+	//printf("Edge map = ");
+	//edge = UCFReadPic(infile);  
+	  
+	/* use the true depth to initial normal of edge points */  
+	//printf("True depth data file = ");  
+	//for(j=0;j<ISIZE;j++)  
+	// for(i=0;i<ISIZE;i++)  
+	//   fscanf(infile,"%f",&TZ[i][j]);  
+	  
+	var pic2maxX = ISIZE;  
+	var pic2maxY = ISIZE;  
+	var pic2image = createArray(pic2maxX, pic2maxY);
+	  
+	/*   Initial N   */  
+	  
+    for (var i=0; i<ISIZE; i++)  
+		for (var j=0; j<ISIZE; j++)  
+		{  
+			if(edge[(i+j*srcWidth) * 4] == 255) // if(edge[i+j*edge.maxX] == 255)  // edge file
+	        {  
+	           	d = (i-ISIZE/2)*(i-ISIZE/2) + (ISIZE/2-j)*(ISIZE/2-j) + TZ[i][j]*TZ[i][j];  
+	           	Nx[i][j] = ((i-64.0)/Math.sqrt(d));    
+	           	Ny[i][j] = ((64.0-j)/Math.sqrt(d));    
+	           	Nz[i][j] = TZ[i][j]/Math.sqrt(d);    
+	        }  
+	        else  
+	        {  
+	           	if(src[(i+j*srcWidth) * 4] > 0)  
+	           	{  
+	            	Nx[i][j] = 0.0;    
+	            	Ny[i][j] = 0.0;    
+	            	Nz[i][j] = 1.0;    
+	            }  
+	           	else  
+	           	{  
+	            	Nx[i][j] = 0.0;    
+	            	Ny[i][j] = 0.0;    
+	            	Nz[i][j] = 0.0;    
+	           	}  
+	        };  
+	    };  
+	  
+	  
+	/*   Interative loop   */  
+	if(Sx<=0.0001)  
+		at1=Math.atan(Sy/0.000001);   
+	else  
+		at1=Math.atan(Sy/Sx);  
+	
+	console.log("Initial S = " + Sx+"," + Sy+"," + Sz + " A = " + (57.3*Math.acos(Sz/(Math.sqrt(Sx*Sx+Sy*Sy+Sz*Sz)))) + " B = "+ (57.3*at1));
+	  
+	K=1;
+	while(K!=maxI && err > 0.04)  
+	{
+	  	for(var I=X;I<srcWidth-X;I++)  
+	  	for(var J=X;J<srcHeight-X;J++)
+	  	{  
+	   		ns = (Nx[I][J]*Sx + Ny[I][J]*Sy + Nz[I][J]*Sz);  
+	  
+			  Mx[I][J] = (Nx[I][J+1]+Nx[I][J-1]+Nx[I+1][J]+Nx[I-1][J])/4.0 +  
+	          ((E*E)/(4.0*lam))*((src[(I+J*srcWidth) * 4]/255.0 - Math.max(0,ns))*Sx);   
+	   		My[I][J] = (Ny[I][J+1]+Ny[I][J-1]+Ny[I+1][J]+Ny[I-1][J])/4.0 +  
+	          ((E*E)/(4.0*lam))*((src[(I+J*srcWidth) * 4]/255.0 - Math.max(0,ns))*Sy);  
+	   		Mz[I][J] = (Nz[I][J+1]+Nz[I][J-1]+Nz[I+1][J]+Nz[I-1][J])/4.0 +  
+	          ((E*E)/(4.0*lam))*((src[(I+J*srcWidth) * 4]/255.0 - Math.max(0,ns))*Sz);  
+	  	}
+	  
+	 	for(var I=X;I<srcWidth-X;I++)  
+	  	for(var J=X;J<srcHeight-X;J++)  
+	  	{  
+	  		if(src[(I+J*srcWidth) * 4] > 0 && edge[(I+J*srcWidth) * 4] != 255)   //&& edge.image[I+J*edge.maxX] != 255)
+	  		{  
+	   			mm=Math.sqrt(Mx[I][J]*Mx[I][J] + My[I][J]*My[I][J] + Mz[I][J]*Mz[I][J]);  
+	   			if (mm == 0)  
+	   			{  
+	    			Nx[I][J] = 0;  
+	    			Ny[I][J] = 0;  
+	    			Nz[I][J] = 0;  
+	   			}  
+	   			else  
+	   			{  
+		    		Nx[I][J] = Mx[I][J]/mm;  
+	    			Ny[I][J] = My[I][J]/mm;  
+	    			Nz[I][J] = Mz[I][J]/mm;  
+	   			}  
+	  		}   
+	  	};  
+	  
+		err = 0.0;  
+		for(var i=0;i<pic2maxX;i++)  
+	 	for(var j=0;j<pic2maxY;j++)  
+	 	{  
+	  		ee = (Sxx*Nx[i][j] + Syy*Ny[i][j] + Szz*Nz[i][j]);  
+	  		pic2image[i+j*pic2maxY] = parseInt(Math.max(0,ee)*255);  
+	  		err += Math.abs(src[(i+j*srcWidth) * 4]/255.0 - pic2image[i+j*pic2maxX]/255.0);  
+	 	}
+		err = err/(ISIZE*ISIZE);
+	  
+		console.log("K = " + (K++));
+		  
+		console.log("Intensity Error = " + err);
+  	}  
+	
+	for (var i = 0; i < pic2maxX; i++) { 
+    for (var j = 0; j < pic2maxY; j++) { 
+      pos = (j*pic2maxX + i)*4;
+      src[pos] = Nx[i][j];
+      src[pos+1] = Ny[i][j];
+      src[pos+2] = Nz[i][j];
+      src[pos+3] = 255;      
+      //console.log(Height1[i][j]);
     }
-    // R[0]=1;R[5]=1;R[10]=1;
-    
-
-
-}
-
-
-///////////////////////////////////////////////////////////////////
-//                                                             
-//  Multiplies M1 by M2 (4 x 4 X 4 x 1) and puts result in R   
-//                                                             
-//////////////////////////////////////////////////////////////////
-
- Matrix_Multiply2(M1,M2,R)
-double *M1,*M2,*R;
-
-{
-long x,y,z;
-double f;
-   for (z=0; z<4; z++)
-   for (y=0; y<4; y++)
-   {
-      f = M1[y+z*4]*M2[y];
-      if (f > 0.0 || 1) R[z] = R[z] + f;
-   }
-}
-
-#endif
-
-
-
-/*
-create_image(filename, matrix)
-char *filename;
-double matrix[ARRAY_SIZE][ARRAY_SIZE];
-{
-    int x, y;
-    double max_val, min_val;
-    FILE *outfile;
-    PIC outpic;
-
-    if ((outpic.image = (unsigned char *)malloc(IMG_SIZE*IMG_SIZE)) == NULL)
-    {
-  fprintf(stderr, "Malloc failed in create_image()\n");
-  exit(1);
-    }
-    outpic.type = 0;
-    outpic.maxX = outpic.maxY = IMG_SIZE;
-
-    if ( (outfile = fopen(filename, "w")) == NULL)
-    {
-  fprintf(stderr, "Can't open '%s' in create_image()\n", filename);
-  exit(1);
-    }
-
-    max_val = -1e99;
-    min_val = 1e99;
-    for (x = 0;  x < IMG_SIZE;  x++)
-    {
-  for (y = 0;  y < IMG_SIZE;  y++)
-  {
-      max_val = max(max_val, matrix[x][y]);
-      min_val = min(min_val, matrix[x][y]);
   }
-    }
-fprintf(stderr, "image name:  %s\n", filename);
-fprintf(stderr, "\tmax_val = %lg\n", max_val);
-fprintf(stderr, "\tmin_val = %lg\n", min_val);
-    for (x = 0;  x < IMG_SIZE;  x++)
-    {
-  for (y = 0;  y < IMG_SIZE;  y++)
-  {
-      outpic.image[y+x*IMG_SIZE] =
-           (unsigned char) (((matrix[x][y]-min_val)/(max_val-min_val))*255.0 + 0.5);
-  }
-    }
-    UCFWritePic(outpic, outfile);
-    fclose(outfile);
+  return pic2image;
+  	/*
+ 	outfile = fopen("out2.img","w");  
+ 	UCFWritePic(pic2,outfile);  
+ 	fclose(outfile);  
+  
+ 	outfile = fopen("normal2.out","w");  
+ 	for(i=0;i<pic2.maxX;i++)  
+  	for(j=0;j<pic2.maxY;j++)  
+   		fprintf(outfile,"%f %f %f \n",Nx[i][j],Ny[i][j],Nz[i][j]);  
+ 	fclose(outfile);*/
 }
-*/

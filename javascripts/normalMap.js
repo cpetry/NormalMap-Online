@@ -57,12 +57,19 @@ var createNormalMap = function(){
 		img_data = Filters.newsobelfilter(grayscale, strength, level, normal_type);
 	else
 		img_data = Filters.newsobelfilter(grayscale, 0, level, normal_type);
-	//console.log("sobelfilter: " + (new Date().getTime() - st));
+	console.log("sobelfilter: " + (new Date().getTime() - st));
 	
 	
 	
 	var normal = Filters.createImageData(height_image.width, height_image.height);
-			
+	
+
+	for (var i=0; i<img_data.data.length; i+=4){	
+		img_data.data[i] = (img_data.data[i] * 0.5 + 0.5) * 255.0; 	// red
+		img_data.data[i+1] = (img_data.data[i+1] * 0.5 + 0.5) * 255.0; 	// green
+		img_data.data[i+2] = img_data.data[i+2] * 255.0; 				// blue
+	}
+	
 	st = new Date().getTime();
 	for (var i=0; i<img_data.data.length; i++){	
 		if ((i % 4 == 0 && invert_red)
