@@ -190,12 +190,12 @@ Filters.newsobelfilter = function(pixels, strength, level, type){
 				br = src[(dstOff + 4 + wm4)];   // bottom right
 			}
 			
-			// scharr
-			if (filter_type == 0){ // "sobel"
-				dX = tl*1.0 + l*2.0 + bl*1.0 - tr*1.0 - r*2.0 - br*1.0;
-				dY = tl*1.0 + t*2.0 + tr*1.0 - bl*1.0 - b*2.0 - br*1.0;
-			}
 			// sobel
+			if (filter_type == 0){ // "sobel"
+				dX = tl + l*2 + bl - tr - r*2 - br;//tl*1.0 + l*2.0 + bl*1.0 - tr*1.0 - r*2.0 - br*1.0;
+				dY = tl + t*2 + tr - bl - b*2 - br;//tl*1.0 + t*2.0 + tr*1.0 - bl*1.0 - b*2.0 - br*1.0;
+			}
+			// scharr
 			else if (filter_type == 1){  // "scharr"
 				dX = tl*3.0 + l*10.0 + bl*3.0 - tr*3.0 - r*10.0 - br*3.0;
 				dY = tl*3.0 + t*10.0 + tr*3.0 - bl*3.0 - b*10.0 - br*3.0;
@@ -239,6 +239,7 @@ Filters.sobelfilter = function(pixels, strength, level){
 
 			// very costly operation!
 			if (x == 0 || x == w-1 || y == 0 || y == h-1){
+				
 				tl = src[(dstOff - 4 - wm4).mod(max_size)];   // top left  
 				l  = src[(dstOff - 4      ).mod(max_size)];   // left  
 				bl = src[(dstOff - 4 + wm4).mod(max_size)];   // bottom left  

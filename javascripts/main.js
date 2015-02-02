@@ -137,7 +137,7 @@ function setTexturePreview(canvas, img_id,  width, height){
 	//canvas.height = getNextPowerOf2(canvas.height);
 		
 	
-	img.onload = function(){
+	/*img.onload = function(){
 	
 		var new_width  = width;//getNextPowerOf2(width);
 		var new_height = height;//getNextPowerOf2(height);
@@ -145,20 +145,46 @@ function setTexturePreview(canvas, img_id,  width, height){
 		var ctx_preview = canvas.getContext("2d");
 		//ctx_normal_preview.clearRect(     0, 0, new_width, new_height);
 		ctx_preview.drawImage(img, 0, 0, new_width, new_height);
-		
 		setRepeat(document.getElementById('repeat_sliderx').value, document.getElementById('repeat_slidery').value);
 		
 		normal_map.needsUpdate = true;
 		ao_map.needsUpdate = true;
 		displacement_map.needsUpdate = true;
 		specular_map.needsUpdate = true;
-	}
-	img.src = canvas.toDataURL('image/png');
+	}*/
+	img.getContext('2d').clearRect ( 0 , 0 , img.width, img.height );
+
+	//st = new Date().getTime();
+	
+	
+	//console.log("drawImage: " + (new Date().getTime() - st));
+		
 	var ratio = width / height;
-	//console.log('width' + width);
-	//console.log('height' + height);
-	img.width = ratio >= 1 ? container_height : (container_height * ratio );
-	img.height = ratio >= 1 ? (container_height / ratio ) : container_height;
+	
+	var draw_width = ratio >= 1 ? container_height : (container_height * ratio );
+	var draw_height = ratio >= 1 ? (container_height / ratio ) : container_height;
+	
+	var reduce_canvas = document.createElement('canvas');
+	reduce_canvas.width = width;
+	reduce_canvas.height = height;
+
+	var current_width = width;
+	var current_height = height;
+	reduce_canvas.getContext('2d').drawImage(canvas, 0, 0, width, height);
+	while(2*draw_width < current_width && 2*draw_height < current_height ){
+		console.log("redraw!");
+		reduce_canvas.getContext('2d').drawImage(reduce_canvas, 0, 0, reduce_canvas.width * 0.5, reduce_canvas.height * 0.5);
+		current_width *= 0.5;
+		current_height *= 0.5;
+	}
+	img.height = draw_height;
+	img.width = draw_width;
+	img.getContext('2d').drawImage(reduce_canvas, 0, 0, current_width, current_height, 0,0, draw_width, draw_height);
+	
+	normal_map.needsUpdate = true;
+	ao_map.needsUpdate = true;
+	displacement_map.needsUpdate = true;
+	specular_map.needsUpdate = true;
 	
 }
 

@@ -17,7 +17,7 @@ div.view {
     vertical-align: middle;
 }
 
-img.preview_img {
+canvas.preview_img {
     /*background: #3A6F9A;*/
     vertical-align: middle;
     max-height: 300px;
