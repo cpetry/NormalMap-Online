@@ -195,10 +195,14 @@ function getImageType(){
 }
 
 function switchJPGQual(){
-	if (getImageType() != 'jpg')
+	if (getImageType() != 'jpg'){
 		document.getElementById('file_jpg_qual').style.cssText = "display: none;";
-	else
-		document.getElementById('file_jpg_qual').style.cssText = "width:40px";
+		document.getElementById('total_transparency').style.cssText = "font-size:11px;";
+	}
+	else{
+		document.getElementById('total_transparency').style.cssText = "display: none;";	
+		document.getElementById('file_jpg_qual').style.cssText = "font-size:11px;";
+	}
 }
 
 
@@ -229,34 +233,56 @@ button.addEventListener('click', function (e) {
 	var filesize = 0;
 	var qual = 0.9;
 	var file_name = "download";
-	var canvas;
+	var canvas = document.createElement("canvas");
 	
+	var file_type = getImageType();
+	var image_type = "image/png";
+	if (file_type == "jpg")
+		image_type = "image/jpeg";
+
 	if (document.getElementById('normal_map').style.cssText != "display: none;"){
-		canvas = normal_canvas;
+		canvas.width = normal_canvas.width;
+		canvas.height = normal_canvas.height;
+		var context = canvas.getContext('2d');
+		if (file_type == "png") 
+			context.globalAlpha = $('#transparency_nmb').val() / 100;
+		context.drawImage(normal_canvas,0,0);
 		file_name="NormalMap";
 	}
 	else if (document.getElementById('displacement_map').style.cssText != "display: none;"){
-		canvas = displacement_canvas;
+		canvas.width = displacement_canvas.width;
+		canvas.height = displacement_canvas.height;
+		var context = canvas.getContext('2d');
+		if (file_type == "png") 
+			context.globalAlpha = $('#transparency_nmb').val() / 100;
+		context.drawImage(displacement_canvas,0,0);
 		file_name="DisplacementMap";
 	}
 	else if (document.getElementById('ao_map').style.cssText != "display: none;"){
-		canvas = ao_canvas;
+		canvas.width = ao_canvas.width;
+		canvas.height = ao_canvas.height;
+		var context = canvas.getContext('2d');
+		if (file_type == "png") 
+			context.globalAlpha = $('#transparency_nmb').val() / 100;
+		context.drawImage(ao_canvas,0,0);
 		file_name="AmbientOcclusionMap";
 	}
 	else if (document.getElementById('specular_map').style.cssText != "display: none;"){
-		canvas = specular_canvas;
+		canvas.width = specular_canvas.width;
+		canvas.height = specular_canvas.height;
+		var context = canvas.getContext('2d');
+		if (file_type == "png") 
+			context.globalAlpha = $('#transparency_nmb').val() / 100;
+		context.drawImage(specular_canvas,0,0);
 		file_name="SpecularMap";
 	}
 	
 	if (document.getElementById('file_name').value != "")
 		file_name = document.getElementById('file_name').value;
 	
-	var file_type = getImageType();
-	var image_type = "image/png";
-	if (file_type == "jpg")
-		image_type = "image/jpeg";
+	
 		
-	var qual = parseFloat( document.getElementById('file_jpg_qual').value);
+	var qual = $('#file_jpg_qual_nmb').val() / 100;
 	
 	canvas.toBlob(function(blob) {
     	saveAs(blob, file_name + "." + file_type);

@@ -460,9 +460,17 @@
 					<option value="png" selected>PNG</option>
 					<option value="jpg">JPG</option>
 				</select>
-				<input id="file_jpg_qual" type="number" step="0.01" min='0.5' max='1' value="0.95" size="4" style="display:none;">
+				
+				<div style="min-height:3px"></div>
+				<div id="file_jpg_qual" style="display:none;">
+					Quality <input type="number" id="file_jpg_qual_nmb" step="1" style="width:40px;" min='0' max='100' value="95" size="4" > %
+				</div>
+				<div id="total_transparency" style="font-size:11px;">
+					Opacity <input type="number" id="transparency_nmb" step="1" style="width:40px;" value='100' max='100' min='0'> %
+				</div>
 				<div style="min-height:10px"></div>
-					<button id="download" class="download" style="width: 8em;  height: 2em;"><b>Download</b></button>
+
+				<button id="download" class="download" style="width: 8em;  height: 2em;"><b>Download</b></button>
 					<!--<img src="images/Download_NormalMap_128.png"/>-->
 			</div>
 		</div>
