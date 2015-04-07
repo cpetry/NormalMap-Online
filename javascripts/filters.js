@@ -164,20 +164,32 @@ Filters.newsobelfilter = function(pixels, strength, level, type){
 		filter_type = 1;
 
 	var wm4 = w*4;
+	//console.log(w + h);
 	for (var y=0; y<h; y++) {
 		for (var x=0; x<w; x++) {
 			var dstOff = (y*w+x)*4;
 
 			// very costly operation!
 			if (x == 0 || x == w-1 || y == 0 || y == h-1){
-				tl = src[(dstOff - 4 - wm4).mod(max_size)];   // top left  
+				/*tl = src[(dstOff - 4 - wm4).mod(max_size)];   // top left  
 				l  = src[(dstOff - 4      ).mod(max_size)];   // left  
 				bl = src[(dstOff - 4 + wm4).mod(max_size)];   // bottom left  
 				t  = src[(dstOff - wm4    ).mod(max_size)];   // top  
 				b  = src[(dstOff + wm4    ).mod(max_size)];   // bottom  
 				tr = src[(dstOff + 4 - wm4).mod(max_size)];   // top right  
 				r  = src[(dstOff + 4      ).mod(max_size)];   // right  
-				br = src[(dstOff + 4 + wm4).mod(max_size)];   // bottom right  
+				br = src[(dstOff + 4 + wm4).mod(max_size)];   // bottom right  				
+				console.log("before: tl: " + tl + ",l: " + l + ", bl: " + bl + ", t: " + t + ", b: " + b );*/
+				tl = src[((x-1).mod(w) + ((y-1).mod(h)*w)) * 4];   // top left  
+				l  = src[((x-1).mod(w) + ( y		  *w)) * 4];   // left  
+				bl = src[((x-1).mod(w) + ((y+1).mod(h)*w)) * 4];   // bottom left  
+				t  = src[(  x 		   + ((y-1).mod(h)*w)) * 4];   // top  
+				b  = src[(  x 		   + ((y+1).mod(h)*w)) * 4];   // bottom  
+				tr = src[((x+1).mod(w) + ((y-1).mod(h)*w)) * 4];   // top right  
+				r  = src[((x+1).mod(w) + ( y		  *w)) * 4];   // right  
+				br = src[((x+1).mod(w) + ((y+1).mod(h)*w)) * 4];   // bottom right 
+				//console.log("after: tl: " + tl + ",l: " + l + ", bl: " + bl + ", t: " + t + ", b: " + b );
+				
 			}
 			else{
 				tl = src[(dstOff - 4 - wm4)];   // top left
