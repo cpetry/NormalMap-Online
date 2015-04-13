@@ -37,7 +37,6 @@ var current_disp_scale;
 var model;
 
 var initRenderer = function(){
-
 	camera = new THREE.PerspectiveCamera( 30, container_height / container_height, 0.1, 100000 );
 	//camera.position.x = 2000;
     camera.position.z = 2900;
@@ -175,25 +174,27 @@ var initRenderer = function(){
 	
 	scene.add( model );
 	console.log("create model: " + (new Date().getTime() - st));
-}
 
-
-
-function render() {
-	setTimeout( function() {
-        requestAnimationFrame( render );
-    }, 1000 / 30 );
-	
-	renderer.render(scene, camera);
-	
-	if(rotation_enabled){
-		model.rotation.x += 0.003;
-		model.rotation.y += 0.003;
+	function renderView() {
+		// request new frame
+        requestAnimationFrame(function(){
+            renderView();
+        });
+		renderer.render(scene, camera);
+		
+		if(rotation_enabled){
+			model.rotation.x += 0.003;
+			model.rotation.y += 0.003;
+		}
+		//bump_map.needsUpdate = true;
+		//ao_map.needsUpdate = true;
+		
 	}
-	//bump_map.needsUpdate = true;
-	//ao_map.needsUpdate = true;
-	
+	renderView();
 }
+
+
+
 
 
 var setRepeat = function(v_x, v_y){
