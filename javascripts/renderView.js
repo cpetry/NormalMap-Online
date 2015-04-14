@@ -37,10 +37,9 @@ var current_disp_scale;
 var model;
 
 var initRenderer = function(){
-
 	camera = new THREE.PerspectiveCamera( 30, container_height / container_height, 0.1, 100000 );
 	//camera.position.x = 2000;
-    camera.position.z = 2900;
+    camera.position.z = 29;
 	camera.lookAt({
         x: 0,
         y: 0,
@@ -59,28 +58,32 @@ var initRenderer = function(){
 	var ambientLight = new THREE.AmbientLight(0x606060 );
 	scene.add(ambientLight);
 	
-	// directional lighting
+	// directional lighting with shadows
 	var directionalLight = new THREE.DirectionalLight(0xdddddd, 0.5 );
-	directionalLight.position.set(2000, 2000, 2000);
-	scene.add(directionalLight);
+	console.log(directionalLight);
+	directionalLight.position.set(40, 40, 40);
 	directionalLight.castShadow = true;
-	directionalLight.shadowDarkness = 0.3;
-	//directionalLight.shadowCameraVisible = true;
+	directionalLight.shadowDarkness = 0.40;
 	directionalLight.shadowMapWidth = 2048;
-    directionalLight.shadowMapHeight = 2048;
-	directionalLight.shadowCameraFar = 10000;
-	directionalLight.shadowCameraRight     =  5000;
-	directionalLight.shadowCameraLeft     = -5000;
-	directionalLight.shadowCameraTop      =  5000;
-	directionalLight.shadowCameraBottom   = -5000;
+	directionalLight.shadowMapHeight = 2048;
+	directionalLight.shadowCameraFar = 100;
+	directionalLight.shadowCameraRight     =  50;
+	directionalLight.shadowCameraLeft     = -50;
+	directionalLight.shadowCameraTop      =  50;
+	directionalLight.shadowCameraBottom   = -50;
+	// debug shadow
+	//directionalLight.shadowCameraVisible = true;
+	scene.add(directionalLight);
 	
+	// light without any shadows
 	var dL2 = new THREE.DirectionalLight( 0xbbdbff, 0.3 );
 	dL2.position.set( 0, -1, 1 );
 	scene.add( dL2 );
 	
-	var dL2 = new THREE.DirectionalLight( 0xbbffff, 0.25 );
-	dL2.position.set( -3, 1, -1 );
-	scene.add( dL2 );
+	// light without any shadows
+	var dL3 = new THREE.DirectionalLight( 0xbbffff, 0.25 );
+	dL3.position.set( -3, 1, -1 );
+	scene.add( dL3 );
 	
 	controls = new THREE.OrbitControls( camera, renderer.domElement );
 	
@@ -92,28 +95,24 @@ var initRenderer = function(){
 	
 	displacement_map			= new THREE.Texture( displacement_canvas );
 	displacement_map.wrapS 		= displacement_map.wrapT = THREE.RepeatWrapping;
-	displacement_map.magFilter 	= THREE.LinearFilter;
-	displacement_map.minFilter 	= THREE.LinearMipMapNearestFilter;
+	displacement_map.minFilter 	= THREE.LinearFilter;
 	displacement_map.anisotropy = 2;
 	//bump_map  				= new THREE.Texture( height_canvas );
 	ao_map  					= new THREE.Texture( ao_canvas );
 	ao_map.wrapS 				= ao_map.wrapT = THREE.RepeatWrapping;
-	ao_map.magFilter 			= THREE.LinearFilter;
-	ao_map.minFilter 			= THREE.LinearMipMapNearestFilter;
+	ao_map.minFilter 			= THREE.LinearFilter;
 	ao_map.anisotropy 			= 2;
 	normal_map  			= new THREE.Texture( normal_canvas );
 	normal_map.wrapS 		= normal_map.wrapT 		= THREE.RepeatWrapping;
-	normal_map.magFilter 	= THREE.LinearFilter;
-	normal_map.minFilter 	= THREE.LinearMipMapNearestFilter;
+	normal_map.minFilter 	= THREE.LinearFilter;
 	normal_map.anisotropy 	= 2;
 	specular_map  			= new THREE.Texture( specular_canvas );
 	specular_map.wrapS 		= specular_map.wrapT = THREE.RepeatWrapping;
-	specular_map.magFilter 	= THREE.LinearFilter;
-	specular_map.minFilter 	= THREE.LinearMipMapNearestFilter;
+	specular_map.minFilter 	= THREE.LinearFilter;
 	specular_map.anisotropy = 2;
 	
 	
-	var shader = THREE.ShaderLib[ "normalmap" ];
+	var shader = THREE.NormalDisplacementShader;
 	
 	// see ShaderLib (https://github.com/mrdoob/three.js/blob/master/src/renderers/shaders/ShaderLib.js)
 	var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
@@ -126,15 +125,14 @@ var initRenderer = function(){
 	uniforms[ "diffuse" ].value = new THREE.Color(0xbbbbbb);
 	uniforms[ "specular" ].value = new THREE.Color(0x777777);
 	//uniforms[ "shininess" ].value = new THREE.Color(0x777777);
-	uniforms[ "ambient" ].value = new THREE.Color(0x000000);
+	uniforms[ "ambientLightColor" ].value = new THREE.Color(0x000000);
 
 	uniforms[ "tDisplacement"].value = displacement_map;
 	uniforms[ "tNormal" ].value = normal_map;
 	uniforms[ "tSpecular" ].value = specular_map;
 	uniforms[ "tAO" ].value = ao_map;
 	uniforms[ "uDisplacementScale" ].value = -0.3;
-	uniforms[ "uDisplacementBias" ].value = 0;
-	
+	uniforms[ "uDisplacementBias" ].value = 0;	
 	
 	var parameters = { 
 		fragmentShader: shader.fragmentShader, 
@@ -143,16 +141,12 @@ var initRenderer = function(){
 		lights: true 
 	};
 	material = new THREE.ShaderMaterial( parameters );
-	//material = new THREE.MeshPhongMaterial({
-    //    color: 0x6C6C6C
-    //});
 	material.wrapAround = true;
-	//var geometry = new THREE.PlaneGeometry(16,16,128,128);
-	//var geometry = new THREE.BoxGeometry(1,1,1, 128, 128, 128);
 
 	
 	var st = new Date().getTime()
-	var geometry = new THREE.BoxGeometry(1000,1000,1000, 96, 96, 96);
+	// width height depth widthsegments heightsegments depthsegments
+	var geometry = new THREE.BoxGeometry(10,10,10, 96, 96, 96);
 	geometry.computeTangents();
 	console.log("generate geometry: " + (new Date().getTime() - st));
 	
@@ -175,39 +169,45 @@ var initRenderer = function(){
 	
 	scene.add( model );
 	console.log("create model: " + (new Date().getTime() - st));
-}
 
-
-
-function render() {
-	setTimeout( function() {
-        requestAnimationFrame( render );
-    }, 1000 / 30 );
-	
-	renderer.render(scene, camera);
-	
-	if(rotation_enabled){
-		model.rotation.x += 0.003;
-		model.rotation.y += 0.003;
+	function renderView() {
+		// request new frame
+        requestAnimationFrame(function(){
+            renderView();
+        });
+		renderer.render(scene, camera);
+		
+		if(rotation_enabled){
+			model.rotation.x += 0.0015;
+			model.rotation.y += 0.0015;
+		}
+		//bump_map.needsUpdate = true;
+		//ao_map.needsUpdate = true;
+		
 	}
-	//bump_map.needsUpdate = true;
-	//ao_map.needsUpdate = true;
-	
+	renderView();
 }
+
+
+
 
 
 var setRepeat = function(v_x, v_y){
-	//bump_map.repeat.set( v_x, v_y );
-	//normal_map_preview.repeat.set( v_x, v_y );
+	//ao_map.repeat.set( v_x, v_y );
+	//normal_map.repeat.set( v_x, v_y );
 	//displacement_map.repeat.set( v_x, v_y );
+	//specular_map.repeat.set( v_x, v_y );
 	model.material.uniforms[ "uRepeat" ].value = new THREE.Vector2(v_x, v_y);
+	//model.geometry.computeTangents();
+	//console.log(model.material.uniforms);
+
 }
 
 var setModel = function(type){
 	scene.remove( model );
 
 	if (type == "Cube"){
-		var geometry = new THREE.BoxGeometry(1000,1000,1000, 96, 96, 96);
+		var geometry = new THREE.BoxGeometry(10, 10, 10, 96, 96, 96);
 		geometry.computeTangents();
 		model = new THREE.Mesh( geometry, material);
 		model.castShadow = true;
@@ -215,7 +215,7 @@ var setModel = function(type){
 		scene.add( model );
 	}
 	else if (type == "Sphere"){
-		var geometry = new THREE.SphereGeometry( 700, 32, 32);
+		var geometry = new THREE.SphereGeometry( 7, 128, 128);
 		geometry.computeTangents();
 		model = new THREE.Mesh( geometry, material);
 		model.castShadow = true;
@@ -223,7 +223,7 @@ var setModel = function(type){
 		scene.add( model );
 	}
 	else if (type == "Cylinder"){
-		var geometry = new THREE.CylinderGeometry( 700, 700, 1000, 128 );
+		var geometry = new THREE.CylinderGeometry( 7, 7, 10, 128 );
 		geometry.computeTangents();
 		model = new THREE.Mesh( geometry, material);
 		model.castShadow = true;
@@ -231,16 +231,24 @@ var setModel = function(type){
 		scene.add( model );
 	}
 	else if (type == "Plane"){
-		var geometry = new THREE.PlaneGeometry(1200, 1200, 128, 128);
+		var geometry = new THREE.PlaneBufferGeometry(12, 12, 128, 128);
 		geometry.computeTangents();
 		rotation_enabled = 0;
-		
 		model.rotation.x = 0;
 		model.rotation.y = 0;
+		camera.position.x = 0;
+		camera.position.y = 0;
+		camera.position.z = 29;
+		camera.lookAt({
+        	x: 0,
+        	y: 0,
+	        z: 0
+    	});
 		document.getElementById('input_rot').checked = false;
 		model = new THREE.Mesh( geometry, material);
 		model.castShadow = true;
 		model.receiveShadow = true;
+		model.material.side = THREE.DoubleSide;
 		scene.add( model );
 	}
 	
@@ -252,8 +260,8 @@ function setDisplacementScale(scale){
 }
 
 function updateDisplacementBias(){
-	model.material.uniforms[ "uDisplacementScale" ].value = current_disp_scale * 500;
-	model.material.uniforms[ "uDisplacementBias" ].value = current_disp_scale * 500 * -displacement_bias;
+	model.material.uniforms[ "uDisplacementScale" ].value = current_disp_scale * 5;
+	model.material.uniforms[ "uDisplacementBias" ].value = current_disp_scale * 5 * -displacement_bias;
 }
 
 /*
