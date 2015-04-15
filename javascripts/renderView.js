@@ -60,7 +60,7 @@ var initRenderer = function(){
 	
 	// directional lighting with shadows
 	var directionalLight = new THREE.DirectionalLight(0xdddddd, 0.5 );
-	console.log(directionalLight);
+	//console.log(directionalLight);
 	directionalLight.position.set(40, 40, 40);
 	directionalLight.castShadow = true;
 	directionalLight.shadowDarkness = 0.40;
@@ -148,7 +148,7 @@ var initRenderer = function(){
 	// width height depth widthsegments heightsegments depthsegments
 	var geometry = new THREE.BoxGeometry(10,10,10, 96, 96, 96);
 	geometry.computeTangents();
-	console.log("generate geometry: " + (new Date().getTime() - st));
+	//console.log("generate geometry: " + (new Date().getTime() - st));
 	
 	
 	st = new Date().getTime();
@@ -168,7 +168,7 @@ var initRenderer = function(){
 	*/
 	
 	scene.add( model );
-	console.log("create model: " + (new Date().getTime() - st));
+	//console.log("create model: " + (new Date().getTime() - st));
 
 	function renderView() {
 		// request new frame
