@@ -90,7 +90,6 @@ var createNormalMap = function(){
 	setTexturePreview(normal_canvas, "normal_img", img_data.width, img_data.height);
 	
 	//console.log("setTexturePreview: " + (new Date().getTime() - st));
-	
 }
 
 

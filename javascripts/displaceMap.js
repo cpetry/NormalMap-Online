@@ -27,6 +27,7 @@ var displacement_canvas = document.createElement("canvas");
 
 function createDisplacementMap(){
 
+	var st = new Date().getTime();
 	var img_data = Filters.filterImage(Filters.grayscale, height_image);
 	var displace_map = Filters.createImageData(img_data.width, img_data.height);
 
@@ -75,7 +76,7 @@ function createDisplacementMap(){
 	if (model.material.uniforms[ "enableDisplacement" ].value == true){
 		model.geometry.computeTangents();
 	}
-	
+	//console.log("Displacement: " + (new Date().getTime() - st));
 }
 
 

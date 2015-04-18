@@ -28,6 +28,7 @@ var ao_level = 7;
 var invert_ao = false;
 
 function createAmbientOcclusionTexture(){
+	var st = new Date().getTime();
 	
 	var grayscale = Filters.filterImage(Filters.grayscale, height_image, invert_source);
 	
@@ -63,6 +64,7 @@ function createAmbientOcclusionTexture(){
 	ctx_ambient.putImageData(ao_map, 0, 0, 0, 0, grayscale.width, grayscale.height);
 	
 	setTexturePreview(ao_canvas, "ao_img", grayscale.width, grayscale.height);
+	//console.log("AmbientOcc: " + (new Date().getTime() - st));
 }
 
 

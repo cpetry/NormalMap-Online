@@ -56,6 +56,8 @@ var specular_falloff = FallOffEnum.LINEAR;
 
 
 function createSpecularTexture(){
+	var st = new Date().getTime();
+	
 	var img_data = Filters.filterImage(Filters.grayscale, height_image);
 	var specular_map = Filters.createImageData(img_data.width, img_data.height);
 
@@ -93,4 +95,5 @@ function createSpecularTexture(){
 	ctx_specular.putImageData(specular_map, 0, 0, 0, 0, img_data.width, img_data.height);
 	
 	setTexturePreview(specular_canvas, "specular_img", img_data.width, img_data.height);
+	//console.log("Specular: " + (new Date().getTime() - st));
 }
