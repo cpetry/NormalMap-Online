@@ -145,12 +145,12 @@ function setTexturePreview(canvas, img_id, width, height){
 	var current_height = height;
 	reduce_canvas.getContext('2d').drawImage(canvas, 0, 0, width, height);
 	while(2*draw_width < current_width && 2*draw_height < current_height ){
-		console.log("redraw!");
+		//console.log("redraw!");
 		reduce_canvas.getContext('2d').drawImage(reduce_canvas, 0, 0, reduce_canvas.width * 0.5, reduce_canvas.height * 0.5);
 		current_width *= 0.5;
 		current_height *= 0.5;
 	}
-	console.log(draw_width + ", " + draw_height)
+	//console.log(draw_width + ", " + draw_height)
 	img.height = draw_height;
 	img.width = draw_width;
 	img.getContext('2d').drawImage(reduce_canvas, 0, 0, current_width, current_height, 0,0, draw_width, draw_height);
