@@ -22,7 +22,7 @@
  */
  
 var height_image;
-var container_height = 300;
+container_height = 300;
 
 function handleFileSelect(evt) {
     evt.stopPropagation();
@@ -88,10 +88,10 @@ var readImage = function(imgFile){
 var loadHeightmap = function(source){
 	height_image = new Image();
 	//console.log("reading: ", source.type);
-		
+			
 	height_image.onload = function(){
 		//console.log("creating height image");
-		
+
 		height_image.width = container_height;
 		height_image.height = container_height;
 		
@@ -133,14 +133,16 @@ var loadHeightmap = function(source){
 
 var initHeightMap = function(){
 	var div_container = document.getElementById("height_map");	
-	var canvas = document.getElementById('height_canvas');
-	var context = canvas.getContext('2d');
+	var context = height_canvas.getContext('2d');
 	
-	canvas.height = container_height;
+
+	height_canvas.height = container_height;
+	height_canvas.width = container_height;
+	height_canvas.height = document.getElementById("height_canvas").height;
 	
     height_image = new Image();
 	height_image.onload = function () {
-		context.drawImage(height_image, 0, 0, height_image.width, height_image.height, 0,0, canvas.width, canvas.height);
+		context.drawImage(height_image, 0, 0, height_image.width, height_image.height, 0,0, height_canvas.width, height_canvas.height);
 		height_image.width = height_image.naturalWidth;
 		height_image.height = height_image.naturalHeight;
 		

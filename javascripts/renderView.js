@@ -37,7 +37,8 @@ var current_disp_scale;
 var model;
 
 var initRenderer = function(){
-	camera = new THREE.PerspectiveCamera( 30, container_height / container_height, 0.1, 100000 );
+
+	camera = new THREE.PerspectiveCamera( 30, 1, 0.1, 100000 );
 	//camera.position.x = 2000;
     camera.position.z = 29;
 	camera.lookAt({
@@ -189,9 +190,6 @@ var initRenderer = function(){
 }
 
 
-
-
-
 var setRepeat = function(v_x, v_y){
 	//ao_map.repeat.set( v_x, v_y );
 	//normal_map.repeat.set( v_x, v_y );
@@ -317,6 +315,7 @@ function switchRenderView(){
 }
 
 $(document).ready(function() {
+	
 	$(".various").fancybox({
 		maxWidth	: 600,
 		maxHeight	: 600,

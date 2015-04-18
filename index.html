@@ -92,10 +92,13 @@
 	<div style="min-height:10px"></div>
 	
 	<div class="content">
-	
+		<div class="column_btn">
+			<span class="helper_column_button"></span><div id="column_btn_left" onclick="toggle_height_column();">
+			<span style="display: inline-block; min-height: 50px; vertical-align: middle;"></span><div id="column_btn_left_div" style="vertical-align:middle">>></div></div>
+		</div>
 	
 		<!-- Drop box %D -->
-		<div class="column">
+		<div class="column" id="column_height">
 			<div id="file_zone">
 				<input id="select_file" type="file" accept="image/*" onpropertychange="handleFileSelect()" style="position:absolute;visibility:hidden;"/>
 				<input type="button" id="browseButton" value="Select image..." onclick="select_file.click()">
@@ -166,7 +169,7 @@
 				
 			</div>			
 			<div class="view" id="height_map">
-				<canvas height=300 width=300 id="height_canvas"></canvas>
+				<canvas id="height_canvas"></canvas>
 			</div>
 			
 			
@@ -428,22 +431,22 @@
 				</div>
 				<!-- Normal Texture -->
 				<div class="view" id="normal_map">
-					<span class="helper"></span><canvas class="preview_img" height=300 width=300 id="normal_img" />
+					<span class="helper"></span><canvas class="preview_img" id="normal_img" />
 				</div>
 				
 				<!-- Displacement Texture -->
 				<div class="view" id="displacement_map" style="display: none;">
-					<span class="helper"></span><canvas class="preview_img" height=300 width=300 id="displace_img" />
+					<span class="helper"></span><canvas class="preview_img" id="displace_img" />
 				</div>
 				
 				<!-- Ambient Occlusion Texture -->
 				<div class="view" id="ao_map" style="display: none;">
-					<span class="helper"></span><canvas class="preview_img" height=300 width=300 id="ao_img" />
+					<span class="helper"></span><canvas class="preview_img" id="ao_img" />
 				</div>
 
 				<!-- Specular Texture -->
 				<div class="view" id="specular_map" style="display: none;">
-					<span class="helper"></span><canvas class="preview_img" height=300 width=300 id="specular_img" />
+					<span class="helper"></span><canvas class="preview_img" id="specular_img" />
 				</div>
 			</div>
 			
@@ -549,7 +552,7 @@
 			</div>
 	
 			<div class="view" id="render_view">
-				<a style="top: 190px; right: 40px; position: absolute;overflow:hidden;" class="various" href="#renderBig">
+				<a style="top: 190px; right: 70px; position: absolute;overflow:hidden;" class="various" href="#renderBig">
 					<img src="images/iconmonstr-magnifier-6-icon-16.png" />
 				</a>
 			</div>
@@ -571,6 +574,12 @@
 			<!--
 				<input type="button" onclick="createNormalMap()" value="Generate NormalMap"/>
 			-->
+		</div>
+
+
+		<div class="column_btn">
+			<span class="helper_column_button"></span><div id="column_btn_right" onclick="toggle_preview_column();">
+			<span style="display: inline-block; min-height: 50px; vertical-align: middle;"></span><div id="column_btn_right_div" style="vertical-align:middle"><<</div></div>
 		</div>
 	</div>
 	

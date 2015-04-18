@@ -126,7 +126,7 @@ function activate_texture(type){
 }
 
 
-function setTexturePreview(canvas, img_id,  width, height){
+function setTexturePreview(canvas, img_id, width, height){
 	var img = document.getElementById(img_id);
 	
 
@@ -134,7 +134,6 @@ function setTexturePreview(canvas, img_id,  width, height){
 
 		
 	var ratio = width / height;
-	
 	var draw_width = ratio >= 1 ? container_height : (container_height * ratio );
 	var draw_height = ratio >= 1 ? (container_height / ratio ) : container_height;
 	
@@ -151,6 +150,7 @@ function setTexturePreview(canvas, img_id,  width, height){
 		current_width *= 0.5;
 		current_height *= 0.5;
 	}
+	console.log(draw_width + ", " + draw_height)
 	img.height = draw_height;
 	img.width = draw_width;
 	img.getContext('2d').drawImage(reduce_canvas, 0, 0, current_width, current_height, 0,0, draw_width, draw_height);
@@ -159,6 +159,104 @@ function setTexturePreview(canvas, img_id,  width, height){
 	ao_map.needsUpdate = true;
 	displacement_map.needsUpdate = true;
 	specular_map.needsUpdate = true;
+}
+
+function toggle_height_column(){
+
+	if ($("#column_height").is(":visible") == true) {
+		$("#column_btn_left_div").html("<<");
+		$("#column_height").hide("slide", function(){
+			/*$(".column").each(function () {
+    		$(this).css("width", "438px");
+			});
+			$(".preview_img").each(function () {
+	    		$(this).css("max-width", "400px");
+	    		$(this).css("max-height", "400px");
+			});
+			$(".view").each(function () {
+	    		$(this).css("max-width", "400px");
+	    		$(this).css("max-height", "400px");
+			});
+			$(".helper").each(function () {
+	    		$(this).css("max-width", "400px");
+	    		$(this).css("max-height", "400px");
+			});
+			container_height = 400;
+			updateCurrentTexture();
+			renderer.setSize( 400, 400 );*/
+		});
+	}
+	else{
+		$("#column_btn_left_div").html(">>");
+		/*$(".column").each(function () {
+    		$(this).css("width", "338px");
+		});
+		$(".preview_img").each(function () {
+    		$(this).css("max-width", "300px");
+    		$(this).css("max-height", "300px");
+		});
+		$(".view").each(function () {
+    		$(this).css("max-width", "300px");
+    		$(this).css("max-height", "300px");
+		});
+		$(".helper").each(function () {
+    		$(this).css("max-width", "300px");
+    		$(this).css("max-height", "300px");
+		});
+		container_height = 300;
+		updateCurrentTexture();
+		renderer.setSize( 300, 300 );*/
+		$("#column_height").show("slide");
+	}
+}
+
+function toggle_preview_column(){
+
+	if ($("#preview").is(":visible") == true) {
+		$("#column_btn_right_div").html(">>");
+		$("#preview").hide("slide", function(){
+			/*$(".column").each(function () {
+    		$(this).css("width", "438px");
+			});
+			$(".preview_img").each(function () {
+	    		$(this).css("max-width", "400px");
+	    		$(this).css("max-height", "400px");
+			});
+			$(".view").each(function () {
+	    		$(this).css("max-width", "400px");
+	    		$(this).css("max-height", "400px");
+			});
+			$(".helper").each(function () {
+	    		$(this).css("max-width", "400px");
+	    		$(this).css("max-height", "400px");
+			});
+			container_height = 400;
+			updateCurrentTexture();
+			renderer.setSize( 400, 400 );*/
+		});
+	}
+	else{
+		$("#column_btn_right_div").html("<<");
+		/*$(".column").each(function () {
+    		$(this).css("width", "338px");
+		});
+		$(".preview_img").each(function () {
+    		$(this).css("max-width", "300px");
+    		$(this).css("max-height", "300px");
+		});
+		$(".view").each(function () {
+    		$(this).css("max-width", "300px");
+    		$(this).css("max-height", "300px");
+		});
+		$(".helper").each(function () {
+    		$(this).css("max-width", "300px");
+    		$(this).css("max-height", "300px");
+		});
+		container_height = 300;
+		updateCurrentTexture();
+		renderer.setSize( 300, 300 );*/
+		$("#preview").show("slide");
+	}
 }
 
 function getImageType(){

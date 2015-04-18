@@ -46,6 +46,29 @@ div.column {
 	vertical-align: top;
 	width:338px;
 }
+
+.helper_column_button {
+    display: inline-block;
+    min-height: 250px;
+    vertical-align: middle;
+}
+
+div.column_btn{
+	display: inline-block;
+	vertical-align: middle;
+	width:25px;
+}
+
+#column_btn_left, #column_btn_right{
+	cursor: pointer; 
+	cursor: hand;
+	vertical-align: middle;
+	min-height: 120px;
+    border-radius: 10px;
+	box-shadow: 2px 2px 10px #333;
+	background: none repeat scroll 0% 0% rgba(10,10,10,0.3);
+}
+
 div.column_top {
 	height: 150px;
 }
@@ -139,7 +162,6 @@ div.imprint {
 	border: 1px solid;
 	display: inline-block;
 	border-radius: 20px;
-	width:300px;
 }
 div.imprinttext {
 	width:60px;
