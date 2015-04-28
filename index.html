@@ -45,6 +45,7 @@
 	<br/>
 	<div align="center" >
 		<img src="images/nmap_logo_trans_small.png" /><br/>
+		<p>Now GPU powered!</p>
 
 		<a style="top: -180px; right: -220px; position: relative; overflow:hidden;" class="various" href="#normalmaponline_help">
 			<img src="images/help.png" />
@@ -53,39 +54,39 @@
 
 	<!-- DESCRIPTION -->
 	<div id="normalmaponline_help" style="display:none;overflow:hidden;font-family:Georgia" align="left">		
-				<h1>NormalMap-Online</h1>
-				<p>
-					This website lets you create normal maps from height maps <b>for free</b>.<br/>
-					All normal map textures you create are <b>your own</b>.<br/>
-					Textures are <b>not</b> saved on the server and all scripts are running on your Browser.<br/>
-					<br/>
-					Just <b>drag & drop</b> a heightmap in the specified field and adjust settings.<br/>
-					Afterwards check the preview window and download your own normalmap.<br/>
-					Additionally you can adjust and download displacement and ambient occlusion maps<br/>
-					<br/>
-					The preview window shows a 3D-model with several different maps.<br/>
-					Each map can be enabled/disabled and the preview model can be adjusted.<br/>
-					<br/>
-					If you have further questions, just give feedback to the mail-adress on the webpage.<br/>
-				</p>			
+		<h1>NormalMap-Online</h1>
+		<p>
+			This website lets you create normal maps from height maps <b>for free</b>.<br/>
+			All normal map textures you create are <b>your own</b>.<br/>
+			Textures are <b>not</b> saved on the server and all scripts are running on your Browser.<br/>
+			<br/>
+			Just <b>drag & drop</b> a heightmap in the specified field and adjust settings.<br/>
+			Afterwards check the preview window and download your own normalmap.<br/>
+			Additionally you can adjust and download displacement and ambient occlusion maps<br/>
+			<br/>
+			The preview window shows a 3D-model with several different maps.<br/>
+			Each map can be enabled/disabled and the preview model can be adjusted.<br/>
+			<br/>
+			If you have further questions, just give feedback to the mail-adress on the webpage.<br/>
+		</p>			
 
-				<h2>Normal Maps</h2>
-				<p>
-					<img src="images/normal_description.png" style="display: block; 
-						margin-left: auto; margin-right: auto; padding-left: 10px;" align="right" />
+		<h2>Normal Maps</h2>
+		<p>
+			<img src="images/normal_description.png" style="display: block; 
+				margin-left: auto; margin-right: auto; padding-left: 10px;" align="right" />
 
-					Normal Maps are textures that inherit depth information of a surface.<br/>
-					They don't change the structure of the model and have <b>nearly no impact on performance</b>.<br/>
-					Each pixel represents a <b>normal vector</b> and is composed of three colors.<br/>
-					These colors are representing the direction of the normal vector.<br/>
-					<br/>
-					They can enhance the optical illusion of depth significantly and 
-					are especially useful on flat surfaces, that have several <b>bumps or
-					cracks</b>.<br/>
-					As shown on the right, the elevation described by the height map can be converted to a normal map, that can be read from your graphics card inside the shader units.<br/>
-					When aiming for a more drastical illusion in depth, where parts could be occluding the model, you should try displacement maps<br/>
-					These maps really alter polygons but could decrease performance significantly!<br/>
-				</p>
+			Normal Maps are textures that inherit depth information of a surface.<br/>
+			They don't change the structure of the model and have <b>nearly no impact on performance</b>.<br/>
+			Each pixel represents a <b>normal vector</b> and is composed of three colors.<br/>
+			These colors are representing the direction of the normal vector.<br/>
+			<br/>
+			They can enhance the optical illusion of depth significantly and 
+			are especially useful on flat surfaces, that have several <b>bumps or
+			cracks</b>.<br/>
+			As shown on the right, the elevation described by the height map can be converted to a normal map, that can be read from your graphics card inside the shader units.<br/>
+			When aiming for a more drastical illusion in depth, where parts could be occluding the model, you should try displacement maps<br/>
+			These maps really alter polygons but could decrease performance significantly!<br/>
+		</p>
 	</div>
 	
 
@@ -205,8 +206,9 @@
 								onchange="setNormalSetting('strength', this.value); document.getElementById('strength_nmb').value = this.value;"
 								oninput="setNormalSetting('strength', this.value); document.getElementById('strength_nmb').value = this.value;"
 								style="width:60%;"
-								type="range"  value='2.5' min='0' max='5' step='0.1'/>
-						<input id="strength_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='2.5' 
+								type="range"  value='2.5' min='0.01' max='5' step='0.01'/>
+						<input id="strength_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" 
+								value='2.5' min='0.01' max='5' 
 								onchange="setNormalSetting('strength', this.value); document.getElementById('strength_slider').value = this.value;">
 					</td>
 				</tr>
@@ -451,11 +453,11 @@
 			</div>
 			
 			<!-- Autoupdate stuff -->
-			<div style="min-height:15px;margin-top:-10px;">
+			<!--<div style="min-height:15px;margin-top:-10px;">
 				<input id="auto_update" type="checkbox" onclick="toggleAutoUpdate();document.getElementById('update').disabled = auto_update;" checked />Auto update
 				<input id="update" type="button" onclick="updateCurrentTexture();" value="Update" disabled />
-			</div>
-			<div style="min-height:20px"></div>
+			</div>-->
+			<div style="min-height:10px"></div>
 			<!-- Download Button -->
 			<div>
 				<input id="file_name" type="text" placeholder="NormalMap" size="12">
@@ -611,7 +613,15 @@
 <script src="javascripts/extern/canvas-toBlob.js"></script>
 <script src="javascripts/extern/filesaver.min.js"></script>
 <script src="javascripts/extern/three.min.js"></script>
+<script src="javascripts/extern/EffectComposer.js"></script>
+<script src="javascripts/extern/RenderPass.js"></script>
+<script src="javascripts/extern/ShaderPass.js"></script>
+<script src="javascripts/extern/MaskPass.js"></script>
+<script src="javascripts/extern/CopyShader.js"></script>
 <script src="javascripts/extern/NormalDisplacementShader.js"></script>
+<script src="javascripts/shader/NormalMapShader.js"></script>
+<script src="javascripts/shader/HorizontalBlurShader.js"></script>
+<script src="javascripts/shader/VerticalBlurShader.js"></script>
 <script src="javascripts/extern/OrbitControls.js"></script>
 <script src="javascripts/extern/ganalytics.js"></script>
 
@@ -619,6 +629,7 @@
 <script type="text/javascript" src="javascripts/parallel.js"></script>
 <script type="text/javascript" src="javascripts/filters.js"></script>
 <script type="text/javascript" src="javascripts/renderView.js"></script>
+<script type="text/javascript" src="javascripts/renderNormalview.js"></script>
 <script type="text/javascript" src="javascripts/normalMap.js"></script>
 <script type="text/javascript" src="javascripts/displaceMap.js"></script>
 <script type="text/javascript" src="javascripts/ambientOccMap.js"></script>

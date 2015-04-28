@@ -155,10 +155,13 @@ function setTexturePreview(canvas, img_id, width, height){
 	img.width = draw_width;
 	img.getContext('2d').drawImage(reduce_canvas, 0, 0, current_width, current_height, 0,0, draw_width, draw_height);
 	
-	normal_map.needsUpdate = true;
-	ao_map.needsUpdate = true;
+	if (canvas == normal_canvas)
+		normal_map.needsUpdate = true;
+	else{
+		ao_map.needsUpdate = true;
 	displacement_map.needsUpdate = true;
 	specular_map.needsUpdate = true;
+	}
 }
 
 function toggle_height_column(){

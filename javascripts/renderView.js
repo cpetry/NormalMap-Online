@@ -91,7 +91,6 @@ var initRenderer = function(){
 	
 	
 	document.getElementById('render_view').appendChild( renderer.domElement );
-
 	var height_canvas   = document.getElementById('height_canvas');
 	
 	displacement_map			= new THREE.Texture( displacement_canvas );

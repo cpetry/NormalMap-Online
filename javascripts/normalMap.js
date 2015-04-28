@@ -40,102 +40,69 @@ var getNextPowerOf2 = function(nmb){
 }
 
 var createNormalMap = function(){
-
-	// Note that ImageData values are clamped between 0 and 255, so we need
-	// to use a Float32Array for the gradient values because they
-	// range between -255 and 255.
-		
-	var st = new Date().getTime();
-	var grayscale = Filters.filterImage(Filters.grayscale, height_image, !invert_source);
-	//console.log("grayscale: " + (new Date().getTime() - st));
-	// smoothing
-		
-	st = new Date().getTime();
-	
-	var img_data;
-	if (normal_enabled)	
-		img_data = Filters.newsobelfilter(grayscale, strength, level, normal_type);
-	else
-		img_data = Filters.newsobelfilter(grayscale, 0, level, normal_type);
-	//console.log("sobelfilter: " + (new Date().getTime() - st));
-	
-	
-	
-	var normal = Filters.createImageData(height_image.width, height_image.height);
-			
-	st = new Date().getTime();
-	for (var i=0; i<img_data.data.length; i++){	
-		if ((i % 4 == 0 && invert_red)
-		|| (i % 4 == 1 && invert_green))
-			normal.data[i] = (255.0 - img_data.data[i]);
-		else
-			normal.data[i] = img_data.data[i];
-	}
-	//console.log("invertImage: " + (new Date().getTime() - st));
-	
-	
-	if (smoothing > 0)
-		gaussiansharpen(normal, height_image.width, height_image.height, Math.abs(smoothing));
-	else if (smoothing < 0)
-		gaussianblur(normal, height_image.width, height_image.height, Math.abs(smoothing));
-		
-	
-	
-	st = new Date().getTime();
-	var ctx_normal = normal_canvas.getContext("2d");
-	normal_canvas.width  = height_image.width; 	// important!
-	normal_canvas.height = height_image.height;
-	//ctx_normal.clearRect(0, 0, height_image.width, height_image.height);
-	ctx_normal.putImageData(normal, 0, 0, 0, 0, img_data.width, img_data.height);
-	setTexturePreview(normal_canvas, "normal_img", img_data.width, img_data.height);
-	
-	//console.log("setTexturePreview: " + (new Date().getTime() - st));
+	renderNormalView();
+	setTexturePreview(normal_canvas, "normal_img", normal_canvas.width, normal_canvas.height);
 }
-
-
 
 
 var invertRed = function(){
 	invert_red = !invert_red;
+	if (invert_red)
+		normalmap_uniforms["invertR"].value = -1;
+	else
+		normalmap_uniforms["invertR"].value = 1;
 	
-	if (auto_update)
-		createNormalMap();
+	createNormalMap();
 }
 
 var invertGreen = function(){
 	invert_green = !invert_green;
+	if (invert_green)
+		normalmap_uniforms["invertG"].value = -1;
+	else
+		normalmap_uniforms["invertG"].value = 1;
 	
-	if (auto_update)
-		createNormalMap();
+	createNormalMap();
 }
 
 var invertSource = function(){
 	invert_source = !invert_source;
-	
-	if (auto_update){
-		createNormalMap();
-	}
+	if (!invert_source)
+		normalmap_uniforms["invertH"].value = -1;
+	else
+		normalmap_uniforms["invertH"].value = 1;
+
+	createNormalMap();
 }
 
 var timer = Date.now();
 
 var setNormalSetting = function(element, v){
-	if (element == "blur_sharp")
+	if (element == "blur_sharp"){
 		smoothing = v;
-	
-	else if (element == "strength")
-		strength = v;
-	
-	else if (element == "level")
-		level = v;
-
-	else if (element == "type")
-		normal_type = v;
-		
-	if (auto_update && Date.now() - timer > 150){
-		createNormalMap();
-		timer = Date.now();
+		gaussian_shader_y.uniforms["v"].value = v / height_image.naturalWidth / 5;
+		gaussian_shader_x.uniforms["h"].value = v / height_image.naturalHeight / 5;
 	}
+	
+	else if (element == "strength"){
+		strength = v;
+		normalmap_uniforms["dz"].value = 1.0 / v * (1.0 + Math.pow(2.0, document.getElementById('level_nmb').value));
+	}
+	
+	else if (element == "level"){
+		level = v;
+		normalmap_uniforms["dz"].value = 1.0 / document.getElementById('strength_nmb').value * (1.0 + Math.pow(2.0, v));
+	}
+
+	else if (element == "type"){
+		normal_type = v;
+		if (v == "Sobel")
+			normalmap_uniforms["type"].value = 0;
+		else
+			normalmap_uniforms["type"].value = 1;
+	}
+		
+	createNormalMap();
 }
 
 
