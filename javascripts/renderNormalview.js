@@ -40,7 +40,7 @@ function renderNormalview_init(){
 	normalmap_uniforms = THREE.UniformsUtils.clone( shader.uniforms );
 	
 	height_map				= new THREE.Texture( height_image );
-	height_map.wrapS 		= displacement_map.wrapT = THREE.ClampToEdgeWrapping; //RepeatWrapping, ClampToEdgeWrapping
+	height_map.wrapS 		= height_map.wrapT = THREE.ClampToEdgeWrapping; //RepeatWrapping, ClampToEdgeWrapping
 	height_map.minFilter 	= height_map.magFilter = THREE.NearestFilter; //LinearFilter , NearestFilter
 	height_map.anisotropy   = 2;
 	normalmap_uniforms["tDiffuse"].value = height_map;
@@ -112,7 +112,7 @@ function renderNormalview_update(){
 	var width = height_image.naturalWidth;
 	var height = height_image.naturalHeight;
 	height_map				= new THREE.Texture( height_image );
-	height_map.wrapS 		= displacement_map.wrapT = THREE.ClampToEdgeWrapping; //RepeatWrapping, ClampToEdgeWrapping
+	height_map.wrapS 		= height_map.wrapT = THREE.ClampToEdgeWrapping; //RepeatWrapping, ClampToEdgeWrapping
 	height_map.minFilter 	= height_map.magFilter = THREE.NearestFilter; //LinearFilter , NearestFilter
 	height_map.anisotropy   = 2;
 	normalmap_uniforms["tDiffuse"].value = height_map;
