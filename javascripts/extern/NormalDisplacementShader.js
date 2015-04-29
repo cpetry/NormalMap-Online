@@ -17,6 +17,7 @@ THREE.NormalDisplacementShader = {
 
 		{
 
+		"enableNormal"      : { type: "i", value: 1 },
 		"enableAO"          : { type: "i", value: 0 },
 		"enableDiffuse"     : { type: "i", value: 0 },
 		"enableSpecular"    : { type: "i", value: 0 },
@@ -59,6 +60,7 @@ THREE.NormalDisplacementShader = {
 		"uniform float shininess;",
 		"uniform float opacity;",
 
+		"uniform bool enableNormal;",
 		"uniform bool enableDiffuse;",
 		"uniform bool enableSpecular;",
 		"uniform bool enableAO;",
@@ -138,10 +140,15 @@ THREE.NormalDisplacementShader = {
 		"	vec4 diffuseColor = vec4( diffuse, opacity );",
 
 		"	vec3 specularTex = vec3( 1.0 );",
+		"	vec3 normalTex = vec3( 1.0 );",
+		
+		"	if( enableNormal ) {",
 
-		"	vec3 normalTex = texture2D( tNormal, vUv ).xyz * 2.0 - 1.0;",
-		"	normalTex.xy *= uNormalScale;",
-		"	normalTex = normalize( normalTex );",
+		"		normalTex = texture2D( tNormal, vUv ).xyz * 2.0 - 1.0;",
+		"		normalTex.xy *= uNormalScale;",
+		"		normalTex = normalize( normalTex );",
+		
+		" 	}",
 
 		"	if( enableDiffuse ) {",
 

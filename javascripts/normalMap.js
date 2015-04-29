@@ -68,9 +68,9 @@ var invertGreen = function(){
 var invertSource = function(){
 	invert_source = !invert_source;
 	if (!invert_source)
-		normalmap_uniforms["invertH"].value = -1;
-	else
 		normalmap_uniforms["invertH"].value = 1;
+	else
+		normalmap_uniforms["invertH"].value = -1;
 
 	createNormalMap();
 }

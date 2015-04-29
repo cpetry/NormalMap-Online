@@ -73,8 +73,8 @@ function createDisplacementMap(){
 	
 	updateDisplacementBias();
 	//console.log("w:" + img_data.width + ", h:" + img_data.height);
-	if (model.material.uniforms[ "enableDisplacement" ].value == true){
-		model.geometry.computeTangents();
+	if (render_model.material.uniforms[ "enableDisplacement" ].value == true){
+		render_model.geometry.computeTangents();
 	}
 	//console.log("Displacement: " + (new Date().getTime() - st));
 }

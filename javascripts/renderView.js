@@ -34,7 +34,7 @@ var normal_enabled = true;
 var ao_canvas = document.createElement("canvas");
 var displacement_canvas_preview = document.createElement("canvas");
 var current_disp_scale;
-var model;
+var render_model;
 
 var initRenderer = function(){
 
@@ -152,9 +152,9 @@ var initRenderer = function(){
 	
 	
 	st = new Date().getTime();
-	model = new THREE.Mesh( geometry, material);
-	model.castShadow = true;
-	model.receiveShadow = true;
+	render_model = new THREE.Mesh( geometry, material);
+	render_model.castShadow = true;
+	render_model.receiveShadow = true;
 	
 	
 	/*var secmodel = new THREE.Mesh(new THREE.BoxGeometry(500,500,500), new THREE.MeshLambertMaterial({
@@ -167,8 +167,8 @@ var initRenderer = function(){
 	scene.add( secmodel );
 	*/
 	
-	scene.add( model );
-	//console.log("create model: " + (new Date().getTime() - st));
+	scene.add( render_model );
+	//console.log("create render_model: " + (new Date().getTime() - st));
 
 	function renderView() {
 		// request new frame
@@ -178,8 +178,8 @@ var initRenderer = function(){
 		renderer.render(scene, camera);
 		
 		if(rotation_enabled){
-			model.rotation.x += 0.0015;
-			model.rotation.y += 0.0015;
+			render_model.rotation.x += 0.0015;
+			render_model.rotation.y += 0.0015;
 		}
 		//bump_map.needsUpdate = true;
 		//ao_map.needsUpdate = true;
@@ -194,45 +194,44 @@ var setRepeat = function(v_x, v_y){
 	//normal_map.repeat.set( v_x, v_y );
 	//displacement_map.repeat.set( v_x, v_y );
 	//specular_map.repeat.set( v_x, v_y );
-	model.material.uniforms[ "uRepeat" ].value = new THREE.Vector2(v_x, v_y);
-	//model.geometry.computeTangents();
-	//console.log(model.material.uniforms);
+	render_model.material.uniforms[ "uRepeat" ].value = new THREE.Vector2(v_x, v_y);
+	//render_model.geometry.computeTangents();
 
 }
 
 var setModel = function(type){
-	scene.remove( model );
+	scene.remove( render_model );
 
 	if (type == "Cube"){
 		var geometry = new THREE.BoxGeometry(10, 10, 10, 96, 96, 96);
 		geometry.computeTangents();
-		model = new THREE.Mesh( geometry, material);
-		model.castShadow = true;
-		model.receiveShadow = true;
-		scene.add( model );
+		render_model = new THREE.Mesh( geometry, material);
+		render_model.castShadow = true;
+		render_model.receiveShadow = true;
+		scene.add( render_model );
 	}
 	else if (type == "Sphere"){
 		var geometry = new THREE.SphereGeometry( 7, 128, 128);
 		geometry.computeTangents();
-		model = new THREE.Mesh( geometry, material);
-		model.castShadow = true;
-		model.receiveShadow = true;
-		scene.add( model );
+		render_model = new THREE.Mesh( geometry, material);
+		render_model.castShadow = true;
+		render_model.receiveShadow = true;
+		scene.add( render_model );
 	}
 	else if (type == "Cylinder"){
 		var geometry = new THREE.CylinderGeometry( 7, 7, 10, 128 );
 		geometry.computeTangents();
-		model = new THREE.Mesh( geometry, material);
-		model.castShadow = true;
-		model.receiveShadow = true;
-		scene.add( model );
+		render_model = new THREE.Mesh( geometry, material);
+		render_model.castShadow = true;
+		render_model.receiveShadow = true;
+		scene.add( render_model );
 	}
 	else if (type == "Plane"){
 		var geometry = new THREE.PlaneBufferGeometry(12, 12, 128, 128);
 		geometry.computeTangents();
 		rotation_enabled = 0;
-		model.rotation.x = 0;
-		model.rotation.y = 0;
+		render_model.rotation.x = 0;
+		render_model.rotation.y = 0;
 		camera.position.x = 0;
 		camera.position.y = 0;
 		camera.position.z = 29;
@@ -242,11 +241,11 @@ var setModel = function(type){
 	        z: 0
     	});
 		document.getElementById('input_rot').checked = false;
-		model = new THREE.Mesh( geometry, material);
-		model.castShadow = true;
-		model.receiveShadow = true;
-		model.material.side = THREE.DoubleSide;
-		scene.add( model );
+		render_model = new THREE.Mesh( geometry, material);
+		render_model.castShadow = true;
+		render_model.receiveShadow = true;
+		render_model.material.side = THREE.DoubleSide;
+		scene.add( render_model );
 	}
 	
 }
@@ -257,25 +256,25 @@ function setDisplacementScale(scale){
 }
 
 function updateDisplacementBias(){
-	model.material.uniforms[ "uDisplacementScale" ].value = current_disp_scale * 5;
-	model.material.uniforms[ "uDisplacementBias" ].value = current_disp_scale * 5 * -displacement_bias;
+	render_model.material.uniforms[ "uDisplacementScale" ].value = current_disp_scale * 5;
+	render_model.material.uniforms[ "uDisplacementBias" ].value = current_disp_scale * 5 * -displacement_bias;
 }
 
 /*
 function setDisplacementResolution(res){
 	
-	scene.remove( model );
+	scene.remove( render_model );
 	
 	
 	var geometry = new THREE.CylinderGeometry( 0.7, 0.5, 1, 32 );
 	geometry.computeTangents();
-	model = new THREE.Mesh( model.geometry.clone();, material);
-	scene.add( model );
+	render_model = new THREE.Mesh( render_model.geometry.clone();, material);
+	scene.add( render_model );
 	g.widthSegments = res;
 	g.heightSegments = res;
 	g.depthSegments = res;
 	g.computeTangents();
-	model = new THREE.Mesh( g, material);
+	render_model = new THREE.Mesh( g, material);
 }
 */
 
@@ -284,29 +283,31 @@ function toggleRotation(){
 }
 
 function toggleDisplacement(){
-	if(model.material.uniforms[ "enableDisplacement" ].value == true)
-		model.material.uniforms[ "enableDisplacement" ].value = false;
+	if(render_model.material.uniforms[ "enableDisplacement" ].value == true)
+		render_model.material.uniforms[ "enableDisplacement" ].value = false;
 	else
-		model.material.uniforms[ "enableDisplacement" ].value = true;
+		render_model.material.uniforms[ "enableDisplacement" ].value = true;
 }
 
 function toggleNormal(){
-	normal_enabled = !normal_enabled;
-	createNormalMap();
+	if(render_model.material.uniforms[ "enableNormal" ].value == true)
+		render_model.material.uniforms[ "enableNormal" ].value = false;
+	else
+		render_model.material.uniforms[ "enableNormal" ].value = true;
 }
 
 function toggleAO(){
-	if(model.material.uniforms[ "enableAO" ].value == true)
-		model.material.uniforms[ "enableAO" ].value = false;
+	if(render_model.material.uniforms[ "enableAO" ].value == true)
+		render_model.material.uniforms[ "enableAO" ].value = false;
 	else
-		model.material.uniforms[ "enableAO" ].value = true;
+		render_model.material.uniforms[ "enableAO" ].value = true;
 }
 
 function toggleSpecular(){
-	if(model.material.uniforms[ "enableSpecular" ].value == true)
-		model.material.uniforms[ "enableSpecular" ].value = false;
+	if(render_model.material.uniforms[ "enableSpecular" ].value == true)
+		render_model.material.uniforms[ "enableSpecular" ].value = false;
 	else
-		model.material.uniforms[ "enableSpecular" ].value = true;
+		render_model.material.uniforms[ "enableSpecular" ].value = true;
 }
 
 function switchRenderView(){
