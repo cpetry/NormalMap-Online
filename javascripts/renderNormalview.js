@@ -52,12 +52,12 @@ function renderNormalview_init(){
 		vertexShader: shader.vertexShader, 
 		uniforms: normalmap_uniforms
 	};
-	material = new THREE.ShaderMaterial( parameters );
+	var material = new THREE.ShaderMaterial( parameters );
 	material.wrapAround = true;
 	material.transparent = true;
 	//geometry = new THREE.PlaneBufferGeometry(2, 2, 2, 2);
-	geometry = new THREE.PlaneBufferGeometry(1, 1, 1, 1);
-	plane = new THREE.Mesh( geometry, material );
+	var geometry = new THREE.PlaneBufferGeometry(1, 1, 1, 1);
+	var plane = new THREE.Mesh( geometry, material );
 	
 	scene_Normalview.add(plane);
 	
