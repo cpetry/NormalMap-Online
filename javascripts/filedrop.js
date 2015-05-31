@@ -71,6 +71,7 @@ function isPowerOf2(val){
 }
 
 var readImage = function(imgFile){
+	//console.log(imgFile);
 	if(!imgFile.type.match(/image.*/)){
 		console.log("The dropped file is not an image: ", imgFile.type);
 		return;
@@ -78,16 +79,26 @@ var readImage = function(imgFile){
 
 	var reader = new FileReader();
 	reader.onload = function(e){
-		loadHeightmap(e.target.result);
+		var data = e.target.result;
+		if (imgFile.type == "image/targa"){
+			//console.log(uint8ArrayNew);
+			var tga = new TGA();
+			tga.load(new Uint8Array(data));
+			data = tga.getDataURL('image/png');
+		}
+		loadHeightmap(data);
 	};
-	reader.readAsDataURL(imgFile);
+	if (imgFile.type == "image/targa")
+		reader.readAsArrayBuffer(imgFile);
+	else
+		reader.readAsDataURL(imgFile);
 };
 
 
 
 var loadHeightmap = function(source){
 	height_image = new Image();
-	//console.log("reading: ", source.type);
+	console.log(source);
 			
 	height_image.onload = function(){
 		//console.log("creating height image");
@@ -139,7 +150,7 @@ var loadHeightmap = function(source){
 		createAmbientOcclusionTexture();
 		createSpecularTexture();
 	};
-	
+
 	height_image.src = source;
 };
 
