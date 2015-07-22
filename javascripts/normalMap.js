@@ -96,7 +96,7 @@ var setNormalSetting = function(element, v){
 
 	else if (element == "type"){
 		normal_type = v;
-		if (v == "Sobel")
+		if (v == "sobel")
 			normalmap_uniforms["type"].value = 0;
 		else
 			normalmap_uniforms["type"].value = 1;
