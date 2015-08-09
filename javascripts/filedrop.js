@@ -24,13 +24,6 @@
 var height_image;
 container_height = 300;
 
-function handleFileSelect(evt) {
-    evt.stopPropagation();
-    evt.preventDefault();
-
-    var files = evt.dataTransfer.files; // FileList object.
-    readImage(files[0]);
-}
 
 function handleDragOver(evt) {
 	evt.stopPropagation();
@@ -41,12 +34,10 @@ function handleDragOver(evt) {
 // Setup the dnd listeners.
 function handleFileSelect(evt) {
     var files = evt.target.files; // FileList object
+    readImage(evt.target.files[0]); // files is a FileList of File objects. List some properties.
+}
 
-    // files is a FileList of File objects. List some properties.
-    readImage(evt.target.files[0]);
-  }
-
- document.getElementById('select_file').addEventListener('change', handleFileSelect, false);
+document.getElementById('select_file').addEventListener('change', handleFileSelect, false);
 /*var dropZone = document.getElementById('drop_zone');
 dropZone.addEventListener('dragover', handleDragOver, false);
 dropZone.addEventListener('drop', function(e){

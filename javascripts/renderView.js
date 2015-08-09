@@ -26,6 +26,7 @@ var camera;
 var renderer;
 var bump_map;
 var normal_map;
+var diffuse_map;
 var ao_map;
 var specular_map;
 var material;
@@ -97,6 +98,10 @@ var initRenderer = function(){
 	displacement_map.wrapS 		= displacement_map.wrapT = THREE.RepeatWrapping;
 	displacement_map.minFilter 	= THREE.LinearFilter;
 	displacement_map.anisotropy = 2;
+	diffuse_map				= new THREE.Texture( diffuse_canvas );
+	diffuse_map.wrapS 		= diffuse_map.wrapT = THREE.RepeatWrapping;
+	diffuse_map.minFilter 	= THREE.LinearFilter;
+	diffuse_map.anisotropy  = 2;
 	//bump_map  				= new THREE.Texture( height_canvas );
 	ao_map  					= new THREE.Texture( ao_canvas );
 	ao_map.wrapS 				= ao_map.wrapT = THREE.RepeatWrapping;
@@ -127,6 +132,7 @@ var initRenderer = function(){
 	//uniforms[ "shininess" ].value = new THREE.Color(0x777777);
 	uniforms[ "ambientLightColor" ].value = new THREE.Color(0x000000);
 
+	uniforms[ "tDiffuse"].value = diffuse_map;
 	uniforms[ "tDisplacement"].value = displacement_map;
 	uniforms[ "tNormal" ].value = normal_map;
 	uniforms[ "tSpecular" ].value = specular_map;
@@ -338,3 +344,16 @@ $(document).ready(function() {
 		}
 	});
 });
+
+function toggleDiffuse(){
+	if(render_model.material.uniforms[ "enableDiffuse" ].value == true)
+		render_model.material.uniforms[ "enableDiffuse" ].value = false;
+	else
+		render_model.material.uniforms[ "enableDiffuse" ].value = true;
+}
+
+function enableDiffuse(){
+	render_model.material.uniforms[ "enableDiffuse" ].value = true;
+	document.getElementById('input_diffuse').disabled = false;
+	document.getElementById('input_diffuse').checked = true;
+}

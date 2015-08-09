@@ -100,16 +100,14 @@
 	
 		<!-- Drop box %D -->
 		<div class="column" id="column_height">
-			<div id="file_zone">
+			<div class="column_top">
 				<input id="select_file" type="file" accept="image/*, .tga" onpropertychange="handleFileSelect()" style="position:absolute;visibility:hidden;"/>
-				<input type="button" id="browseButton" value="Select image..." onclick="select_file.click()">
+				<input type="button" style="margin-top:30px" id="browseButton" value="Select image..." onclick="select_file.click()">
 				or
-			</div>
-			<div class="column_top" style="margin-top: 22px; height:105px;">
-				<a style="top: -30px; right: -10px; position: relative; overflow:hidden;" class="various" href="#heightmap_help"><img src="images/help.png" /></a>
-				<img src="images/drag_drop.png" />
+				<a style="top: 80px; left: -180px; position: relative; overflow:hidden;" class="various" href="#heightmap_help"><img src="images/help.png" /></a>
+				<img src="images/drag_drop.png" style="padding-top:30px"/>
 				
-				<a style="top: -10px; right: -25px; position: relative; overflow:hidden;" class="various" href="#photo_help"><img src="images/help.png" /></a>
+				<a style="top: -15px; right: -50px; position: relative; overflow:hidden;" class="various" href="#photo_help"><img src="images/help.png" /></a>
 			</div>
 			
 			<!-- DESCRIPTION HEIGHT MAP -->
@@ -196,7 +194,7 @@
 		
 			<!-- Normal Settings -->
 			<div class="column_top" id="normal_settings" style="width:100%;">
-				<table style="border-spacing:0px; width:100%;" >
+				<table class="options_top">
 				<tr>
 					<td class="option_text">
 						<span> Strength</span>
@@ -271,7 +269,7 @@
 						
 			<!-- Displacement Settings -->
 			<div class="column_top" id="displacement_settings" style="display: none;width:100%;">
-				<table style="border-spacing:0px; width:100%;">
+				<table class="options_top">
 				<tr>
 					<td class="option_text">
 						<span>Contrast</span>
@@ -319,7 +317,7 @@
 			
 			<!-- Ambient Occlusion Settings -->
 			<div class="column_top" id="ao_settings" style="display: none;width:100%;">
-				<table style="border-spacing:0px; width:100%;" >
+				<table class="options_top">
 				<tr>
 					<td class="option_text">
 						<span> Strength</span>
@@ -377,7 +375,7 @@
 
 			<!-- Specular Settings -->
 			<div class="column_top" id="specular_settings" style="display: none;width:100%;">
-				<table style="border-spacing:0px; width:100%;" >
+				<table class="options_top">
 				<tr>
 					<td class="option_text">
 						<span>Mean</span>
@@ -484,7 +482,7 @@
 		
 		<!-- Preview -->
 		<div class="column" id="preview" <!--style="display: none;-->">
-			<div class="column_top" style="width:100%;">
+			<div class="column_top">
 				<table style="border-spacing:0px; width:100%;" >
 				<tr style="height:30px;">
 					<td align="center" class="option_text" colspan="2" style="text-align:center">
@@ -502,6 +500,16 @@
 							type="number"  min='1' max='3' value='1' step='1'/>
 					<td/>
 				<tr/>
+				<tr style="height:30px;">
+					<td class="option_text">
+						<span>Diffuse Map</span>
+					</td>
+					<td class="options" style="font-size: small;">
+						<input id="select_diffuse_file" type="file" accept="image/*, .tga" onpropertychange="handleDiffuseFileSelect()" style="position:absolute;visibility:hidden;"/>
+						<input type="button" id="browseDiffuseButton" value="Load..." onclick="select_diffuse_file.click();">
+						<input id="input_diffuse" type="checkbox" value="Diffuse" onclick="toggleDiffuse()" disabled>Diffuse
+					<td>
+				</tr>
 				<tr style="height:30px;">
 					<td class="option_text">
 						<span>UV</span>
@@ -531,6 +539,7 @@
 						
 					</td>
 				</tr>
+				
 				<tr style="height:30px;">
 					<td class="option_text">
 						<span>Use Map</span>
@@ -554,7 +563,7 @@
 			</div>
 	
 			<div class="view" id="render_view">
-				<a style="top: 190px; right: 70px; position: absolute;overflow:hidden;" class="various" href="#renderBig">
+				<a class="render_magnifier various" href="#renderBig">
 					<img src="images/iconmonstr-magnifier-6-icon-16.png" />
 				</a>
 			</div>
@@ -585,8 +594,7 @@
 		</div>
 	</div>
 	
-	<div style="position: absolute; margin-top: -200px; margin-left: 30px; z-index:5; color: #111;
-	border-radius: 5px; padding: 5px 5px 5px 5px; background: none repeat scroll 0% 0% rgba(240,240,240,0.7);">
+	<div class="texture_link">
 		Need a Texture?<br/>
 		<a href="http://cpetry.github.io/TextureGenerator-Online/">
 			<img src="http://www.petry-christian.de/content_images/texture_generator_logo.png" style="padding-top:5px"/>
@@ -635,6 +643,7 @@
 <script type="text/javascript" src="javascripts/displaceMap.js"></script>
 <script type="text/javascript" src="javascripts/ambientOccMap.js"></script>
 <script type="text/javascript" src="javascripts/specularMap.js"></script>
+<script type="text/javascript" src="javascripts/diffuseMap.js"></script>
 <script type="text/javascript" src="javascripts/gaussianblur.js"></script>
 <script type="text/javascript" src="javascripts/main.js"></script>
 
