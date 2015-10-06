@@ -165,12 +165,18 @@
 			<div class="tabs" style="margin-right:10px; text-align:right;">
 				<input class="tab_button" id="tab_btn_heightmap" type="button" disabled value="HeightMap"/>
 				<input class="tab_button" style="color: #888888; border: 2px solid #666666;" id="tab_btn_photo" type="button" value="Photo"/>
+				<!--
+				<input class="tab_button" id="tab_btn_heightmap" type="button" disabled value="HeightMap" onclick="activate_height_tab('height')"/>
+				<input class="tab_button" id="tab_btn_photo"     type="button" value="Photo" onclick="activate_height_tab('photo'); reconstruct_depth();"/>
+				-->
 				
 			</div>			
 			<div class="view" id="height_map">
 				<canvas id="height_canvas"></canvas>
 			</div>
-			
+			<div class="view" id="photo_map" style="display: none;">
+				<canvas id="photo_canvas"></canvas>
+			</div>
 			
 			<div style="float:center; margin:-8px 15px 0 0; padding:0 0 0 0;">Size: 
 				<input style="border: none; color:white; background-color: transparent; border-color: transparent;" id="size" type="text" size="30" maxlength="30" readonly>
@@ -603,7 +609,7 @@
 
 </body>
 <footer>
-		<p>Imprint: Christian Petry, St.Nepomuk-Str. 2a, 97218 Gerbrunn, Germany - 
+		<p>Imprint: Christian Petry, Fliederweg 6, 91094 Langensendelbach, Germany - 
 		
 		<a href="http://www.petry-christian.de"> www.petry-christian.de </a>
 		</p>
