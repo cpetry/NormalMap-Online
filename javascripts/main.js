@@ -21,6 +21,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+
+initHeightFromPictures();
 initHeightMap();
 initRenderer();
 
@@ -33,6 +35,46 @@ TextureEnum = {
 
 var auto_update = true;
 var current_texture = TextureEnum.NORMAL;
+
+
+function activate_height_tab(type){
+	if (type == "height"){
+		$('#pictures_map').hide("slide", {direction: "right"}, 400, function() {
+			$('#height_map').show("slide", {direction: "left"}, 400);
+			var selectedObject = scene_Normalview.getObjectByName("mesh");
+			scene_Normalview.remove(selectedObject);
+			render_mesh = new THREE.Mesh( mesh_geometry, normal_map_material );
+			render_mesh.name = "mesh";
+			scene_Normalview.add(render_mesh);
+			render_mesh.buffersNeedUpdate = true;
+			render_mesh.uvsNeedUpdate = true;
+			render_mesh.needUpdate = true;
+			renderNormalView();
+			setTexturePreview(normal_canvas, "normal_img", normal_canvas.width, normal_canvas.height);
+		});
+	}
+	else if (type == "pictures"){
+		$('#height_map').hide("slide", {direction: "left"}, 400, function() {
+			$('#pictures_map').show("slide", {direction: "right"}, 400);
+			var selectedObject = scene_Normalview.getObjectByName("mesh");
+			scene_Normalview.remove(selectedObject);
+			render_mesh = new THREE.Mesh( mesh_geometry, normal_map_from_pictures_material );
+			render_mesh.name = "mesh";
+			scene_Normalview.add(render_mesh);
+			render_mesh.buffersNeedUpdate = true;
+			render_mesh.uvsNeedUpdate = true;
+			render_mesh.needUpdate = true;
+			renderNormalView();
+			setTexturePreview(normal_canvas, "normal_img", normal_canvas.width, normal_canvas.height);
+		});
+		
+	}
+	/*
+	else if (type == "photo"){
+		document.getElementById('photo_canvas').disabled = false;
+		document.getElementById('height_canvas').disabled = true;
+	}*/
+}
 
 function activate_texture(type){
 	if (type == "normal"){
@@ -159,8 +201,8 @@ function setTexturePreview(canvas, img_id, width, height){
 		normal_map.needsUpdate = true;
 	else{
 		ao_map.needsUpdate = true;
-	displacement_map.needsUpdate = true;
-	specular_map.needsUpdate = true;
+		displacement_map.needsUpdate = true;
+		specular_map.needsUpdate = true;
 	}
 }
 
@@ -168,7 +210,7 @@ function toggle_height_column(){
 
 	if ($("#column_height").is(":visible") == true) {
 		$("#column_btn_left_div").html("<<");
-		$("#column_height").hide("slide", function(){
+		$("#column_height").hide("slide", {direction: "right"}, 400);
 			/*$(".column").each(function () {
     		$(this).css("width", "438px");
 			});
@@ -187,7 +229,6 @@ function toggle_height_column(){
 			container_height = 400;
 			updateCurrentTexture();
 			renderer.setSize( 400, 400 );*/
-		});
 	}
 	else{
 		$("#column_btn_left_div").html(">>");
@@ -209,7 +250,7 @@ function toggle_height_column(){
 		container_height = 300;
 		updateCurrentTexture();
 		renderer.setSize( 300, 300 );*/
-		$("#column_height").show("slide");
+		$("#column_height").show("slide", {direction: "right"}, 400);
 	}
 }
 
@@ -217,7 +258,7 @@ function toggle_preview_column(){
 
 	if ($("#preview").is(":visible") == true) {
 		$("#column_btn_right_div").html(">>");
-		$("#preview").hide("slide", function(){
+		$("#preview").hide("slide", {direction: "left"}, 400);
 			/*$(".column").each(function () {
     		$(this).css("width", "438px");
 			});
@@ -236,7 +277,6 @@ function toggle_preview_column(){
 			container_height = 400;
 			updateCurrentTexture();
 			renderer.setSize( 400, 400 );*/
-		});
 	}
 	else{
 		$("#column_btn_right_div").html("<<");
@@ -258,7 +298,7 @@ function toggle_preview_column(){
 		container_height = 300;
 		updateCurrentTexture();
 		renderer.setSize( 300, 300 );*/
-		$("#preview").show("slide");
+		$("#preview").show("slide", {direction: "left"}, 400);
 	}
 }
 

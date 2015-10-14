@@ -22,6 +22,7 @@
  */
  
 var height_image;
+var picture_above, picture_left, picture_right, picture_below;
 container_height = 300;
 
 
@@ -146,7 +147,6 @@ var loadHeightmap = function(source){
 };
 
 var initHeightMap = function(){
-	var div_container = document.getElementById("height_map");	
 	var context = height_canvas.getContext('2d');
 	
 
@@ -165,7 +165,7 @@ var initHeightMap = function(){
 		
 		document.getElementById("size").value = "" +(height_image.naturalWidth) + " x " + (height_image.naturalHeight);
 		
-		renderNormalview_init();
+		//renderNormalview_init();
 			
 		createNormalMap(); // height map was loaded... so create standard normal map!
 		height_map.needsUpdate = true;
@@ -183,6 +183,64 @@ var initHeightMap = function(){
     };
 	
     height_image.src = './images/standard_height.png';	
+}
+
+
+var initHeightFromPictures = function(){
+	var pic_canvas_above = document.getElementById("picture_canvas_above");
+	var pic_canvas_left = document.getElementById("picture_canvas_left");
+	var pic_canvas_right = document.getElementById("picture_canvas_right");
+	var pic_canvas_below = document.getElementById("picture_canvas_below");
+	var context_above = pic_canvas_above.getContext('2d');
+	var context_left = pic_canvas_left.getContext('2d');
+	var context_right = pic_canvas_right.getContext('2d');
+	var context_below = pic_canvas_below.getContext('2d');
+	
+    picture_above = new Image();
+	picture_above.onload = function () {	
+		context_above.drawImage(picture_above, 0, 0, picture_above.width, picture_above.height, 0,0, pic_canvas_above.width, pic_canvas_above.height);
+		picture_above.width = picture_above.naturalWidth;
+		picture_above.height = picture_above.naturalHeight;
+
+		renderNormalview_init();
+		createNormalMap(); // height map was loaded... so create standard normal map!
+		picture_above_map.needsUpdate = true;
+    };
+	
+    picture_above.src = './images/test_picture_above.jpg';
+
+    picture_left = new Image();
+	picture_left.onload = function () {	
+		context_left.drawImage(picture_left, 0, 0, picture_left.width, picture_left.height, 0,0, pic_canvas_left.width, pic_canvas_left.height);
+		picture_left.width = picture_left.naturalWidth;
+		picture_left.height = picture_left.naturalHeight;
+
+		picture_left_map.needsUpdate = true;
+    };
+	
+    picture_left.src = './images/test_picture_left.jpg';
+
+    picture_right = new Image();
+	picture_right.onload = function () {	
+		context_right.drawImage(picture_right, 0, 0, picture_right.width, picture_right.height, 0,0, pic_canvas_right.width, pic_canvas_right.height);
+		picture_right.width = picture_right.naturalWidth;
+		picture_right.height = picture_right.naturalHeight;
+
+		picture_right_map.needsUpdate = true;
+    };
+	
+    picture_right.src = './images/test_picture_right.jpg';	
+
+    picture_below = new Image();
+	picture_below.onload = function () {	
+		context_below.drawImage(picture_below, 0, 0, picture_below.width, picture_below.height, 0,0, pic_canvas_below.width, pic_canvas_below.height);
+		picture_below.width = picture_below.naturalWidth;
+		picture_below.height = picture_below.naturalHeight;
+
+		picture_below_map.needsUpdate = true;
+    };
+	
+    picture_below.src = './images/test_picture_below.jpg';	
 }
 
 

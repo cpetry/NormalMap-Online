@@ -2,11 +2,15 @@ var renderer_Normalview;
 var composer_Normalview;
 var scene_Normalview;
 var camera_Normalview;
-var normalmap_uniforms;
+var normalmap_uniforms, normalmap_from_pictures_uniforms;
 var height_map;
+var picture_above_map, picture_left_map, picture_right_map, picture_below_map;
 var NormalRenderScene;
 var gaussian_shader_y, gaussian_shader_x;
 var copyPass;
+var normal_map_material, normal_map_from_pictures_material;
+var render_mesh;
+var mesh_geometry;
 
 function renderNormalView() {
 	// request new frame
@@ -21,8 +25,6 @@ function renderNormalView() {
 
 function renderNormalview_init(){
 	
-	var width = height_image.width;
-	var height = height_image.height;
 	renderer_Normalview = new THREE.WebGLRenderer({ alpha: true, antialias: true, canvas: normal_canvas });
 	renderer_Normalview.setClearColor( 0x000000, 0 ); // the default
 	//camera_Normalview = new THREE.OrthographicCamera( -1, 1, 1, -1, 0, 10 );
@@ -31,35 +33,76 @@ function renderNormalview_init(){
 	
 	
 	// start the renderer
-	renderer_Normalview.setSize(width, height);
+	renderer_Normalview.setSize(height_image.width, height_image.height);
 	
 	// attach the render-supplied DOM element
 	//$('#normal_map').append(renderer_Normalview.domElement);
 
-	var shader = THREE.NormalMapShader;
-	normalmap_uniforms = THREE.UniformsUtils.clone( shader.uniforms );
+	// normal map shader
+	var normal_map_shader = THREE.NormalMapShader;
+	normalmap_uniforms = THREE.UniformsUtils.clone( normal_map_shader.uniforms );
 	
 	height_map				= new THREE.Texture( height_image );
 	height_map.wrapS 		= height_map.wrapT = THREE.ClampToEdgeWrapping; //RepeatWrapping, ClampToEdgeWrapping
 	height_map.minFilter 	= height_map.magFilter = THREE.NearestFilter; //LinearFilter , NearestFilter
 	height_map.anisotropy   = 2;
-	normalmap_uniforms["tDiffuse"].value = height_map;
-	normalmap_uniforms["dimensions"].value = [width, height, 0];
+	normalmap_uniforms["tHeightMap"].value = height_map;
+	normalmap_uniforms["dimensions"].value = [height_image.width, height_image.height, 0];
 	normalmap_uniforms["dz"].value = 1.0 / document.getElementById('strength_nmb').value * (1.0 + Math.pow(2.0, document.getElementById('level_nmb').value));
 	
-	var parameters = { 
-		fragmentShader: shader.fragmentShader, 
-		vertexShader: shader.vertexShader, 
+	var normal_map_parameters = { 
+		fragmentShader: normal_map_shader.fragmentShader, 
+		vertexShader: normal_map_shader.vertexShader, 
 		uniforms: normalmap_uniforms
 	};
-	var material = new THREE.ShaderMaterial( parameters );
-	material.wrapAround = true;
-	material.transparent = true;
-	//geometry = new THREE.PlaneBufferGeometry(2, 2, 2, 2);
-	var geometry = new THREE.PlaneBufferGeometry(1, 1, 1, 1);
-	var plane = new THREE.Mesh( geometry, material );
+
+	// normal map from pictures shader
+	var normal_map_from_pictures_shader = THREE.NormalMapFromPicturesShader;
+	normalmap_from_pictures_uniforms = THREE.UniformsUtils.clone( normal_map_from_pictures_shader.uniforms );
 	
-	scene_Normalview.add(plane);
+	picture_above_map				= new THREE.Texture( picture_above );
+	picture_above_map.wrapS 		= picture_above_map.wrapT = THREE.ClampToEdgeWrapping; //RepeatWrapping, ClampToEdgeWrapping
+	picture_above_map.minFilter 	= picture_above_map.magFilter = THREE.NearestFilter; //LinearFilter , NearestFilter
+	picture_above_map.anisotropy   	= 2;
+	picture_left_map				= new THREE.Texture( picture_left );
+	picture_left_map.wrapS 			= picture_above_map.wrapT = THREE.ClampToEdgeWrapping; //RepeatWrapping, ClampToEdgeWrapping
+	picture_left_map.minFilter 		= picture_above_map.magFilter = THREE.NearestFilter; //LinearFilter , NearestFilter
+	picture_left_map.anisotropy   	= 2;
+	picture_right_map				= new THREE.Texture( picture_right );
+	picture_right_map.wrapS 		= picture_above_map.wrapT = THREE.ClampToEdgeWrapping; //RepeatWrapping, ClampToEdgeWrapping
+	picture_right_map.minFilter 	= picture_above_map.magFilter = THREE.NearestFilter; //LinearFilter , NearestFilter
+	picture_right_map.anisotropy   	= 2;
+	picture_below_map				= new THREE.Texture( picture_below );
+	picture_below_map.wrapS 		= picture_above_map.wrapT = THREE.ClampToEdgeWrapping; //RepeatWrapping, ClampToEdgeWrapping
+	picture_below_map.minFilter 	= picture_above_map.magFilter = THREE.NearestFilter; //LinearFilter , NearestFilter
+	picture_below_map.anisotropy   	= 2;
+	normalmap_from_pictures_uniforms["tAbove"].value = picture_above_map;
+	normalmap_from_pictures_uniforms["tLeft"].value = picture_left_map;
+	normalmap_from_pictures_uniforms["tRight"].value = picture_right_map;
+	normalmap_from_pictures_uniforms["tBelow"].value = picture_below_map;
+	normalmap_from_pictures_uniforms["dimensions"].value = [picture_above.width, picture_above.height, 0];
+	//normalmap_from_pictures_uniforms["dz"].value = 1.0 / document.getElementById('strength_nmb').value * (1.0 + Math.pow(2.0, document.getElementById('level_nmb').value));
+
+	var normal_map_from_pictures_parameters = { 
+		fragmentShader: normal_map_from_pictures_shader.fragmentShader, 
+		vertexShader: normal_map_from_pictures_shader.vertexShader, 
+		uniforms: normalmap_from_pictures_uniforms
+	};
+
+	normal_map_material = new THREE.ShaderMaterial( normal_map_parameters );
+	normal_map_material.wrapAround = true;
+	normal_map_material.transparent = true;
+	normal_map_from_pictures_material = new THREE.ShaderMaterial( normal_map_from_pictures_parameters );
+	normal_map_from_pictures_material.wrapAround = true;
+	normal_map_from_pictures_material.transparent = true;
+	
+
+	//geometry = new THREE.PlaneBufferGeometry(2, 2, 2, 2);
+	mesh_geometry = new THREE.PlaneBufferGeometry(1, 1, 1, 1);
+	render_mesh = new THREE.Mesh( mesh_geometry, normal_map_from_pictures_material );
+	render_mesh.name = "mesh";
+	
+	scene_Normalview.add(render_mesh);
 	
 	NormalRenderScene = new THREE.RenderPass( scene_Normalview, camera_Normalview );
 	//NormalRenderScene.renderToScreen = true;
@@ -70,8 +113,8 @@ function renderNormalview_init(){
 	 
 	var bluriness = 0;
  
-	gaussian_shader_y.uniforms[ "v" ].value = bluriness / width;
-	gaussian_shader_x.uniforms[ "h" ].value = bluriness / height;
+	gaussian_shader_y.uniforms[ "v" ].value = bluriness / height_image.width;
+	gaussian_shader_x.uniforms[ "h" ].value = bluriness / height_image.height;
 
 	gaussian_shader_x.renderToScreen = true;
 	

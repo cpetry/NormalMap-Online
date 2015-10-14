@@ -47,30 +47,42 @@ var createNormalMap = function(){
 
 var invertRed = function(){
 	invert_red = !invert_red;
-	if (invert_red)
+	if (invert_red){
 		normalmap_uniforms["invertR"].value = -1;
-	else
+		normalmap_from_pictures_uniforms["invertR"].value = -1;
+	}
+	else{
 		normalmap_uniforms["invertR"].value = 1;
+		normalmap_from_pictures_uniforms["invertR"].value = 1;
+	}
 	
 	createNormalMap();
 }
 
 var invertGreen = function(){
 	invert_green = !invert_green;
-	if (invert_green)
+	if (invert_green){
 		normalmap_uniforms["invertG"].value = -1;
-	else
+		normalmap_from_pictures_uniforms["invertG"].value = -1;
+	}
+	else{
 		normalmap_uniforms["invertG"].value = 1;
+		normalmap_from_pictures_uniforms["invertG"].value = 1;
+	}
 	
 	createNormalMap();
 }
 
 var invertSource = function(){
 	invert_source = !invert_source;
-	if (!invert_source)
+	if (!invert_source){
 		normalmap_uniforms["invertH"].value = 1;
-	else
+		normalmap_from_pictures_uniforms["invertH"].value = 1;
+	}
+	else{
 		normalmap_uniforms["invertH"].value = -1;
+		normalmap_from_pictures_uniforms["invertH"].value = -1;
+	}
 
 	createNormalMap();
 }
@@ -87,11 +99,13 @@ var setNormalSetting = function(element, v){
 	else if (element == "strength"){
 		strength = v;
 		normalmap_uniforms["dz"].value = 1.0 / v * (1.0 + Math.pow(2.0, document.getElementById('level_nmb').value));
+		normalmap_from_pictures_uniforms["dz"].value = 1.0 / v * (1.0 + Math.pow(2.0, document.getElementById('level_nmb').value));
 	}
 	
 	else if (element == "level"){
 		level = v;
 		normalmap_uniforms["dz"].value = 1.0 / document.getElementById('strength_nmb').value * (1.0 + Math.pow(2.0, v));
+		normalmap_from_pictures_uniforms["dz"].value = 1.0 / document.getElementById('strength_nmb').value * (1.0 + Math.pow(2.0, v));
 	}
 
 	else if (element == "type"){
