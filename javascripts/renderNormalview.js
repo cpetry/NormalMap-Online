@@ -99,7 +99,7 @@ function renderNormalview_init(){
 
 	//geometry = new THREE.PlaneBufferGeometry(2, 2, 2, 2);
 	mesh_geometry = new THREE.PlaneBufferGeometry(1, 1, 1, 1);
-	render_mesh = new THREE.Mesh( mesh_geometry, normal_map_from_pictures_material );
+	render_mesh = new THREE.Mesh( mesh_geometry, normal_map_material );
 	render_mesh.name = "mesh";
 	
 	scene_Normalview.add(render_mesh);
@@ -150,19 +150,53 @@ function renderNormalview_init(){
 	renderNormalview();*/
 }
 
-function renderNormalview_update(){
+function renderNormalview_update(map){
 	//composer_Normalview = new THREE.EffectComposer( renderer_Normalview, renderTarget );
-	var width = height_image.naturalWidth;
-	var height = height_image.naturalHeight;
-	height_map				= new THREE.Texture( height_image );
-	height_map.wrapS 		= height_map.wrapT = THREE.ClampToEdgeWrapping; //RepeatWrapping, ClampToEdgeWrapping
-	height_map.minFilter 	= height_map.magFilter = THREE.NearestFilter; //LinearFilter , NearestFilter
-	height_map.anisotropy   = 2;
-	normalmap_uniforms["tDiffuse"].value = height_map;
-	normalmap_uniforms["dimensions"].value = [width, height, 0];
+	
+	if (map === "height"){
+		height_map				= new THREE.Texture( height_image );
+		height_map.wrapS 		= height_map.wrapT = THREE.ClampToEdgeWrapping; //RepeatWrapping, ClampToEdgeWrapping
+		height_map.minFilter 	= height_map.magFilter = THREE.NearestFilter; //LinearFilter , NearestFilter
+		height_map.anisotropy   = 2;
+		normalmap_uniforms["tHeightMap"].value = height_map;
+		normalmap_uniforms["dimensions"].value = [height_image.naturalWidth, height_image.naturalHeight, 0];
 
-	renderer_Normalview.setSize( width, height );
-	composer_Normalview.setSize( width, height );
+		renderer_Normalview.setSize( height_image.naturalWidth, height_image.naturalHeight );
+		composer_Normalview.setSize( height_image.naturalWidth, height_image.naturalHeight );
+	}
+
+	else if (map === "picture"){
+		picture_above_map				= new THREE.Texture( picture_above );
+		picture_above_map.wrapS 		= picture_above_map.wrapT = THREE.ClampToEdgeWrapping; //RepeatWrapping, ClampToEdgeWrapping
+		picture_above_map.minFilter 	= picture_above_map.magFilter = THREE.NearestFilter; //LinearFilter , NearestFilter
+		picture_above_map.anisotropy   	= 2;
+		picture_left_map				= new THREE.Texture( picture_left );
+		picture_left_map.wrapS 			= picture_above_map.wrapT = THREE.ClampToEdgeWrapping; //RepeatWrapping, ClampToEdgeWrapping
+		picture_left_map.minFilter 		= picture_above_map.magFilter = THREE.NearestFilter; //LinearFilter , NearestFilter
+		picture_left_map.anisotropy   	= 2;
+		picture_right_map				= new THREE.Texture( picture_right );
+		picture_right_map.wrapS 		= picture_above_map.wrapT = THREE.ClampToEdgeWrapping; //RepeatWrapping, ClampToEdgeWrapping
+		picture_right_map.minFilter 	= picture_above_map.magFilter = THREE.NearestFilter; //LinearFilter , NearestFilter
+		picture_right_map.anisotropy   	= 2;
+		picture_below_map				= new THREE.Texture( picture_below );
+		picture_below_map.wrapS 		= picture_above_map.wrapT = THREE.ClampToEdgeWrapping; //RepeatWrapping, ClampToEdgeWrapping
+		picture_below_map.minFilter 	= picture_above_map.magFilter = THREE.NearestFilter; //LinearFilter , NearestFilter
+		picture_below_map.anisotropy   	= 2;
+		normalmap_from_pictures_uniforms["tAbove"].value = picture_above_map;
+		normalmap_from_pictures_uniforms["tLeft"].value = picture_left_map;
+		normalmap_from_pictures_uniforms["tRight"].value = picture_right_map;
+		normalmap_from_pictures_uniforms["tBelow"].value = picture_below_map;
+		normalmap_from_pictures_uniforms["dimensions"].value = [picture_above.width, picture_above.height, 0];
+
+		renderer_Normalview.setSize( picture_above.naturalWidth, picture_above.naturalHeight );
+		composer_Normalview.setSize( picture_above.naturalWidth, picture_above.naturalHeight );
+
+		picture_above_map.needsUpdate = true;
+		picture_left_map.needsUpdate = true;
+		picture_right_map.needsUpdate = true;
+		picture_below_map.needsUpdate = true;
+	}
+
 	composer_Normalview.addPass( NormalRenderScene );
 	composer_Normalview.addPass( gaussian_shader_y );	
 	composer_Normalview.addPass( gaussian_shader_x );
