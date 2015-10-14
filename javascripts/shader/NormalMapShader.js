@@ -6,7 +6,7 @@ THREE.NormalMapShader = {
     	"invertH": 		{type: "1f", value: 1},
     	"dz":           {type: "1f", value: 0},
     	"dimensions": 	{type: "fv", value: [0, 0, 0]},
-    	"tDiffuse": 	{type: "t", value: null }
+    	"tHeightMap": 	{type: "t", value: null }
 	},
 
 	vertexShader: [
@@ -31,7 +31,7 @@ THREE.NormalMapShader = {
         "uniform float invertG;",
         "uniform float invertH;",
         "uniform int type;",
-		"uniform sampler2D tDiffuse;",
+		"uniform sampler2D tHeightMap;",
         
 		"void main(void) {",
 		"	vec2 tlv = vec2(vUv.x - step.x, vUv.y + step.y );", 
@@ -74,14 +74,14 @@ THREE.NormalMapShader = {
 		"	rv  = vec2( rv.x < dimensions.x  ?  rv.x : ( rv.x - dimensions.x ), rv.y <= dimensions.y    ?  rv.y : ( rv.y - dimensions.y  ));",
 		"	brv = vec2(brv.x >= 0.0 		 ? brv.x : (dimensions.x - brv.x), 	brv.y >= 0.0 			? brv.y : (dimensions.y - brv.y));",
 		"	brv = vec2(brv.x < dimensions.x  ? brv.x : (brv.x - dimensions.x ), brv.y <= dimensions.y    ? brv.y : (brv.y - dimensions.y  ));",*/
-		"	float tl = abs(texture2D(tDiffuse, tlv).r);", 
-		"	float l  = abs(texture2D(tDiffuse, lv ).r);",
-		"	float bl = abs(texture2D(tDiffuse, blv).r);",	
-		"	float t  = abs(texture2D(tDiffuse, tv ).r);", 
-		"	float b  = abs(texture2D(tDiffuse, bv ).r);",
-		"	float tr = abs(texture2D(tDiffuse, trv).r);", 
-		"	float r  = abs(texture2D(tDiffuse, rv ).r);",
-		"	float br = abs(texture2D(tDiffuse, brv).r);",
+		"	float tl = abs(texture2D(tHeightMap, tlv).r);", 
+		"	float l  = abs(texture2D(tHeightMap, lv ).r);",
+		"	float bl = abs(texture2D(tHeightMap, blv).r);",	
+		"	float t  = abs(texture2D(tHeightMap, tv ).r);", 
+		"	float b  = abs(texture2D(tHeightMap, bv ).r);",
+		"	float tr = abs(texture2D(tHeightMap, trv).r);", 
+		"	float r  = abs(texture2D(tHeightMap, rv ).r);",
+		"	float br = abs(texture2D(tHeightMap, brv).r);",
 		"   float dx = 0.0, dy = 0.0;",
 		"   if(type == 0){",	// Sobel
 		"		dx = tl + l*2.0 + bl - tr - r*2.0 - br;",
@@ -91,12 +91,12 @@ THREE.NormalMapShader = {
 		"		dx = tl*3.0 + l*10.0 + bl*3.0 - tr*3.0 - r*10.0 - br*3.0;",
 		"		dy = tl*3.0 + t*10.0 + tr*3.0 - bl*3.0 - b*10.0 - br*3.0;",
 		"   }",
-		"	vec4 normal = vec4(normalize(vec3(dx * invertR * invertH * 255.0, dy * invertG * invertH * 255.0, dz)), texture2D(tDiffuse, vUv).a);",
+		"	vec4 normal = vec4(normalize(vec3(dx * invertR * invertH * 255.0, dy * invertG * invertH * 255.0, dz)), texture2D(tHeightMap, vUv).a);",
 		"	gl_FragColor = vec4(normal.xy * 0.5 + 0.5, normal.zw);",
 		//"	gl_FragColor = texture2D(tDiffuse, vec2(1.0,1.0));",
-		//"	gl_FragColor = texture2D(tDiffuse, vec2(0.0,0.0));",
+		//"	gl_FragColor = texture2D(tHeightMap, vec2(0.0,0.0));",
 		//"	gl_FragColor = texture2D(tDiffuse, tlv);",
-		//"	gl_FragColor = vec4(texture2D(tDiffuse, vUv.xy).rgba);",
+		//"	gl_FragColor = vec4(texture2D(tHeightMap, vUv.xy).rgba);",
 		"}"
 	].join("\n")
 
