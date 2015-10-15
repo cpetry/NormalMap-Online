@@ -21,91 +21,103 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-var invert_red = false;
-var invert_green = false;
-var invert_source = false;
-var smoothing = 0;
-var strength = 2.5;
-var level = 7;
-var normal_type = "sobel";
-var normal_canvas = document.createElement("canvas");
+var NMO_NormalMap = new function(){
 
-var getNextPowerOf2 = function(nmb){
-	i = 2;
-	while(i < Math.pow(2,14)){
-		i *= 2;
-		if(i >= nmb)
-			return i;
-	}
-}
+	this.invert_red = false;
+	this.invert_green = false;
+	this.invert_source = false;
+	this.smoothing = 0;
+	this.strength = 2.5;
+	this.level = 8;
+	this.normal_type = "sobel";
+	this.normal_canvas = document.createElement("canvas");
 
-var createNormalMap = function(){
-	renderNormalView();
-	setTexturePreview(normal_canvas, "normal_img", normal_canvas.width, normal_canvas.height);
-}
+	this.getNextPowerOf2 = function(nmb){
+		i = 2;
+		while(i < Math.pow(2,14)){
+			i *= 2;
+			if(i >= nmb)
+				return i;
+		}
+	};
+
+	this.createNormalMap = function(){
+		NMO_RenderNormalview.renderNormalView();
+		NMO_Main.setTexturePreview(this.normal_canvas, "normal_img", this.normal_canvas.width, this.normal_canvas.height);
+		//NMO_RenderView.normal_map.needsUpdate = true;
+	};
 
 
-var invertRed = function(){
-	invert_red = !invert_red;
-	if (invert_red)
-		normalmap_uniforms["invertR"].value = -1;
-	else
-		normalmap_uniforms["invertR"].value = 1;
-	
-	createNormalMap();
-}
-
-var invertGreen = function(){
-	invert_green = !invert_green;
-	if (invert_green)
-		normalmap_uniforms["invertG"].value = -1;
-	else
-		normalmap_uniforms["invertG"].value = 1;
-	
-	createNormalMap();
-}
-
-var invertSource = function(){
-	invert_source = !invert_source;
-	if (!invert_source)
-		normalmap_uniforms["invertH"].value = 1;
-	else
-		normalmap_uniforms["invertH"].value = -1;
-
-	createNormalMap();
-}
-
-var timer = Date.now();
-
-var setNormalSetting = function(element, v){
-	if (element == "blur_sharp"){
-		smoothing = v;
-		gaussian_shader_y.uniforms["v"].value = v / height_image.naturalWidth / 5;
-		gaussian_shader_x.uniforms["h"].value = v / height_image.naturalHeight / 5;
-	}
-	
-	else if (element == "strength"){
-		strength = v;
-		normalmap_uniforms["dz"].value = 1.0 / v * (1.0 + Math.pow(2.0, document.getElementById('level_nmb').value));
-	}
-	
-	else if (element == "level"){
-		level = v;
-		normalmap_uniforms["dz"].value = 1.0 / document.getElementById('strength_nmb').value * (1.0 + Math.pow(2.0, v));
-	}
-
-	else if (element == "type"){
-		normal_type = v;
-		if (v == "sobel")
-			normalmap_uniforms["type"].value = 0;
-		else
-			normalmap_uniforms["type"].value = 1;
-	}
+	this.invertRed = function(){
+		this.invert_red = !this.invert_red;
+		if (this.invert_red){
+			NMO_RenderNormalview.normalmap_uniforms["invertR"].value = -1;
+			NMO_RenderNormalview.normalmap_from_pictures_uniforms["invertR"].value = -1;
+		}
+		else{
+			NMO_RenderNormalview.normalmap_uniforms["invertR"].value = 1;
+			NMO_RenderNormalview.normalmap_from_pictures_uniforms["invertR"].value = 1;
+		}
 		
-	createNormalMap();
+		NMO_NormalMap.createNormalMap();
+	};
+
+	this.invertGreen = function(){
+		this.invert_green = !this.invert_green;
+		if (this.invert_green){
+			NMO_RenderNormalview.normalmap_uniforms["invertG"].value = -1;
+			NMO_RenderNormalview.normalmap_from_pictures_uniforms["invertG"].value = -1;
+		}
+		else{
+			NMO_RenderNormalview.normalmap_uniforms["invertG"].value = 1;
+			NMO_RenderNormalview.normalmap_from_pictures_uniforms["invertG"].value = 1;
+		}
+		
+		NMO_NormalMap.createNormalMap();
+	};
+
+	this.invertSource = function(){
+		this.invert_source = !this.invert_source;
+		if (!this.invert_source){
+			NMO_RenderNormalview.normalmap_uniforms["invertH"].value = 1;
+			NMO_RenderNormalview.normalmap_from_pictures_uniforms["invertH"].value = 1;
+		}
+		else{
+			NMO_RenderNormalview.normalmap_uniforms["invertH"].value = -1;
+			NMO_RenderNormalview.normalmap_from_pictures_uniforms["invertH"].value = -1;
+		}
+
+		NMO_NormalMap.createNormalMap();
+	};
+
+	this.setNormalSetting = function(element, v, initial){
+		if (element == "blur_sharp"){
+			smoothing = v;
+			NMO_RenderNormalview.gaussian_shader_y.uniforms["v"].value = v / NMO_FileDrop.height_image.naturalWidth / 5;
+			NMO_RenderNormalview.gaussian_shader_x.uniforms["h"].value = v / NMO_FileDrop.height_image.naturalHeight / 5;
+		}
+		
+		else if (element == "strength"){
+			strength = v;
+			NMO_RenderNormalview.normalmap_uniforms["dz"].value = 1.0 / v * (1.0 + Math.pow(2.0, document.getElementById('level_nmb').value));
+			NMO_RenderNormalview.normalmap_from_pictures_uniforms["dz"].value = 1.0 / v * (1.0 + Math.pow(2.0, document.getElementById('level_nmb').value));
+		}
+		
+		else if (element == "level"){
+			level = v;
+			NMO_RenderNormalview.normalmap_uniforms["dz"].value = 1.0 / document.getElementById('strength_nmb').value * (1.0 + Math.pow(2.0, v));
+			NMO_RenderNormalview.normalmap_from_pictures_uniforms["dz"].value = 1.0 / document.getElementById('strength_nmb').value * (1.0 + Math.pow(2.0, v));
+		}
+
+		else if (element == "type"){
+			normal_type = v;
+			if (v == "sobel")
+				NMO_RenderNormalview.normalmap_uniforms["type"].value = 0;
+			else
+				NMO_RenderNormalview.normalmap_uniforms["type"].value = 1;
+		}
+
+		if (typeof initial === 'undefined')
+			NMO_NormalMap.createNormalMap();
+	};
 }
-
-
-
-
-
