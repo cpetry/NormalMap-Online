@@ -44,7 +44,7 @@ var loadDiffuseMap = function(source){
 		ctx_diffuse.drawImage(diffuse_image,0,0, diffuse_image.width, diffuse_image.height);
 		enableDiffuse();
 
-		diffuse_map.needsUpdate = true;
+		//diffuse_map.needsUpdate = true;
 	};
 
 	diffuse_image.src = source;

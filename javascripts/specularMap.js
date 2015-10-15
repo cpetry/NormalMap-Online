@@ -21,79 +21,100 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-FallOffEnum = {
-    NO : 0,
-    LINEAR : 1,
-    SQUARE : 2
-}
+NMO_SpecularMap = new function(){
 
-var specular_mean = 255;
-var specular_range = 255;
-var specular_canvas = document.createElement("canvas");
-var specular_falloff = FallOffEnum.LINEAR;
-
- var setSpecularSetting = function(element, v){
-	if (element == "spec_mean")
-		specular_mean = v * 255;
-	
-	else if (element == "spec_range")
-		specular_range = v * 255;
-
-	else if (element == "spec_falloff"){
-		if (v == "linear")
-			specular_falloff = FallOffEnum.LINEAR;
-		else if (v == "square")
-			specular_falloff = FallOffEnum.SQUARE;
-		else if (v == "no")
-			specular_falloff = FallOffEnum.NO;
+	this.FallOffEnum = {
+	    NO : 0,
+	    LINEAR : 1,
+	    SQUARE : 2
 	}
+
+	this.timer = 0;
+	this.specular_mean = 255;
+	this.specular_range = 255;
+	this.specular_canvas = document.createElement("canvas");
+	this.specular_falloff = this.FallOffEnum.LINEAR;
+
+	this.setSpecularSetting = function(element, v){
+		if (element == "spec_mean")
+			this.specular_mean = v * 255;
 		
-	if (auto_update && Date.now() - timer > 150){
-		createSpecularTexture();
-		timer = Date.now();
-	}
-}
+		else if (element == "spec_range")
+			this.specular_range = v * 255;
+
+		else if (element == "spec_falloff"){
+			if (v == "linear")
+				this.specular_falloff = this.FallOffEnum.LINEAR;
+			else if (v == "square")
+				this.specular_falloff = this.FallOffEnum.SQUARE;
+			else if (v == "no")
+				this.specular_falloff = this.FallOffEnum.NO;
+		}
+			
+		if (NMO_Main.auto_update && Date.now() - this.timer > 150){
+			this.createSpecularTexture();
+			this.timer = Date.now();
+		}
+	};
 
 
-function createSpecularTexture(){
-	var st = new Date().getTime();
-	
-	var img_data = Filters.filterImage(Filters.grayscale, height_image);
-	var specular_map = Filters.createImageData(img_data.width, img_data.height);
+	this.createSpecularTexture = function(){
 
-	
+		var img_data;
+		// if normal from picture is selected
+		if(NMO_Main.normal_map_mode == "pictures"){
+			var picture_sum = Filters.filterImage(Filters.grayscale, NMO_FileDrop.picture_above);
+			var add_left    = Filters.filterImage(Filters.grayscale, NMO_FileDrop.picture_left);
+			var add_right   = Filters.filterImage(Filters.grayscale, NMO_FileDrop.picture_right);
+			var add_below   = Filters.filterImage(Filters.grayscale, NMO_FileDrop.picture_below);
+			
+			for (var i=0; i<picture_sum.data.length; i += 4){
+				var v = picture_sum.data[i] + add_left.data[i] + add_right.data[i] + add_below.data[i];
+				picture_sum.data[i] = picture_sum.data[i+1] = picture_sum.data[i+2] = v * 0.25;
+			}
+			img_data = picture_sum;
+		}
+		// Normal from height is selected
+		else
+			img_data = Filters.filterImage(Filters.grayscale, NMO_FileDrop.height_image);
 
-	// invert colors if needed
-	var v = 0;
-	for (var i=0; i<img_data.data.length; i += 4){
-		v = (img_data.data[i] + img_data.data[i+1] + img_data.data[i+2]) * 0.333333; // average
-		v = v < 1.0 || v > 255.0 ? 0 : v; // clamp
+		var specular_map = Filters.createImageData(img_data.width, img_data.height);
 
-		var per_dist_to_mean = (specular_range - Math.abs(v - specular_mean)) / specular_range;
+		
 
-		if(specular_falloff == FallOffEnum.NO)
-			v = per_dist_to_mean > 0 ? 1 : 0;
-		else if(specular_falloff == FallOffEnum.LINEAR)
-			v = per_dist_to_mean > 0 ? per_dist_to_mean : 0;
-		else if(specular_falloff == FallOffEnum.SQUARE)
-			v = per_dist_to_mean > 0 ? Math.sqrt(per_dist_to_mean,2) : 0;
+		// invert colors if needed
+		var v = 0;
+		for (var i=0; i<img_data.data.length; i += 4){
+			v = (img_data.data[i] + img_data.data[i+1] + img_data.data[i+2]) * 0.333333; // average
+			v = v < 1.0 || v > 255.0 ? 0 : v; // clamp
 
-		v = v*255;
-		specular_map.data[i]   = v;
-		specular_map.data[i+1] = v;
-		specular_map.data[i+2] = v;
-		//specular_map.data[i+3] = 255;
-		specular_map.data[i+3] = img_data.data[i+3];
-	}
+			var per_dist_to_mean = (this.specular_range - Math.abs(v - this.specular_mean)) / this.specular_range;
+
+			if(this.specular_falloff == this.FallOffEnum.NO)
+				v = per_dist_to_mean > 0 ? 1 : 0;
+			else if(this.specular_falloff == this.FallOffEnum.LINEAR)
+				v = per_dist_to_mean > 0 ? per_dist_to_mean : 0;
+			else if(this.specular_falloff == this.FallOffEnum.SQUARE)
+				v = per_dist_to_mean > 0 ? Math.sqrt(per_dist_to_mean,2) : 0;
+
+			v = v*255;
+			specular_map.data[i]   = v;
+			specular_map.data[i+1] = v;
+			specular_map.data[i+2] = v;
+			//specular_map.data[i+3] = 255;
+			specular_map.data[i+3] = img_data.data[i+3];
+		}
 
 
-	// write out texture
-	var ctx_specular = specular_canvas.getContext("2d");
-	specular_canvas.width = img_data.width;
-	specular_canvas.height = img_data.height;
-	ctx_specular.clearRect(0, 0, img_data.width, img_data.height);
-	ctx_specular.putImageData(specular_map, 0, 0, 0, 0, img_data.width, img_data.height);
-	
-	setTexturePreview(specular_canvas, "specular_img", img_data.width, img_data.height);
-	//console.log("Specular: " + (new Date().getTime() - st));
+		// write out texture
+		var ctx_specular = this.specular_canvas.getContext("2d");
+		this.specular_canvas.width = img_data.width;
+		this.specular_canvas.height = img_data.height;
+		ctx_specular.clearRect(0, 0, img_data.width, img_data.height);
+		ctx_specular.putImageData(specular_map, 0, 0, 0, 0, img_data.width, img_data.height);
+		
+		NMO_Main.setTexturePreview(this.specular_canvas, "specular_img", img_data.width, img_data.height);
+		//console.log("Specular: " + (new Date().getTime() - st));
+		//NMO_RenderView.specular_map.needsUpdate = true;
+	};
 }
