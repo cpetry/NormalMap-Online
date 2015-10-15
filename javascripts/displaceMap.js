@@ -28,7 +28,7 @@ NMO_DisplacementMap = new function(){
 	this.blur_sharp = 0;
 	this.timer = 0;
 	this.current_disp_scale = 0;
-	this.contrast = 0;
+	this.contrast = -0.5;
 	this.invert_displacement = false;
 	this.displacement_canvas = document.createElement("canvas");
 

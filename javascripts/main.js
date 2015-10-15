@@ -195,11 +195,13 @@ var NMO_Main = new function(){
 		
 		if (canvas == NMO_NormalMap.normal_canvas)
 			NMO_RenderView.normal_map.needsUpdate = true;
-		else{
-			NMO_RenderView.ao_map.needsUpdate = true;
+		else if (canvas == NMO_DisplacementMap.displacement_canvas)
 			NMO_RenderView.displacement_map.needsUpdate = true;
+		else if (canvas == NMO_AmbientOccMap.ao_canvas)
+			NMO_RenderView.ao_map.needsUpdate = true;
+		else if (canvas == NMO_SpecularMap.specular_canvas)
 			NMO_RenderView.specular_map.needsUpdate = true;
-		}
+		
 	}
 
 	this.toggle_height_column = function(){

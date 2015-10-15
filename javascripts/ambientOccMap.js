@@ -69,8 +69,9 @@ NMO_AmbientOccMap = new function(){
 			var per_dist_to_mean = (this.ao_range - Math.abs(v - this.ao_mean)) / this.ao_range;
 			v = per_dist_to_mean > 0 ? Math.sqrt(per_dist_to_mean,2) : 0;
 
-			v = v*255 * (1-this.ao_strength);
-			ao_map.data[i]   = ao_map.data[i+1] = ao_map.data[i+2] = v;
+			v = v * (1-this.ao_strength);
+			v = (!this.invert_ao) ? (1 - v) : v;
+			ao_map.data[i]   = ao_map.data[i+1] = ao_map.data[i+2] = v*255;
 
 			//specular_map.data[i+3] = 255;
 			ao_map.data[i+3] = grayscale.data[i+3];
