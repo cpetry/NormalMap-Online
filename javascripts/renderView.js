@@ -298,10 +298,22 @@ $(document).ready(function() {
 		closeClick	: false,
 		openEffect	: 'none',
 		closeEffect	: 'none',
+	});
+
+	$(".big_preview").fancybox({
+		maxWidth	: 800,
+		maxHeight	: 800,
+		fitToView	: false,
+		width		: 800,
+		height		: 800,
+		autoSize	: false,
+		closeClick	: false,
+		openEffect	: 'none',
+		closeEffect	: 'none',
 		
 		afterShow: function(){
 			document.getElementById('renderBig').appendChild(NMO_RenderView.renderer.domElement);
-			NMO_RenderView.renderer.setSize( 600, 600 );
+			NMO_RenderView.renderer.setSize( 800, 800 );
 
 		},
 		afterClose: function(){
