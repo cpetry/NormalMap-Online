@@ -32,10 +32,14 @@ NMO_SpecularMap = new function(){
 	this.timer = 0;
 	this.specular_mean = 255;
 	this.specular_range = 255;
+	this.specular_strength = 1;
 	this.specular_canvas = document.createElement("canvas");
 	this.specular_falloff = this.FallOffEnum.LINEAR;
 
 	this.setSpecularSetting = function(element, v){
+		if (element == "spec_strength")
+			this.specular_strength = v;
+
 		if (element == "spec_mean")
 			this.specular_mean = v * 255;
 		
@@ -97,7 +101,7 @@ NMO_SpecularMap = new function(){
 			else if(this.specular_falloff == this.FallOffEnum.SQUARE)
 				v = per_dist_to_mean > 0 ? Math.sqrt(per_dist_to_mean,2) : 0;
 
-			v = v*255;
+			v = v*255 * this.specular_strength;
 			specular_map.data[i]   = v;
 			specular_map.data[i+1] = v;
 			specular_map.data[i+2] = v;

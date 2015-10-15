@@ -34,21 +34,14 @@ var NMO_RenderNormalview = new function(){
 	this.normal_map_material, this.normal_map_from_pictures_material;
 	this.render_mesh;
 	this.mesh_geometry;
-	
+
 	this.normal_to_height_canvas = document.createElement("canvas");
 
 	this.height_map;
 	this.picture_above_map, this.picture_left_map, this.picture_right_map, this.picture_below_map;
 
 	this.renderNormalView = function() {
-		// request new frame
-		//composer_Normalview.addPass( gaussian_shader_y );
-		//composer_Normalview.addPass( gaussian_shader_x );
-		//renderer_Normalview.clear();
-		//renderer_Normalview.render(scene_Normalview, camera_Normalview);
-
-		this.composer_Normalview.render( 1 / 60 );
-		
+		this.composer_Normalview.render( 1 / 60 );		
 	};
 
 	this.renderNormalview_init = function() {
@@ -178,12 +171,37 @@ var NMO_RenderNormalview = new function(){
 		this.render_mesh.uvsNeedUpdate = true;
 		this.render_mesh.needUpdate = true;
 		this.renderNormalView();
-		NMO_Main.setTexturePreview(NMO_NormalMap.normal_canvas, "normal_img", NMO_NormalMap.normal_canvas.width, NMO_NormalMap.normal_canvas.height);
 	};
 
 
 	this.renderNormalview_update = function(map){
 		//composer_Normalview = new THREE.EffectComposer( renderer_Normalview, renderTarget );
+
+		
+		var img = (map === "height") ? NMO_FileDrop.height_image : NMO_FileDrop.picture_above;
+		//console.log(img);
+		img.width = NMO_FileDrop.container_height;
+		img.height = NMO_FileDrop.container_height;
+		//console.log(img.width);
+		
+		var context = NMO_FileDrop.height_canvas.getContext("2d");
+		context.clearRect(0, 0, NMO_FileDrop.height_canvas.width, NMO_FileDrop.height_canvas.height);
+		
+		NMO_FileDrop.height_canvas.width = img.width;
+		NMO_FileDrop.height_canvas.height = img.height;
+		
+		var ratio = img.naturalWidth / img.naturalHeight;
+		var draw_width = ratio > 1 ? img.width : (img.width * ratio);
+		var draw_height = ratio > 1 ? (img.height / ratio) : img.height;
+		context.drawImage(img, NMO_FileDrop.container_height/2 - draw_width/2, 
+							NMO_FileDrop.container_height/2 - draw_height/2, draw_width, draw_height);
+		img.width = img.naturalWidth;
+		img.height = img.naturalHeight;
+
+		var size_text = "" + (img.width) + " x " + (img.height);
+		size_text += (!NMO_FileDrop.isPowerOf2(this.width) && !NMO_FileDrop.isPowerOf2(this.height)) ? " NOT POWER OF 2 !" : "";
+		document.getElementById("size").value = size_text;
+		
 		
 		if (map === "height"){
 			this.height_map.image = NMO_FileDrop.height_image;
@@ -195,7 +213,13 @@ var NMO_RenderNormalview = new function(){
 			this.composer_Normalview.setSize( NMO_FileDrop.height_image.naturalWidth, NMO_FileDrop.height_image.naturalHeight );
 		}
 
-		else if (map === "picture"){
+		else if (map === "pictures"){
+			NMO_FileDrop.height_canvas.width = NMO_FileDrop.picture_above.width;
+			NMO_FileDrop.height_canvas.height = NMO_FileDrop.picture_above.height;
+			NMO_FileDrop.height_canvas.getContext('2d').drawImage(NMO_FileDrop.picture_above, 0, 0, NMO_FileDrop.picture_above.width, NMO_FileDrop.picture_above.height, 0,0, NMO_FileDrop.height_canvas.width, NMO_FileDrop.height_canvas.height);
+			NMO_FileDrop.picture_above.width = NMO_FileDrop.picture_above.naturalWidth;
+			NMO_FileDrop.picture_above.height = NMO_FileDrop.picture_above.naturalHeight;
+
 			this.picture_above_map.image		= NMO_FileDrop.picture_above;
 			this.picture_left_map.image			= NMO_FileDrop.picture_left;
 			this.picture_right_map.image		= NMO_FileDrop.picture_right;
@@ -214,6 +238,8 @@ var NMO_RenderNormalview = new function(){
 			this.picture_right_map.needsUpdate = true;
 			this.picture_below_map.needsUpdate = true;
 		}
+		else
+			console.log("wrong parameter: " + map);
 
 		//composer_Normalview.addPass( NormalRenderScene );
 		//composer_Normalview.addPass( gaussian_shader_y );	
@@ -222,7 +248,7 @@ var NMO_RenderNormalview = new function(){
 	};
 
 	
-	this.renderNormalToHeight = function(iterations){
+	this.renderNormalToHeight = function(){
 		//composer_Normalview = new THREE.EffectComposer( renderer_Normalview, renderTarget );
 		var renderTargetParameters = { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat, stencilBufer: false };
 		var renderTarget = new THREE.WebGLRenderTarget( NMO_FileDrop.picture_above.width, NMO_FileDrop.picture_above.height, 

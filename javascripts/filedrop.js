@@ -38,7 +38,13 @@ NMO_FileDrop = new function(){
 
 	// Setup the dnd listeners.
 	this.handleFileSelect = function(evt) {
-	    NMO_FileDrop.readImage(evt.target.files[0], "height", ""); // files is a FileList of File objects. List some properties.
+		//alert(evt.target.param);
+		if (typeof evt !== 'undefined'){
+	    	if (evt.target.param === 'height')
+		    	NMO_FileDrop.readImage(evt.target.files[0], "height", ""); // files is a FileList of File objects. List some properties.
+	    	else
+	    		NMO_FileDrop.readImage(evt.target.files[0], "pictures", evt.target.param); // files is a FileList of File objects. List some properties.
+		}
 	};
 	
 
@@ -70,7 +76,7 @@ NMO_FileDrop = new function(){
 			}
 			if (type === "height")
 				NMO_FileDrop.loadHeightmap(data);
-			else if (type === "picture")
+			else if (type === "pictures")
 				NMO_FileDrop.loadHeightFromPictures(data, direction);
 		};
 		if (imgFile.type == "image/targa")
@@ -86,32 +92,8 @@ NMO_FileDrop = new function(){
 		this.height_image = new Image();
 				
 		this.height_image.onload = function(){
-			//console.log("creating height image");
-			
-			this.width = NMO_FileDrop.container_height;
-			this.height = NMO_FileDrop.container_height;
-			
-			var context = NMO_FileDrop.height_canvas.getContext("2d");
-			context.clearRect(0, 0, NMO_FileDrop.height_canvas.width, NMO_FileDrop.height_canvas.height);
-			
-			self.height_canvas.width = this.width;
-			self.height_canvas.height = this.height;
-			
-			var ratio = this.naturalWidth / this.naturalHeight;
-			var draw_width = ratio > 1 ? this.width : (this.width * ratio);
-			var draw_height = ratio > 1 ? (this.height / ratio) : this.height;
-			context.drawImage(this, NMO_FileDrop.container_height/2 - draw_width/2, 
-								NMO_FileDrop.container_height/2 - draw_height/2, draw_width, draw_height);
-			//context.drawImage(height_image, height_image.width, height_image.height );
-			//console.log('draw_width ' + height_image.naturalWidth);
-			//console.log('draw_height ' + height_image.naturalHeight);
-			this.width = this.naturalWidth;
-			this.height = this.naturalHeight;
-			
-			var size_text = "" + (this.width) + " x " + (this.height);
-			size_text += (!NMO_FileDrop.isPowerOf2(this.width) && !NMO_FileDrop.isPowerOf2(this.height)) ? " NOT POWER OF 2 !" : "";
-			document.getElementById("size").value = size_text;
-			
+			console.log("loading height image");
+						
 			NMO_RenderNormalview.renderNormalview_update("height");
 			
 			NMO_NormalMap.createNormalMap();
@@ -153,21 +135,24 @@ NMO_FileDrop = new function(){
 			
 			document.getElementById("size").value = "" +(this.naturalWidth) + " x " + (this.naturalHeight);
 			
-			//renderNormalview_init();
-				
-			NMO_NormalMap.createNormalMap(); // height map was loaded... so create standard normal map!
-			NMO_RenderNormalview.height_map.needsUpdate = true;
 
-			NMO_NormalMap.setNormalSetting('strength', document.getElementById('strength_nmb').value);
-			NMO_NormalMap.setNormalSetting('level', document.getElementById('level_nmb').value);
-			NMO_NormalMap.setNormalSetting('blur_sharp', document.getElementById('blur_sharp_nmb').value);
-			
+			NMO_FileDrop.initHeightFromPictures();
+			NMO_RenderNormalview.renderNormalview_init(); // init only when both types of images are loaded (init)
+			NMO_RenderNormalview.height_map.needsUpdate = true;
+				
+			NMO_NormalMap.setNormalSetting('strength', document.getElementById('strength_nmb').value, 'initial');
+			NMO_NormalMap.setNormalSetting('level', document.getElementById('level_nmb').value, 'initial');
+			NMO_NormalMap.setNormalSetting('blur_sharp', document.getElementById('blur_sharp_nmb').value, 'initial');
+			NMO_NormalMap.createNormalMap(); // height map was loaded... so create standard normal map!
+
 			
 			NMO_DisplacementMap.createDisplacementMap(document.getElementById('dm_contrast_nmb').value);
 			NMO_DisplacementMap.setDisplacementScale(-document.getElementById('dm_strength_nmb').value);
 			
 			NMO_AmbientOccMap.createAmbientOcclusionTexture();
 			NMO_SpecularMap.createSpecularTexture();
+
+
 	    };
 		
 	    this.height_image.src = './images/standard_height.png';	
@@ -185,7 +170,8 @@ NMO_FileDrop = new function(){
 		var context_left = pic_canvas_left.getContext('2d');
 		var context_right = pic_canvas_right.getContext('2d');
 		var context_below = pic_canvas_below.getContext('2d');
-		
+		console.log("loading picture image");
+
 		if(direction == "above"){
 			this.picture_above = new Image();
 			this.picture_above.onload = function () {	
@@ -194,9 +180,12 @@ NMO_FileDrop = new function(){
 				this.width = this.naturalWidth;
 				this.height = this.naturalHeight;
 
-				NMO_RenderNormalview.renderNormalview_update("picture");
+				NMO_RenderNormalview.renderNormalview_update("pictures");
 				NMO_NormalMap.createNormalMap();
 				NMO_RenderNormalview.renderNormalToHeight();
+				NMO_DisplacementMap.createDisplacementMap();
+				NMO_SpecularMap.createSpecularTexture();
+				NMO_AmbientOccMap.createAmbientOcclusionTexture();
 			};
 
 			this.picture_above.src = source;
@@ -209,8 +198,12 @@ NMO_FileDrop = new function(){
 				this.width = this.naturalWidth;
 				this.height = this.naturalHeight;
 
-				NMO_RenderNormalview.renderNormalview_update("picture");
+				NMO_RenderNormalview.renderNormalview_update("pictures");
 				NMO_NormalMap.createNormalMap();
+				NMO_RenderNormalview.renderNormalToHeight();
+				NMO_DisplacementMap.createDisplacementMap();
+				NMO_SpecularMap.createSpecularTexture();
+				NMO_AmbientOccMap.createAmbientOcclusionTexture();
 		    };
 			
 		    this.picture_left.src = source;
@@ -223,8 +216,12 @@ NMO_FileDrop = new function(){
 				this.width = this.naturalWidth;
 				this.height = this.naturalHeight;
 
-				NMO_RenderNormalview.renderNormalview_update("picture");
+				NMO_RenderNormalview.renderNormalview_update("pictures");
 				NMO_NormalMap.createNormalMap();
+				NMO_RenderNormalview.renderNormalToHeight();
+				NMO_DisplacementMap.createDisplacementMap();
+				NMO_SpecularMap.createSpecularTexture();
+				NMO_AmbientOccMap.createAmbientOcclusionTexture();
 		    };
 			
 		    this.picture_right.src = source;	
@@ -237,8 +234,12 @@ NMO_FileDrop = new function(){
 				this.width = this.naturalWidth;
 				this.height = this.naturalHeight;
 
-				NMO_RenderNormalview.renderNormalview_update("picture");
+				NMO_RenderNormalview.renderNormalview_update("pictures");
 				NMO_NormalMap.createNormalMap();
+				NMO_RenderNormalview.renderNormalToHeight();
+				NMO_DisplacementMap.createDisplacementMap();
+				NMO_SpecularMap.createSpecularTexture();
+				NMO_AmbientOccMap.createAmbientOcclusionTexture();
 		    };
 			
 		    this.picture_below.src = source;
@@ -266,15 +267,12 @@ NMO_FileDrop = new function(){
 			this.width = this.naturalWidth;
 			this.height = this.naturalHeight;
 
-			NMO_RenderNormalview.renderNormalview_init();
-			NMO_NormalMap.createNormalMap(); // height map was loaded... so create standard normal map!
+			//NMO_NormalMap.createNormalMap(); // height map was loaded... so create standard normal map!
 		
 			NMO_RenderNormalview.picture_above_map.needsUpdate = true;
 			
 	    };
 		
-	    this.picture_above.src = './images/test_picture_above.jpg';
-
 	    this.picture_left = new Image();
 		this.picture_left.onload = function () {	
 			context_left.drawImage(this, 0, 0, this.width, this.height,
@@ -285,7 +283,6 @@ NMO_FileDrop = new function(){
 			NMO_RenderNormalview.picture_left_map.needsUpdate = true;
 	    };
 		
-	    this.picture_left.src = './images/test_picture_left.jpg';
 
 	    this.picture_right = new Image();
 		this.picture_right.onload = function () {	
@@ -297,7 +294,6 @@ NMO_FileDrop = new function(){
 			NMO_RenderNormalview.picture_right_map.needsUpdate = true;
 	    };
 		
-	    this.picture_right.src = './images/test_picture_right.jpg';	
 
 	    this.picture_below = new Image();
 		this.picture_below.onload = function () {	
@@ -309,12 +305,24 @@ NMO_FileDrop = new function(){
 			NMO_RenderNormalview.picture_below_map.needsUpdate = true;
 	    };
 		
-	    this.picture_below.src = './images/test_picture_below.jpg';
+		this.picture_above.src = './images/default_picture_above.jpg';
+	    this.picture_left.src  = './images/default_picture_left.jpg';
+	    this.picture_right.src = './images/default_picture_right.jpg';	
+	    this.picture_below.src = './images/default_picture_below.jpg';
 
 	};
 }
 
-document.getElementById('select_file').addEventListener('change', NMO_FileDrop.handleFileSelect, false);
+document.getElementById('select_file_height').param = "height";
+document.getElementById('select_file_above').param = "above";
+document.getElementById('select_file_left').param = "left";
+document.getElementById('select_file_right').param = "right";
+document.getElementById('select_file_below').param = "below";
+document.getElementById('select_file_height').addEventListener('change', NMO_FileDrop.handleFileSelect, false);
+document.getElementById('select_file_above').addEventListener('change', NMO_FileDrop.handleFileSelect, false);
+document.getElementById('select_file_left').addEventListener('change', NMO_FileDrop.handleFileSelect, false);
+document.getElementById('select_file_right').addEventListener('change', NMO_FileDrop.handleFileSelect, false);
+document.getElementById('select_file_below').addEventListener('change', NMO_FileDrop.handleFileSelect, false);
 
 document.getElementById("height_map").addEventListener("dragover", function(e) {e.preventDefault();}, true);
 document.getElementById("height_map").addEventListener("drop", function(e){
@@ -327,23 +335,23 @@ document.getElementById("picture_above_drop").addEventListener("dragover", funct
 document.getElementById("picture_above_drop").addEventListener("drop", function(e){
 	//console.log("above");
 	e.preventDefault(); 
-	NMO_FileDrop.readImage(e.dataTransfer.files[0], "picture", "above");
+	NMO_FileDrop.readImage(e.dataTransfer.files[0], "pictures", "above");
 }, true);
 
 document.getElementById("picture_left_drop").addEventListener("dragover", function(e) {e.preventDefault();}, true);
 document.getElementById("picture_left_drop").addEventListener("drop", function(e){
 	e.preventDefault(); 
-	NMO_FileDrop.readImage(e.dataTransfer.files[0], "picture", "left");
+	NMO_FileDrop.readImage(e.dataTransfer.files[0], "pictures", "left");
 }, true);
 
 document.getElementById("picture_right_drop").addEventListener("dragover", function(e) {e.preventDefault();}, true);
 document.getElementById("picture_right_drop").addEventListener("drop", function(e){
 	e.preventDefault(); 
-	NMO_FileDrop.readImage(e.dataTransfer.files[0], "picture", "right");
+	NMO_FileDrop.readImage(e.dataTransfer.files[0], "pictures", "right");
 }, true);
 
 document.getElementById("picture_below_drop").addEventListener("dragover", function(e) {e.preventDefault();}, true);
 document.getElementById("picture_below_drop").addEventListener("drop", function(e){
 	e.preventDefault(); 
-	NMO_FileDrop.readImage(e.dataTransfer.files[0], "picture", "below");
+	NMO_FileDrop.readImage(e.dataTransfer.files[0], "pictures", "below");
 }, true);

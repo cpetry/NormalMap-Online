@@ -25,8 +25,10 @@
 NMO_DisplacementMap = new function(){
 
 	this.displacement_bias = 0;
+	this.blur_sharp = 0;
 	this.timer = 0;
 	this.current_disp_scale = 0;
+	this.contrast = 0;
 	this.invert_displacement = false;
 	this.displacement_canvas = document.createElement("canvas");
 
@@ -54,8 +56,6 @@ NMO_DisplacementMap = new function(){
 
 		//var img_data = Filters.filterImage(Filters.grayscale, normal_to_height_canvas);
 		var displace_map = Filters.createImageData(img_data.width, img_data.height);
-
-		var contrast = document.getElementById('dm_contrast_nmb').value;
 		
 		// invert colors if needed
 		var v = 0;
@@ -72,8 +72,12 @@ NMO_DisplacementMap = new function(){
 		}
 		
 		// add contrast value
-		displace_map = this.contrastImage(displace_map, contrast * 255);
-		
+		displace_map = this.contrastImage(displace_map, this.contrast * 255);
+
+		if (this.blur_sharp > 0)
+			NMO_Gaussian.gaussiansharpen(displace_map, img_data.width, img_data.height, Math.abs(this.blur_sharp));
+		else if (this.blur_sharp < 0)
+			NMO_Gaussian.gaussianblur(displace_map, img_data.width, img_data.height, Math.abs(this.blur_sharp));		
 		
 		// GET BIAS FOR DISPLACMENT
 		// calc average value at the border of height tex
@@ -112,7 +116,25 @@ NMO_DisplacementMap = new function(){
 		if (NMO_Main.auto_update && Date.now() - this.timer > 50)
 			this.createDisplacementMap();
 	};
+	
+	this.setDisplacementSetting = function(element, v){	
+		if (element == "blur_sharp")
+			this.blur_sharp = v;
 		
+		else if (element == "strength")
+			this.current_disp_scale = v;
+		
+		else if (element == "contrast")
+			this.contrast = v;
+			
+		if(this.timer == 0)
+			this.timer = Date.now();
+			
+		if (NMO_Main.auto_update && Date.now() - this.timer > 50){
+			this.createDisplacementMap();
+			this.timer = 0;
+		}
+	};
 
 	this.setDisplaceStrength = function(v){
 		if(this.timer == 0)

@@ -22,7 +22,6 @@
  */
 
 
-NMO_FileDrop.initHeightFromPictures();
 NMO_FileDrop.initHeightMap();
 NMO_RenderView.initRenderer();
 
@@ -44,20 +43,28 @@ var NMO_Main = new function(){
 		this.normal_map_mode = type;
 		if (type == "height"){
 			$('#pictures_map').hide("slide", {direction: "right"}, 400, function() {
-				$('#height_map').show("slide", {direction: "left"}, 400);
 				NMO_RenderNormalview.reinitializeShader("height");
+				NMO_RenderNormalview.renderNormalview_update("height");
+				NMO_NormalMap.createNormalMap();
+				NMO_Main.setTexturePreview(NMO_NormalMap.normal_canvas, "normal_img", NMO_NormalMap.normal_canvas.width, NMO_NormalMap.normal_canvas.height);
+				NMO_DisplacementMap.createDisplacementMap();
+				NMO_AmbientOccMap.createAmbientOcclusionTexture();
+				NMO_SpecularMap.createSpecularTexture();
+				$('#height_map').show("slide", {direction: "left"}, 400);
 			});
 		}
 		else if (type == "pictures"){
 			$('#height_map').hide("slide", {direction: "left"}, 400, function() {
-				$('#pictures_map').show("slide", {direction: "right"}, 400);
 				NMO_RenderNormalview.reinitializeShader("pictures");
+				NMO_RenderNormalview.renderNormalview_update("pictures");
+				NMO_NormalMap.createNormalMap();
+				NMO_Main.setTexturePreview(NMO_NormalMap.normal_canvas, "normal_img", NMO_NormalMap.normal_canvas.width, NMO_NormalMap.normal_canvas.height);
+				NMO_DisplacementMap.createDisplacementMap();
+				NMO_AmbientOccMap.createAmbientOcclusionTexture();
+				NMO_SpecularMap.createSpecularTexture();
+				$('#pictures_map').show("slide", {direction: "right"}, 400);
 			});
 		}
-
-		NMO_DisplacementMap.createDisplacementMap();
-		NMO_AmbientOccMap.createAmbientOcclusionTexture();
-		NMO_SpecularMap.createSpecularTexture();
 	}
 
 	this.activate_texture = function(type){
@@ -157,7 +164,8 @@ var NMO_Main = new function(){
 
 		//canvas.width = width;
 		//canvas.height = height;
-		
+
+		//console.log(img_id + ": " + width);		
 
 		img.getContext('2d').clearRect ( 0 , 0 , img.width, img.height );
 
@@ -179,6 +187,7 @@ var NMO_Main = new function(){
 			current_width *= 0.5;
 			current_height *= 0.5;
 		}
+
 		//console.log(draw_width + ", " + draw_height)
 		img.height = draw_height;
 		img.width = draw_width;

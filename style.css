@@ -11,8 +11,15 @@ div.view {
     width: 300px;
 }
 
+div.drop_cell{
+	border-style: outset;
+	box-sizing: border-box;
+}
+
 div.pictures_view {
 	height: 100%;
+	//background: none repeat scroll 0% 0% rgba(50,50,50,1);
+	background: url('./images/light_bulp.png');
 }
 
 div.pictures_view_row {
@@ -23,9 +30,10 @@ div.pictures_view_row {
 
 div.pictures_view_cell {
 	position: relative;
-	width: 33%;
+	width: 33.33333%;
 	height: 100%;
     display: inline-block;
+    float:left;
 }
 
 .helper {
@@ -215,10 +223,9 @@ footer, footer p {
 	font-size: 12px;
 }
 
-a.render_magnifier{
+a.render_magnifier {
 	top: 210px; 
 	right: 70px; 
-	position: 
-	absolute;
-	overflow:hidden;
+	position: absolute;
+	overflow: hidden;
 }

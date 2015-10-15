@@ -96,7 +96,7 @@
 		
 		<div class="column_btn" style="display:inline-block; float:left; position:relative">
 			<span class="helper_column_button"></span>
-			<div id="column_btn_left" onclick="toggle_height_column();">
+			<div id="column_btn_left" onclick="NMO_Main.toggle_height_column();">
 				<span style="display: inline-block; min-height: 50px; vertical-align: middle;"></span>
 			<div id="column_btn_left_div" style="vertical-align:middle"> >> </div>
 			</div>
@@ -107,13 +107,13 @@
 		<!-- Drop box %D -->
 		<div class="column" id="column_height" style="float:left;">
 			<div class="column_top">
-				<input id="select_file" type="file" accept="image/*, .tga" onpropertychange="handleFileSelect()" style="position:absolute;visibility:hidden;"/>
-				<input type="button" style="margin-top:30px" id="browseButton" value="Select image..." onclick="select_file.click()">
+				<input id="select_file_height" type="file" accept="image/*, .tga" onpropertychange="handleFileSelect()" style="position:absolute;visibility:hidden;"/>
+				<input type="button" style="margin-top:30px" id="browseButton" value="Select image..." onclick="select_file_height.click()">
 				or
 				<a style="top: 80px; left: -180px; position: relative; overflow:hidden;" class="various" href="#heightmap_help"><img src="images/help.png" /></a>
 				<img src="images/drag_drop.png" style="padding-top:30px"/>
 				
-				<a style="top: -15px; right: -50px; position: relative; overflow:hidden;" class="various" href="#photo_help"><img src="images/help.png" /></a>
+				<a style="top: -18px; right: -44px; position: relative; overflow:hidden;" class="various" href="#photo_help"><img src="images/attention.png" /></a>
 			</div>
 			
 			<!-- DESCRIPTION HEIGHT MAP -->
@@ -128,8 +128,8 @@
 					This texture contains the distance "height" from "floor".
 					The brighter the pixel, the further away (more depth).
 					<br/>
-					In this application it doesn't matter if it's inverted,
-					the most important thing is the difference between the pixels.
+					In this application it doesn't matter if the values are inverted because you can change it anytime later on.
+					The most important thing though, is the value difference between the pixels.
 					<br/>
 
 					Ideal is a texture with pixel dimensions with a power of 2 (2, 4, 8,..., 256, 512 etc.)
@@ -139,10 +139,10 @@
 				<br/>
 				<hr/>
 				<p>
-					Using a height map for example as displacement, 
-					you can easily see the effect on the surface.
+					If using a height map as a displacement map,
+					you can easily see the effects on the surface.
 					An example heightmap (left), bumps going in (top-right) 
-					and bumps going out (bottom-right).<br/>
+					and bumps going out (bottom-right) are shown in the image below.<br/>
 					
 				</p>
 				<img src="images/example_height.png" style="display: block; 
@@ -152,24 +152,30 @@
 			<div id="photo_help" style="display:none;overflow:hidden;font-family:Georgia" align="left">					
 				<h1>NormalMaps from photos</h1>
 				<p style="width:500px">
-					It is technically not possible to get completely correct normalmaps directly from pictures e.g. taken with a camera.
+					To generate normal maps from photos, you need four specific pictures of the same surface. Each picture needs a different lighting position. <br/>
+					The light should shine from the top, left, right and bottom of the image.
 				</p>
-				<img src="images/normalfromphoto.png" style="display: block; margin-left: auto; margin-right: auto;" />
+				<img src="images/light_directions.png" style="display: block; margin-left: auto; margin-right: auto;" />
 				<p style="width:500px">
-					But because <b>many</b> of you are interested in this, I considered searching for good methods to still achieve reasonable results from photos.
-					There seem to be some techniques that can create decent normalmaps.<br/>
-					Still it would take me a lot of time to learn about these techniques.
+					When captured, resize them and drag&drop them on the four positions inside the left viewport.
+					You can also click on each image to select a file. <br/>
+				</p>
+				<div style="text-align: center">
+					<img src="images/picture_arranged.PNG" style="display: inline-block; margin-left: auto; margin-right: auto;" />
+					<img src="images/normalmap_from_photos.png" style="display: inline-block; margin-left: auto; margin-right: auto;" />
+				</div>
+				<p style="width:500px">
+					Readjust the values afterwards for better results.<br/>
 					<br/>
-					<br/>
-					Right now I'm studying a master's degree, working part-time and giving lessons in programming.<br/>
-					If you would like me to invest more time on finding and implementing a solution for this, <b>please consider donating</b>!<br/><br/>
-					I could work more on this project and include more features you want!
+					<b>Attention:</b>
+					Best try capturing the surface with a tripod and don't forget to capture an additional image for the diffuse map!
+
 				</p>
 			</div>
 
 			<div class="tabs" style="margin-right:10px; text-align:right;">
-				<input class="tab_button" id="tab_btn_heightmap" type="button" value="HeightMap" onclick="activate_height_tab('height')"/>
-				<input class="tab_button" id="tab_btn_pictures" type="button" value="Pictures" onclick="activate_height_tab('pictures')"/>
+				<input class="tab_button" id="tab_btn_heightmap" type="button" value="HeightMap" onclick="NMO_Main.activate_height_tab('height')"/>
+				<input class="tab_button" id="tab_btn_pictures" type="button" value="Pictures" onclick="NMO_Main.activate_height_tab('pictures')"/>
 				<!--
 				<input class="tab_button" style="color: #888888; border: 2px solid #666666;" id="tab_btn_photo" type="button" value="Photo"/>
 
@@ -182,26 +188,38 @@
 				<canvas id="height_canvas"></canvas>
 			</div>
 			<div class="view" id="pictures_map" style="display: inline-block;float: left; display:none;">
+				<input id="select_file_above" type="file" accept="image/*, .tga" onpropertychange="handleFileSelect()" style="position:absolute;visibility:hidden;"/>
+				<input id="select_file_left"  type="file" accept="image/*, .tga" onpropertychange="handleFileSelect()" style="position:absolute;visibility:hidden;"/>
+				<input id="select_file_right" type="file" accept="image/*, .tga" onpropertychange="handleFileSelect()" style="position:absolute;visibility:hidden;"/>
+				<input id="select_file_below" type="file" accept="image/*, .tga" onpropertychange="handleFileSelect()" style="position:absolute;visibility:hidden;"/>
 				<div class="pictures_view">
 					<div class="pictures_view_row">
-						<div class="pictures_view_cell" id="picture_above_drop">
-							<canvas id="picture_canvas_above" style="width:100%; height: 100%"></canvas>
+						<div class="pictures_view_cell">
+							
+						</div>
+						<div class="pictures_view_cell drop_cell" id="picture_below_drop">
+							<canvas id="picture_canvas_below" style="width:100%; height: 100%" onclick="select_file_below.click()"></canvas>
 						</div>
 					</div>
 					<div class="pictures_view_row">
-						<div class="pictures_view_cell" id="picture_left_drop">
-							<canvas id="picture_canvas_left" style="width:100%; height: 100%"></canvas>
+						<div class="pictures_view_cell drop_cell" id="picture_right_drop">
+							<canvas id="picture_canvas_right" style="width:100%; height: 100%" onclick="select_file_right.click()"></canvas>
 						</div>
 						<div class="pictures_view_cell">
 							
 						</div>
-						<div class="pictures_view_cell" id="picture_right_drop">
-							<canvas id="picture_canvas_right" style="width:100%; height: 100%"></canvas>
+						
+						<div class="pictures_view_cell drop_cell" id="picture_left_drop">
+							<canvas id="picture_canvas_left" style="width:100%; height: 100%" onclick="select_file_left.click()"></canvas>
 						</div>
+						
 					</div>
 					<div class="pictures_view_row">
-						<div class="pictures_view_cell" id="picture_below_drop">
-							<canvas id="picture_canvas_below" style="width:100%; height: 100%"></canvas>
+						<div class="pictures_view_cell">
+							
+						</div>
+						<div class="pictures_view_cell drop_cell" id="picture_above_drop">
+							<canvas id="picture_canvas_above" style="width:100%; height: 100%" onclick="select_file_above.click()"></canvas>
 						</div>
 					</div>
 				</div>
@@ -239,13 +257,13 @@
 					</td>
 					<td class="options">
 						<input id="strength_slider" 
-								onchange="setNormalSetting('strength', this.value); document.getElementById('strength_nmb').value = this.value;"
-								oninput="setNormalSetting('strength', this.value); document.getElementById('strength_nmb').value = this.value;"
+								onchange="NMO_NormalMap.setNormalSetting('strength', this.value); document.getElementById('strength_nmb').value = this.value;"
+								oninput="NMO_NormalMap.setNormalSetting('strength', this.value); document.getElementById('strength_nmb').value = this.value;"
 								style="width:60%;"
 								type="range"  value='2.5' min='0.01' max='5' step='0.01'/>
 						<input id="strength_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" 
 								value='2.5' min='0.01' max='5' 
-								onchange="setNormalSetting('strength', this.value); document.getElementById('strength_slider').value = this.value;">
+								onchange="NMO_NormalMap.setNormalSetting('strength', this.value); document.getElementById('strength_slider').value = this.value;">
 					</td>
 				</tr>
 				<tr>
@@ -254,12 +272,12 @@
 					</td>
 					<td class="options">
 						<input id="level_slider" 
-								onchange="setNormalSetting('level', this.value);  document.getElementById('level_nmb').value = this.value;"
-								oninput="setNormalSetting('level', this.value);  document.getElementById('level_nmb').value = this.value;"
+								onchange="NMO_NormalMap.setNormalSetting('level', this.value);  document.getElementById('level_nmb').value = this.value;"
+								oninput="NMO_NormalMap.setNormalSetting('level', this.value);  document.getElementById('level_nmb').value = this.value;"
 								style="width:60%;"
 								type="range" value='7.0' min='4' max='10' step='0.1'/>
 						<input id="level_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='7.0'
-								onchange="setNormalSetting('level', this.value); document.getElementById('level_slider').value = this.value;">
+								onchange="NMO_NormalMap.setNormalSetting('level', this.value); document.getElementById('level_slider').value = this.value;">
 					</td>
 				</tr>
 				<tr>
@@ -268,12 +286,12 @@
 					</td>
 					<td class="options">
 						<input id="blur_sharp_slider" 
-								onchange="setNormalSetting('blur_sharp', this.value); document.getElementById('blur_sharp_nmb').value = this.value;"
-								oninput="setNormalSetting('blur_sharp', this.value); document.getElementById('blur_sharp_nmb').value = this.value;"
+								onchange="NMO_NormalMap.setNormalSetting('blur_sharp', this.value); document.getElementById('blur_sharp_nmb').value = this.value;"
+								oninput="NMO_NormalMap.setNormalSetting('blur_sharp', this.value); document.getElementById('blur_sharp_nmb').value = this.value;"
 								style="width:60%;"
 								type="range" value='0' min='-32' max='32' step='1'/>
 						<input id="blur_sharp_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='0'
-								onchange="setNormalSetting('blur_sharp', this.value); document.getElementById('blur_sharp_slider').value = this.value;">
+								onchange="NMO_NormalMap.setNormalSetting('blur_sharp', this.value); document.getElementById('blur_sharp_slider').value = this.value;">
 					</td>
 				</tr>
 				<tr>
@@ -282,7 +300,7 @@
 					</td>
 					<td class="options">
 						<div>
-							<select onChange="setNormalSetting('type', this.options[this.selectedIndex].value)">
+							<select onChange="NMO_NormalMap.setNormalSetting('type', this.options[this.selectedIndex].value)">
 								<option value="sobel">Sobel</option>
 								<option value="scharr">Scharr</option>
 							</select>
@@ -295,9 +313,9 @@
 					</td>
 					<td class="options">
 						<div>
-							<input id="invert_r" type="checkbox" onclick="invertRed()" />R
-							<input id="invert_g" type="checkbox" onclick="invertGreen()" />G
-							<input id="invert_height" type="checkbox" onclick="invertSource()" />Height
+							<input id="invert_r" type="checkbox" onclick="NMO_NormalMap.invertRed()" />R
+							<input id="invert_g" type="checkbox" onclick="NMO_NormalMap.invertGreen()" />G
+							<input id="invert_height" type="checkbox" onclick="NMO_NormalMap.invertSource()" />Height
 						</div>
 					</td>
 				</tr>
@@ -314,12 +332,26 @@
 					</td>
 					<td class="options">
 						<input id="dm_contrast_slider" 
-							onchange="document.getElementById('dm_contrast_nmb').value = this.value; setDisplacementContrast();"
-							oninput="document.getElementById('dm_contrast_nmb').value = this.value; setDisplacementContrast();"
+							onchange="NMO_DisplacementMap.setDisplacementSetting('contrast', this.value); document.getElementById('dm_contrast_nmb').value = this.value;"
+							oninput="NMO_DisplacementMap.setDisplacementSetting('contrast', this.value); document.getElementById('dm_contrast_nmb').value = this.value;"
 							style="width:60%;"
 							type="range" value='-0.5' min='-1' max='1' step='0.01'/>
 						<input id="dm_contrast_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='-0.5'
-							onchange="document.getElementById('dm_contrast_slider').value = this.value; setDisplacementContrast();">
+							onchange="document.getElementById('dm_contrast_slider').value = this.value;NMO_DisplacementMap.setDisplacementSetting('contrast', this.value);">
+					</td>
+				</tr>
+				<tr>
+					<td class="option_text">
+						<span>Blur/Sharp</span>
+					</td>
+					<td class="options">
+						<input id="dm_blur_sharp_slider" 
+								onchange="NMO_DisplacementMap.setDisplacementSetting('blur_sharp', this.value); document.getElementById('dm_blur_sharp_nmb').value = this.value;"
+								oninput="NMO_DisplacementMap.setDisplacementSetting('blur_sharp', this.value); document.getElementById('dm_blur_sharp_nmb').value = this.value;"
+								style="width:60%;"
+								type="range" value='0' min='-32' max='32' step='1'/>
+						<input id="dm_blur_sharp_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='0'
+								onchange="NMO_DisplacementMap.setDisplacementSetting('blur_sharp', this.value); document.getElementById('dm_blur_sharp_slider').value = this.value;">
 					</td>
 				</tr>
 				<tr>
@@ -328,7 +360,7 @@
 					</td>
 					<td class="options">
 						<div>
-							<input id="invert_height" type="checkbox" onclick="invertDisplacement(); setDisplacementContrast(document.getElementById('dm_contrast_nmb').value);" />
+							<input id="invert_height" type="checkbox" onclick="NMO_DisplacementMap.invertDisplacement(); NMO_DisplacementMap.setDisplacementContrast(document.getElementById('dm_contrast_nmb').value);" />
 						</div>
 					</td>
 				</tr>
@@ -362,26 +394,54 @@
 					</td>
 					<td class="options">
 						<input id="ao_strength_slider" 
-								onchange="setAOSetting('strength', this.value); document.getElementById('ao_strength_nmb').value = this.value;"
-								oninput="setAOSetting('strength', this.value); document.getElementById('ao_strength_nmb').value = this.value;"
+								onchange="NMO_AmbientOccMap.setAOSetting('strength', this.value); document.getElementById('ao_strength_nmb').value = this.value;"
+								oninput="NMO_AmbientOccMap.setAOSetting('strength', this.value); document.getElementById('ao_strength_nmb').value = this.value;"
 								style="width:60%;"
-								type="range"  value='0.5' min='0' max='5' step='0.1'/>
-						<input id="ao_strength_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='2.5' 
-								onchange="setAOSetting('strength', this.value); document.getElementById('ao_strength_slider').value = this.value;">
+								type="range"  value='0.5' min='0' max='1' step='0.1'/>
+						<input id="ao_strength_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='0.5' 
+								onchange="NMO_AmbientOccMap.setAOSetting('strength', this.value); document.getElementById('ao_strength_slider').value = this.value;">
 					</td>
 				</tr>
-				<tr>
+				<!--<tr>
 					<td class="option_text">
 						<span >Level</span>
 					</td>
 					<td class="options">
 						<input id="ao_level_slider" 
-								onchange="setAOSetting('level', this.value);  document.getElementById('ao_level_nmb').value = this.value;"
-								oninput="setAOSetting('level', this.value);  document.getElementById('ao_level_nmb').value = this.value;"
+								onchange="NMO_AmbientOccMap.setAOSetting('level', this.value);  document.getElementById('ao_level_nmb').value = this.value;"
+								oninput="NMO_AmbientOccMap.setAOSetting('level', this.value);  document.getElementById('ao_level_nmb').value = this.value;"
 								style="width:60%;"
 								type="range" value='7.0' min='4' max='10' step='0.1'/>
 						<input id="ao_level_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='7.0'
-								onchange="setAOSetting('level', this.value); document.getElementById('ao_level_slider').value = this.value;">
+								onchange="NMO_AmbientOccMap.setAOSetting('level', this.value); document.getElementById('ao_level_slider').value = this.value;">
+					</td>
+				</tr>-->
+				<tr>
+					<td class="option_text">
+						<span>Mean</span>
+					</td>
+					<td class="options">
+						<input id="ao_mean_slider" 
+								onchange="NMO_AmbientOccMap.setAOSetting('mean', this.value); document.getElementById('ao_mean_nmb').value = this.value;"
+								oninput="NMO_AmbientOccMap.setAOSetting('mean', this.value); document.getElementById('ao_mean_nmb').value = this.value;"
+								style="width:60%;"
+								type="range"  value='1' min='0' max='1' step='0.01'/>
+						<input id="ao_mean_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='1' 
+								onchange="NMO_AmbientOccMap.setAOSetting('mean', this.value); document.getElementById('ao_mean_slider').value = this.value;">
+					</td>
+				</tr>
+				<tr>
+					<td class="option_text">
+						<span>Range</span>
+					</td>
+					<td class="options">
+						<input id="ao_range_slider" 
+								onchange="NMO_AmbientOccMap.setAOSetting('range', this.value); document.getElementById('ao_range_nmb').value = this.value;"
+								oninput="NMO_AmbientOccMap.setAOSetting('range', this.value); document.getElementById('ao_range_nmb').value = this.value;"
+								style="width:60%;"
+								type="range" value='1' min='0' max='1' step='0.01'/>
+						<input id="ao_range_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='1' 
+								onchange="NMO_AmbientOccMap.setAOSetting('range', this.value); document.getElementById('ao_range_slider').value = this.value;">
 					</td>
 				</tr>
 				<tr>
@@ -390,12 +450,12 @@
 					</td>
 					<td class="options">
 						<input id="ao_blur_sharp_slider" 
-								onchange="setAOSetting('blur_sharp', this.value); document.getElementById('ao_blur_sharp_nmb').value = this.value;"
-								oninput="setAOSetting('blur_sharp', this.value); document.getElementById('ao_blur_sharp_nmb').value = this.value;"
+								onchange="NMO_AmbientOccMap.setAOSetting('blur_sharp', this.value); document.getElementById('ao_blur_sharp_nmb').value = this.value;"
+								oninput="NMO_AmbientOccMap.setAOSetting('blur_sharp', this.value); document.getElementById('ao_blur_sharp_nmb').value = this.value;"
 								style="width:60%;"
 								type="range" value='-10' min='-32' max='32' step='1'/>
 						<input id="ao_blur_sharp_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='0'
-								onchange="setAOSetting('blur_sharp', this.value); document.getElementById('ao_blur_sharp_slider').value = this.value;">
+								onchange="NMO_AmbientOccMap.setAOSetting('blur_sharp', this.value); document.getElementById('ao_blur_sharp_slider').value = this.value;">
 					</td>
 				</tr>
 				<tr>
@@ -404,7 +464,7 @@
 					</td>
 					<td class="options">
 						<div>
-							<input id="invert_AO" type="checkbox" onclick="invertAO();" />
+							<input id="invert_AO" type="checkbox" onclick="NMO_AmbientOccMap.invertAO();" />
 						</div>
 					</td>
 				</tr>
@@ -416,16 +476,30 @@
 				<table class="options_top">
 				<tr>
 					<td class="option_text">
+						<span>Strength</span>
+					</td>
+					<td class="options">
+						<input id="specular_strength_slider" 
+								onchange="NMO_SpecularMap.setSpecularSetting('spec_strength', this.value); document.getElementById('specular_strength_nmb').value = this.value;"
+								oninput="NMO_SpecularMap.setSpecularSetting('spec_strength', this.value); document.getElementById('specular_strength_nmb').value = this.value;"
+								style="width:60%;"
+								type="range"  value='1' min='0' max='1' step='0.01'/>
+						<input id="specular_strength_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='1' 
+								onchange="NMO_SpecularMap.setSpecularSetting('spec_strength', this.value); document.getElementById('specular_strength_slider').value = this.value;">
+					</td>
+				</tr>
+				<tr>
+					<td class="option_text">
 						<span>Mean</span>
 					</td>
 					<td class="options">
 						<input id="specular_mean_slider" 
-								onchange="setSpecularSetting('spec_mean', this.value); document.getElementById('specular_mean_nmb').value = this.value;"
-								oninput="setSpecularSetting('spec_mean', this.value); document.getElementById('specular_mean_nmb').value = this.value;"
+								onchange="NMO_SpecularMap.setSpecularSetting('spec_mean', this.value); document.getElementById('specular_mean_nmb').value = this.value;"
+								oninput="NMO_SpecularMap.setSpecularSetting('spec_mean', this.value); document.getElementById('specular_mean_nmb').value = this.value;"
 								style="width:60%;"
 								type="range"  value='1' min='0' max='1' step='0.01'/>
 						<input id="specular_mean_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='1' 
-								onchange="setSpecularSetting('spec_mean', this.value); document.getElementById('specular_mean_slider').value = this.value;">
+								onchange="NMO_SpecularMap.setSpecularSetting('spec_mean', this.value); document.getElementById('specular_mean_slider').value = this.value;">
 					</td>
 				</tr>
 				<tr>
@@ -434,12 +508,12 @@
 					</td>
 					<td class="options">
 						<input id="specular_range_slider" 
-								onchange="setSpecularSetting('spec_range', this.value); document.getElementById('specular_range_nmb').value = this.value;"
-								oninput="setSpecularSetting('spec_range', this.value); document.getElementById('specular_range_nmb').value = this.value;"
+								onchange="NMO_SpecularMap.setSpecularSetting('spec_range', this.value); document.getElementById('specular_range_nmb').value = this.value;"
+								oninput="NMO_SpecularMap.setSpecularSetting('spec_range', this.value); document.getElementById('specular_range_nmb').value = this.value;"
 								style="width:60%;"
 								type="range" value='1' min='0' max='1' step='0.01'/>
 						<input id="specular_range_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='1' 
-								onchange="setSpecularSetting('spec_range', this.value); document.getElementById('specular_range_slider').value = this.value;">
+								onchange="NMO_SpecularMap.setSpecularSetting('spec_range', this.value); document.getElementById('specular_range_slider').value = this.value;">
 					</td>
 				</tr>
 				<tr>
@@ -448,7 +522,7 @@
 					</td>
 					<td class="options">
 						<div>
-							<select onChange="setSpecularSetting('spec_falloff', this.options[this.selectedIndex].value)">
+							<select onChange="NMO_SpecularMap.setSpecularSetting('spec_falloff', this.options[this.selectedIndex].value)">
 								<option value="no">No</option>
 								<option value="linear" selected>Linear</option>
 								<option value="square">Square</option>
@@ -462,10 +536,10 @@
 			<!-- Textures -->
 			<div class="texture_container">
 				<div class="tabs">
-					<input class="tab_button" id="tab_btn_normal" type="button" onclick="activate_texture('normal');" disabled value="Normal"/>
-					<input class="tab_button" id="tab_btn_displace" type="button" onclick="activate_texture('displace');" value="Displacement"/>
-					<input class="tab_button" id="tab_btn_ao" type="button" onclick="activate_texture('ao');" value="AmbientOcc"/>
-					<input class="tab_button" id="tab_btn_specular" type="button" onclick="activate_texture('specular');" value="Specular"/>
+					<input class="tab_button" id="tab_btn_normal" type="button" onclick="NMO_Main.activate_texture('normal');" disabled value="Normal"/>
+					<input class="tab_button" id="tab_btn_displace" type="button" onclick="NMO_Main.activate_texture('displace');" value="Displacement"/>
+					<input class="tab_button" id="tab_btn_ao" type="button" onclick="NMO_Main.activate_texture('ao');" value="AmbientOcc"/>
+					<input class="tab_button" id="tab_btn_specular" type="button" onclick="NMO_Main.activate_texture('specular');" value="Specular"/>
 				</div>
 				<!-- Normal Texture -->
 				<div class="view" id="normal_map">
@@ -519,7 +593,7 @@
 		
 		<div class="column_btn" style="float:right; position:relative">
 			<span class="helper_column_button"></span>
-			<div id="column_btn_right" onclick="toggle_preview_column();">
+			<div id="column_btn_right" onclick="NMO_Main.toggle_preview_column();">
 				<span style="display: inline-block; min-height: 50px; vertical-align: middle;"></span>
 				<div id="column_btn_right_div" style="vertical-align:middle"> << </div>
 			</div>
@@ -539,9 +613,9 @@
 						<span>Model</span>
 					</td>
 					<td class="options">
-						x:<input style="width:50px;" id="repeat_sliderx" onchange="setRepeat(this.value, document.getElementById('repeat_slidery').value)" 
+						x:<input style="width:50px;" id="repeat_sliderx" onchange="NMO_RenderView.setRepeat(this.value, document.getElementById('repeat_slidery').value)" 
 							type="number"  min='1' max='3' value='1' step='1'/>
-						y:<input style="width:50px;" id="repeat_slidery" onchange="setRepeat(document.getElementById('repeat_sliderx').value, this.value)" 
+						y:<input style="width:50px;" id="repeat_slidery" onchange="NMO_RenderView.setRepeat(document.getElementById('repeat_sliderx').value, this.value)" 
 							type="number"  min='1' max='3' value='1' step='1'/>
 					<td/>
 				<tr/>
@@ -552,7 +626,7 @@
 					<td class="options" style="font-size: small;">
 						<input id="select_diffuse_file" type="file" accept="image/*, .tga" onpropertychange="handleDiffuseFileSelect()" style="position:absolute;visibility:hidden;"/>
 						<input type="button" id="browseDiffuseButton" value="Load..." onclick="select_diffuse_file.click();">
-						<input id="input_diffuse" type="checkbox" value="Diffuse" onclick="toggleDiffuse()" disabled>Diffuse
+						<input id="input_diffuse" type="checkbox" value="Diffuse" onclick="NMO_RenderView.toggleDiffuse()" disabled>Diffuse
 					<td>
 				</tr>
 				<tr style="height:30px;">
@@ -560,13 +634,13 @@
 						<span>UV</span>
 					</td>
 					<td class="options">
-						<select id="model" onchange="setModel(document.getElementById('model').value)">
+						<select id="model" onchange="NMO_RenderView.setModel(document.getElementById('model').value)">
 							<option selected>Cube</option>
 							<option>Plane</option>
 							<option>Sphere</option>
 							<option>Cylinder</option>
 						</select>
-						<input id="input_rot" type="checkbox" value="rotation" onclick="toggleRotation()" checked> Rotation
+						<input id="input_rot" type="checkbox" value="rotation" onclick="NMO_RenderView.toggleRotation()" checked> Rotation
 					<td/>
 				</tr>
 				<tr style="height:30px;">					
@@ -574,13 +648,13 @@
 						<span>Displacement</span>
 					</td>
 					<td class="options">
-						<input id="input_displacement" type="checkbox" value="displacement" onclick="toggleDisplacement()" style="vertical-align: middle;" checked >
+						<input id="input_displacement" type="checkbox" value="displacement" onclick="NMO_RenderView.toggleDisplacement()" style="vertical-align: middle;" checked >
 						<input id="dm_strength_slider" style="width:70px; vertical-align: middle;" 
-							onchange="setDisplaceStrength( this.value); document.getElementById('dm_strength_nmb').value = this.value;"
-							oninput="setDisplaceStrength( this.value); document.getElementById('dm_strength_nmb').value = this.value;"
+							onchange="NMO_DisplacementMap.setDisplaceStrength( this.value); document.getElementById('dm_strength_nmb').value = this.value;"
+							oninput="NMO_DisplacementMap.setDisplaceStrength( this.value); document.getElementById('dm_strength_nmb').value = this.value;"
 							type="range" value='0.3' min='-1' max='1' step='0.01'/>
 						<input id="dm_strength_nmb" type="number" step="0.01" style="width:40px;vertical-align: middle;" value='0.3'
-							onchange="setDisplaceStrength(this.value); document.getElementById('dm_strength_slider').value = this.value;">
+							onchange="NMO_DisplacementMap.setDisplaceStrength(this.value); document.getElementById('dm_strength_slider').value = this.value;">
 						
 					</td>
 				</tr>
@@ -590,9 +664,9 @@
 						<span>Use Map</span>
 					</td>
 					<td class="options" style="font-size: small;">
-						<input id="input_normal" type="checkbox" value="normal" onclick="toggleNormal()" checked>Normal
-						<input id="input_ao" type="checkbox" value="ao" onclick="toggleAO()" checked>AO
-						<input id="input_specular" type="checkbox" value="specular" onclick="toggleSpecular()" checked>Specular
+						<input id="input_normal" type="checkbox" value="normal" onclick="NMO_RenderView.toggleNormal()" checked>Normal
+						<input id="input_ao" type="checkbox" value="ao" onclick="NMO_RenderView.toggleAO()" checked>AO
+						<input id="input_specular" type="checkbox" value="specular" onclick="NMO_RenderView.toggleSpecular()" checked>Specular
 					</td>
 				</tr>
 				</table>
@@ -673,6 +747,7 @@
 <script src="javascripts/extern/CopyShader.js"></script>
 <script src="javascripts/extern/NormalDisplacementShader.js"></script>
 <script src="javascripts/shader/NormalMapShader.js"></script>
+<script src="javascripts/shader/NormalToHeightShader.js"></script>
 <script src="javascripts/shader/NormalMapFromPicturesShader.js"></script>
 <script src="javascripts/shader/HorizontalBlurShader.js"></script>
 <script src="javascripts/shader/VerticalBlurShader.js"></script>

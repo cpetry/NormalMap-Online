@@ -42,9 +42,9 @@ var loadDiffuseMap = function(source){
 		diffuse_canvas.height = diffuse_image.height;
 		ctx_diffuse.clearRect(0, 0, diffuse_image.width, diffuse_image.height);
 		ctx_diffuse.drawImage(diffuse_image,0,0, diffuse_image.width, diffuse_image.height);
-		enableDiffuse();
+		NMO_RenderView.enableDiffuse();
 
-		//diffuse_map.needsUpdate = true;
+		NMO_RenderView.diffuse_map.needsUpdate = true;
 	};
 
 	diffuse_image.src = source;

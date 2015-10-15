@@ -90,7 +90,7 @@ var NMO_NormalMap = new function(){
 		NMO_NormalMap.createNormalMap();
 	};
 
-	this.setNormalSetting = function(element, v){
+	this.setNormalSetting = function(element, v, initial){
 		if (element == "blur_sharp"){
 			smoothing = v;
 			NMO_RenderNormalview.gaussian_shader_y.uniforms["v"].value = v / NMO_FileDrop.height_image.naturalWidth / 5;
@@ -116,7 +116,8 @@ var NMO_NormalMap = new function(){
 			else
 				NMO_RenderNormalview.normalmap_uniforms["type"].value = 1;
 		}
-			
-		NMO_NormalMap.createNormalMap();
+
+		if (typeof initial === 'undefined')
+			NMO_NormalMap.createNormalMap();
 	};
 }

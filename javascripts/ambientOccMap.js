@@ -26,6 +26,8 @@ NMO_AmbientOccMap = new function(){
 	this.ao_canvas = document.createElement("canvas");
 	this.ao_smoothing = -10;
 	this.ao_strength = 0.5;
+	this.ao_range = 255;
+	this.ao_mean = 255;
 	this.ao_level = 7;
 	this.invert_ao = false;
 	this.timer = 0;
@@ -57,7 +59,30 @@ NMO_AmbientOccMap = new function(){
 			height = NMO_FileDrop.height_image.height;
 		}
 		
-		var sobelfiltered = Filters.sobelfilter(grayscale, this.ao_strength, this.ao_level);
+
+		var ao_map = Filters.createImageData(width, height);
+
+		for (var i=0; i<grayscale.data.length; i += 4){
+			var v = (grayscale.data[i] + grayscale.data[i+1] + grayscale.data[i+2]) * 0.333333; // average
+			v = v < 1.0 || v > 255.0 ? 0 : v; // clamp
+
+			var per_dist_to_mean = (this.ao_range - Math.abs(v - this.ao_mean)) / this.ao_range;
+			v = per_dist_to_mean > 0 ? Math.sqrt(per_dist_to_mean,2) : 0;
+
+			v = v*255 * (1-this.ao_strength);
+			ao_map.data[i]   = ao_map.data[i+1] = ao_map.data[i+2] = v;
+
+			//specular_map.data[i+3] = 255;
+			ao_map.data[i+3] = grayscale.data[i+3];
+		}
+		
+		
+		if (this.ao_smoothing > 0)
+			NMO_Gaussian.gaussiansharpen(ao_map, width, height, Math.abs(this.ao_smoothing));
+		else if (this.ao_smoothing < 0)
+			NMO_Gaussian.gaussianblur(ao_map, width, height, Math.abs(this.ao_smoothing));
+		
+		/*var sobelfiltered = Filters.sobelfilter(grayscale, this.ao_strength * 0.5, this.ao_level);
 		
 		var ao_map = Filters.createImageData(width, height);
 		
@@ -69,7 +94,7 @@ NMO_AmbientOccMap = new function(){
 		var v = 0;
 		for (var i=0; i<sobelfiltered.data.length && i<grayscale.data.length; i += 4){
 			v = (sobelfiltered.data[i] + sobelfiltered.data[i+1]) * 0.5;
-			v -= grayscale.data[i] * 0.5 - 0.5 * 255.0;
+			v = v - grayscale.data[i] * this.ao_strength * 0.2;
 			v = Math.max(0, Math.min(255, v));
 			v = this.invert_ao ? 255-v : v;
 			ao_map.data[i]   = v;
@@ -77,7 +102,7 @@ NMO_AmbientOccMap = new function(){
 			ao_map.data[i+2] = v;
 			//ao_map.data[i+3] = 255;
 			ao_map.data[i+3] = grayscale.data[i+3];
-		}
+		}*/
 		
 		
 		
@@ -109,6 +134,12 @@ NMO_AmbientOccMap = new function(){
 		else if (element == "strength")
 			this.ao_strength = v;
 		
+		else if (element == "mean")
+			this.ao_mean = v*255;
+
+		else if (element == "range")
+			this.ao_range = v*255;
+
 		else if (element == "level")
 			this.ao_level = v;
 			
