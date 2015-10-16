@@ -1,34 +1,37 @@
 THREE.NormalToHeightShader = {
 	uniforms: {
 		//"type": 		{type: "1i", value: 0},
-    	"dimensions": 	{type: "fv", value: [0, 0, 0]},
-    	"tNormalMap": 	{type: "t", value: null }
+    	"tAbove": 	{type: "t", value: null },
+    	"tLeft": 	{type: "t", value: null },
+    	"tRight": 	{type: "t", value: null },
+    	"tBelow": 	{type: "t", value: null }
 	},
 
 	vertexShader: [
 		"precision mediump float;",
         "varying vec2 vUv;",
-		"varying vec2 step;",
-        "uniform vec3 dimensions;",
         "void main() {",
 			"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
-			"step = vec2(-1.0 / dimensions.x, -1.0 / dimensions.y);", // - to switch from glsl orientation to my orientation :D
+			//"vUv.y = 1.0 - uv.y;",
+			//"vUv.x = uv.x;",
 			"vUv = uv;",
+			"vUv.y = 1.0 - vUv.y;",
 		"}"
 	].join("\n"),
 
 	fragmentShader: [
 		"precision mediump float;",
-        "uniform vec3 dimensions;",
         "varying vec2 vUv;",
-        "varying vec2 step;",
         //"uniform int type;",
-		"uniform sampler2D tNormalMap;",
+		"uniform sampler2D tAbove;",
+		"uniform sampler2D tLeft;",
+		"uniform sampler2D tRight;",
+		"uniform sampler2D tBelow;",
         
 		"void main(void) {",
-		//"	gl_FragColor = texture2D(tAbove, vUv);",
-		// Lower value
-		"	gl_FragColor = vec4(0.5,0.5,0.5,0.5);",
+		//"	gl_FragColor = texture2D(tBelow, vUv);",
+		"	gl_FragColor = vec4(1,1,0,1);",
+		"	gl_FragColor = (texture2D(tAbove, vUv) + texture2D(tLeft, vUv) + texture2D(tRight, vUv) + texture2D(tBelow, vUv)) / 4.0;",
 		"}"
 	].join("\n")
 

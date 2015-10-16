@@ -67,7 +67,7 @@ NMO_SpecularMap = new function(){
 		var img_data;
 		// if normal from picture is selected
 		if(NMO_Main.normal_map_mode == "pictures"){
-			var picture_sum = Filters.filterImage(Filters.grayscale, NMO_FileDrop.picture_above);
+			/*var picture_sum = Filters.filterImage(Filters.grayscale, NMO_FileDrop.picture_above);
 			var add_left    = Filters.filterImage(Filters.grayscale, NMO_FileDrop.picture_left);
 			var add_right   = Filters.filterImage(Filters.grayscale, NMO_FileDrop.picture_right);
 			var add_below   = Filters.filterImage(Filters.grayscale, NMO_FileDrop.picture_below);
@@ -76,7 +76,13 @@ NMO_SpecularMap = new function(){
 				var v = picture_sum.data[i] + add_left.data[i] + add_right.data[i] + add_below.data[i];
 				picture_sum.data[i] = picture_sum.data[i+1] = picture_sum.data[i+2] = v * 0.25;
 			}
-			img_data = picture_sum;
+			img_data = picture_sum;*/
+
+			/*var image = new Image();
+			image.src = NMO_RenderNormalview.normal_to_height_canvas.toDataURL("image/png");
+			img_data = Filters.filterImage(Filters.grayscale, image);*/
+
+			img_data = NMO_RenderNormalview.height_from_normal_img;
 		}
 		// Normal from height is selected
 		else

@@ -179,13 +179,6 @@ NMO_FileDrop = new function(){
 										 0,0, pic_canvas_above.width, pic_canvas_above.height);
 				this.width = this.naturalWidth;
 				this.height = this.naturalHeight;
-
-				NMO_RenderNormalview.renderNormalview_update("pictures");
-				NMO_NormalMap.createNormalMap();
-				NMO_RenderNormalview.renderNormalToHeight();
-				NMO_DisplacementMap.createDisplacementMap();
-				NMO_SpecularMap.createSpecularTexture();
-				NMO_AmbientOccMap.createAmbientOcclusionTexture();
 			};
 
 			this.picture_above.src = source;
@@ -197,13 +190,6 @@ NMO_FileDrop = new function(){
 										0,0, pic_canvas_left.width, pic_canvas_left.height);
 				this.width = this.naturalWidth;
 				this.height = this.naturalHeight;
-
-				NMO_RenderNormalview.renderNormalview_update("pictures");
-				NMO_NormalMap.createNormalMap();
-				NMO_RenderNormalview.renderNormalToHeight();
-				NMO_DisplacementMap.createDisplacementMap();
-				NMO_SpecularMap.createSpecularTexture();
-				NMO_AmbientOccMap.createAmbientOcclusionTexture();
 		    };
 			
 		    this.picture_left.src = source;
@@ -215,13 +201,6 @@ NMO_FileDrop = new function(){
 										0,0, pic_canvas_right.width, pic_canvas_right.height);
 				this.width = this.naturalWidth;
 				this.height = this.naturalHeight;
-
-				NMO_RenderNormalview.renderNormalview_update("pictures");
-				NMO_NormalMap.createNormalMap();
-				NMO_RenderNormalview.renderNormalToHeight();
-				NMO_DisplacementMap.createDisplacementMap();
-				NMO_SpecularMap.createSpecularTexture();
-				NMO_AmbientOccMap.createAmbientOcclusionTexture();
 		    };
 			
 		    this.picture_right.src = source;	
@@ -233,22 +212,19 @@ NMO_FileDrop = new function(){
 										0,0, pic_canvas_below.width, pic_canvas_below.height);
 				this.width = this.naturalWidth;
 				this.height = this.naturalHeight;
-
-				NMO_RenderNormalview.renderNormalview_update("pictures");
-				NMO_NormalMap.createNormalMap();
-				NMO_RenderNormalview.renderNormalToHeight();
-				NMO_DisplacementMap.createDisplacementMap();
-				NMO_SpecularMap.createSpecularTexture();
-				NMO_AmbientOccMap.createAmbientOcclusionTexture();
 		    };
 			
 		    this.picture_below.src = source;
 		}
+
+		NMO_RenderNormalview.renderNormalview_update("pictures");
+		NMO_NormalMap.createNormalMap();
+		NMO_RenderNormalview.renderNormalToHeight();
 	};
 
 
 
-
+	// gets called inside initHeightMap!
 	this.initHeightFromPictures = function(){
 		
 		var pic_canvas_above = document.getElementById("picture_canvas_above");
@@ -303,6 +279,7 @@ NMO_FileDrop = new function(){
 			this.height = this.naturalHeight;
 
 			NMO_RenderNormalview.picture_below_map.needsUpdate = true;
+			//NMO_RenderNormalview.renderNormalToHeight(); // when the last one was loaded
 	    };
 		
 		this.picture_above.src = './images/default_picture_above.jpg';

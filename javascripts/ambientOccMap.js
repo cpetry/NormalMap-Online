@@ -33,12 +33,13 @@ NMO_AmbientOccMap = new function(){
 	this.timer = 0;
 
 	this.createAmbientOcclusionTexture = function(){
-		var st = new Date().getTime();
+		var start = Date.now();
 		
 		var grayscale;
 		var height, width;
 		// if normal from picture is selected
 		if(NMO_Main.normal_map_mode == "pictures"){
+			/*
 			width = NMO_FileDrop.picture_above.width;
 			height = NMO_FileDrop.picture_above.height;
 			var picture_sum = Filters.filterImage(Filters.grayscale, NMO_FileDrop.picture_above); // invert_source?!
@@ -50,7 +51,14 @@ NMO_AmbientOccMap = new function(){
 				var v = picture_sum.data[i] + add_left.data[i] + add_right.data[i] + add_below.data[i];
 				picture_sum.data[i] = picture_sum.data[i+1] = picture_sum.data[i+2] = v * 0.25;
 			}
-			grayscale = picture_sum;
+			grayscale = picture_sum;*/
+			/*var image = new Image();
+			image.src = NMO_RenderNormalview.normal_to_height_canvas.toDataURL("image/png");
+			grayscale = Filters.filterImage(Filters.grayscale, image);*/
+			grayscale = NMO_RenderNormalview.height_from_normal_img;
+			width = grayscale.width;
+			height = grayscale.height;
+
 		}
 		// Normal from height is selected
 		else{
@@ -114,6 +122,9 @@ NMO_AmbientOccMap = new function(){
 		ctx_ambient.clearRect(0, 0, grayscale.width, grayscale.height);
 		ctx_ambient.putImageData(ao_map, 0, 0, 0, 0, grayscale.width, grayscale.height);
 		
+		console.log("Ambient Occ: " + (Date.now() - start));
+		
+
 		NMO_Main.setTexturePreview(this.ao_canvas, "ao_img", grayscale.width, grayscale.height);
 		//console.log("AmbientOcc: " + (new Date().getTime() - st));
 		//NMO_RenderView.ao_map.needsUpdate = true;
