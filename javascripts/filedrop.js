@@ -170,7 +170,7 @@ NMO_FileDrop = new function(){
 		var context_left = pic_canvas_left.getContext('2d');
 		var context_right = pic_canvas_right.getContext('2d');
 		var context_below = pic_canvas_below.getContext('2d');
-		console.log("loading picture image");
+		//console.log("loading picture image");
 
 		if(direction == "above"){
 			this.picture_above = new Image();

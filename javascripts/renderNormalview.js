@@ -320,12 +320,6 @@ var NMO_RenderNormalview = new function(){
 		composer_normal_to_height.render( 1 / 60 );
 		document.body.appendChild( renderer_normal_to_height.domElement );*/
 
-		this.height_from_normal_img = new Image();
-	    this.height_from_normal_img.onload = function(){
-	    	NMO_DisplacementMap.createDisplacementMap();
-			NMO_SpecularMap.createSpecularTexture();
-			NMO_AmbientOccMap.createAmbientOcclusionTexture();
-	    }
 	    //this.height_from_normal_img.src = this.normal_to_height_canvas.toDataURL("image/png");
 	    var gl = renderer_normal_to_height.getContext();
 		var data = new Uint8Array(4 * this.normal_to_height_canvas.width * this.normal_to_height_canvas.height)
@@ -335,9 +329,9 @@ var NMO_RenderNormalview = new function(){
 		//this.height_from_normal_img_data = texture.image;
 		this.height_from_normal_img = texture.image;
 
-		/*NMO_DisplacementMap.createDisplacementMap();
+		NMO_DisplacementMap.createDisplacementMap();
 		NMO_SpecularMap.createSpecularTexture();
-		NMO_AmbientOccMap.createAmbientOcclusionTexture();*/
+		NMO_AmbientOccMap.createAmbientOcclusionTexture();
 	};
 
 }
