@@ -25,11 +25,12 @@
 <html lang="en" dir="ltr" xmlns:fb="http://ogp.me/ns/fb#">
 
 <head>
-	<title>NormalMap-Online</title>
-	<link rel="icon" type="image/png" href="images/favicon.png" />
-	<link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:700"></link>
-	<link type="text/css" rel="stylesheet" href="./style.css"></link>
 	<meta charset="utf-8">
+
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+	<meta http-equiv="reply-to" content="petry_christian@web.de">
 	<meta name="description" content="Online NormalMap Generator FREE! Create a Normalmap directly inside your browser! No Uploads required, completely client-based">
 	<meta name="author" content="Christian Petry">
 	<meta name="language" CONTENT="english">
@@ -37,7 +38,12 @@
 	<meta name="date" content="2014-06-28">
 	<meta name="page-topic" content="Dienstleistung">
 	<meta name="robots" content="index,follow">
-	<meta http-equiv="reply-to" content="petry_christian@web.de">
+
+	<title>NormalMap-Online</title>
+	<link rel="icon" type="image/png" href="images/favicon.png" />
+	<link type="text/css" rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:700"></link>
+	<link type="text/css" rel="stylesheet" href="./style.css"></link>
+	
 </head>
 
 	
@@ -107,13 +113,12 @@
 		<!-- Drop box %D -->
 		<div class="column" id="column_height" style="float:left;">
 			<div class="column_top">
-				<input id="select_file_height" type="file" accept="image/*, .tga" onpropertychange="handleFileSelect()" style="position:absolute;visibility:hidden;"/>
-				<input type="button" style="margin-top:30px" id="browseButton" value="Select image..." onclick="select_file_height.click()">
-				or
-				<a style="top: 80px; left: -180px; position: relative; overflow:hidden;" class="various" href="#heightmap_help"><img src="images/help.png" /></a>
-				<img src="images/drag_drop.png" style="padding-top:30px"/>
-				
-				<a style="top: -18px; right: -44px; position: relative; overflow:hidden;" class="various" href="#photo_help"><img src="images/attention.png" /></a>
+				<!--<input id="select_file_height" type="file" accept="image/*, .tga" onpropertychange="handleFileSelect()" style="position:absolute;visibility:hidden;"/>
+				<input type="button" style="margin-top:30px" id="browseButton" value="Select image...">
+				or-->
+				<img src="images/drag_drop.png" style="padding-top:80px"/>
+				<a style="top: -18px; right: -10px; position: relative; overflow:hidden;" class="various" href="#heightmap_help"><img src="images/help.png" /></a>
+				<a style="top: -18px; right: -40px; position: relative; overflow:hidden;" class="various" href="#photo_help"><img src="images/attention.png" /></a>
 			</div>
 			
 			<!-- DESCRIPTION HEIGHT MAP -->
@@ -190,7 +195,8 @@
 				
 			</div>			
 			<div class="view" id="height_map" style="display: inline-block;float: left;">
-				<canvas id="height_canvas"></canvas>
+				<input id="select_file_height" type="file" accept="image/*, .tga" onpropertychange="handleFileSelect()" style="position:absolute;visibility:hidden;"/>
+				<canvas id="height_canvas" onclick="select_file_height.click()" onmouseover="" style="cursor: pointer;"></canvas>
 			</div>
 			<div class="view" id="pictures_map" style="display: inline-block;float: left; display:none;">
 				<input id="select_file_above" type="file" accept="image/*, .tga" onpropertychange="handleFileSelect()" style="position:absolute;visibility:hidden;"/>
@@ -203,19 +209,19 @@
 							
 						</div>
 						<div class="pictures_view_cell drop_cell" id="picture_below_drop">
-							<canvas id="picture_canvas_below" style="width:100%; height: 100%" onclick="select_file_below.click()"></canvas>
+							<canvas id="picture_canvas_below" style="width:100%; height: 100%; cursor: pointer;" onclick="select_file_below.click()" onmouseover=""></canvas>
 						</div>
 					</div>
 					<div class="pictures_view_row">
 						<div class="pictures_view_cell drop_cell" id="picture_right_drop">
-							<canvas id="picture_canvas_right" style="width:100%; height: 100%" onclick="select_file_right.click()"></canvas>
+							<canvas id="picture_canvas_right" style="width:100%; height: 100%; cursor: pointer;" onclick="select_file_right.click()" onmouseover=""></canvas>
 						</div>
 						<div class="pictures_view_cell">
 							
 						</div>
 						
 						<div class="pictures_view_cell drop_cell" id="picture_left_drop">
-							<canvas id="picture_canvas_left" style="width:100%; height: 100%" onclick="select_file_left.click()"></canvas>
+							<canvas id="picture_canvas_left" style="width:100%; height: 100%; cursor: pointer;" onclick="select_file_left.click()" onmouseover=""></canvas>
 						</div>
 						
 					</div>
@@ -224,7 +230,7 @@
 							
 						</div>
 						<div class="pictures_view_cell drop_cell" id="picture_above_drop">
-							<canvas id="picture_canvas_above" style="width:100%; height: 100%" onclick="select_file_above.click()"></canvas>
+							<canvas id="picture_canvas_above" style="width:100%; height: 100%; cursor: pointer;" onclick="select_file_above.click()" onmouseover=""></canvas>
 						</div>
 					</div>
 				</div>

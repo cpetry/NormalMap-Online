@@ -162,6 +162,7 @@ input.tab_button{
 	-webkit-border-radius: 6px;
 	border-radius: 6px;
 	border: 2px solid #000000;
+	cursor: pointer;
 }
 
 input.tab_button:disabled{
@@ -181,6 +182,7 @@ input.tab_button:disabled{
 	-webkit-border-radius: 6px;
 	border-radius: 6px;
 	border: 2px solid #000000;
+	cursor: default;
 }
 
 div.texture_container{
