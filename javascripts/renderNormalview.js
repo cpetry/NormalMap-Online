@@ -200,7 +200,7 @@ var NMO_RenderNormalview = new function(){
 		img.height = img.naturalHeight;
 
 		var size_text = "" + (img.width) + " x " + (img.height);
-		size_text += (!NMO_FileDrop.isPowerOf2(this.width) && !NMO_FileDrop.isPowerOf2(this.height)) ? " NOT POWER OF 2 !" : "";
+		size_text += (!NMO_FileDrop.isPowerOf2(img.width) || !NMO_FileDrop.isPowerOf2(img.height)) ? " NOT POWER OF 2 !" : "";
 		document.getElementById("size").value = size_text;
 		
 		

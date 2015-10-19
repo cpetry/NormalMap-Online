@@ -49,11 +49,12 @@ NMO_FileDrop = new function(){
 	
 
 
-	this.isPowerOf2 = function(val){
-		if((val & -val) == val)
+	this.isPowerOf2 = function(x){
+		return ((x != 0) && !(x & (x - 1)))
+		/*if((val & -val) == val)
 			return true;
 		else 
-			return false;
+			return false;*/
 	};
 
 
