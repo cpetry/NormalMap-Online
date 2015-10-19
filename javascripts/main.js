@@ -42,6 +42,8 @@ var NMO_Main = new function(){
 	this.activate_height_tab = function(type){
 		this.normal_map_mode = type;
 		if (type == "height"){
+			document.getElementById('tab_btn_heightmap').disabled = true;
+			document.getElementById('tab_btn_pictures').disabled = false;
 			$('#pictures_map').hide("slide", {direction: "right"}, 400, function() {
 				NMO_RenderNormalview.reinitializeShader("height");
 				NMO_RenderNormalview.renderNormalview_update("height");
@@ -54,6 +56,8 @@ var NMO_Main = new function(){
 			});
 		}
 		else if (type == "pictures"){
+			document.getElementById('tab_btn_pictures').disabled = true;
+			document.getElementById('tab_btn_heightmap').disabled = false;
 			$('#height_map').hide("slide", {direction: "left"}, 400, function() {
 				NMO_RenderNormalview.reinitializeShader("pictures");
 				NMO_RenderNormalview.renderNormalview_update("pictures");
