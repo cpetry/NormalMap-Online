@@ -67,7 +67,7 @@ var NMO_RenderNormalview = new function(){
 		this.height_map				= new THREE.Texture( NMO_FileDrop.height_image );
 		this.height_map.wrapS 		= this.height_map.wrapT = THREE.ClampToEdgeWrapping; //RepeatWrapping, ClampToEdgeWrapping
 		this.height_map.minFilter 	= this.height_map.magFilter = THREE.NearestFilter; //LinearFilter , NearestFilter
-		this.height_map.anisotropy   = 2;
+		this.height_map.anisotropy  = 2;
 		this.normalmap_uniforms["tHeightMap"].value = this.height_map;
 		this.normalmap_uniforms["dimensions"].value = [NMO_FileDrop.height_image.width, NMO_FileDrop.height_image.height, 0];
 		this.normalmap_uniforms["dz"].value = 1.0 / document.getElementById('strength_nmb').value * (1.0 + Math.pow(2.0, document.getElementById('level_nmb').value));
@@ -147,7 +147,7 @@ var NMO_RenderNormalview = new function(){
 		var renderTargetParameters = { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat, stencilBufer: false };
 		renderTarget = new THREE.WebGLRenderTarget( NMO_FileDrop.height_image.width, NMO_FileDrop.height_image.height, renderTargetParameters );
 		this.composer_Normalview = new THREE.EffectComposer( this.renderer_Normalview, renderTarget );
-		this.composer_Normalview.setSize( NMO_FileDrop.height_image.naturalWidth, NMO_FileDrop.height_image.naturalHeight );
+		this.composer_Normalview.setSize( NMO_FileDrop.height_image.width, NMO_FileDrop.height_image.height );
 		this.composer_Normalview.addPass( this.NormalRenderScene );
 		this.composer_Normalview.addPass( this.gaussian_shader_y );	
 		this.composer_Normalview.addPass( this.gaussian_shader_x );
@@ -208,20 +208,23 @@ var NMO_RenderNormalview = new function(){
 			this.height_map.image = NMO_FileDrop.height_image;
 		
 			this.normalmap_uniforms["tHeightMap"].value = this.height_map;
-			this.normalmap_uniforms["dimensions"].value = [NMO_FileDrop.height_image.naturalWidth, NMO_FileDrop.height_image.naturalHeight, 0];
+			this.normalmap_uniforms["dimensions"].value = [img.naturalWidth, img.naturalHeight, 0];
 
-			this.renderer_Normalview.setSize( NMO_FileDrop.height_image.naturalWidth, NMO_FileDrop.height_image.naturalHeight );
-			this.composer_Normalview.setSize( NMO_FileDrop.height_image.naturalWidth, NMO_FileDrop.height_image.naturalHeight );
+			this.renderer_Normalview.setSize( img.naturalWidth, img.naturalHeight );
+			this.composer_Normalview.setSize( img.naturalWidth, img.naturalHeight );
+			var renderTargetParameters = { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat, stencilBufer: false };
+			renderTarget = new THREE.WebGLRenderTarget( img.width, img.height, renderTargetParameters );
+			this.composer_Normalview.reset(renderTarget);
 		}
 
 		else if (map === "pictures"){
-			NMO_FileDrop.height_canvas.width = NMO_FileDrop.picture_above.width;
-			NMO_FileDrop.height_canvas.height = NMO_FileDrop.picture_above.height;
-			NMO_FileDrop.height_canvas.getContext('2d').drawImage(NMO_FileDrop.picture_above, 0, 0, NMO_FileDrop.picture_above.width, NMO_FileDrop.picture_above.height, 0,0, NMO_FileDrop.height_canvas.width, NMO_FileDrop.height_canvas.height);
-			NMO_FileDrop.picture_above.width = NMO_FileDrop.picture_above.naturalWidth;
-			NMO_FileDrop.picture_above.height = NMO_FileDrop.picture_above.naturalHeight;
+			NMO_FileDrop.height_canvas.width = img.width;
+			NMO_FileDrop.height_canvas.height = img.height;
+			NMO_FileDrop.height_canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height, 0,0, NMO_FileDrop.height_canvas.width, NMO_FileDrop.height_canvas.height);
+			img.width = img.naturalWidth;
+			img.height = img.naturalHeight;
 
-			this.picture_above_map.image		= NMO_FileDrop.picture_above;
+			this.picture_above_map.image		= img;
 			this.picture_left_map.image			= NMO_FileDrop.picture_left;
 			this.picture_right_map.image		= NMO_FileDrop.picture_right;
 			this.picture_below_map.image		= NMO_FileDrop.picture_below;
@@ -229,10 +232,13 @@ var NMO_RenderNormalview = new function(){
 			this.normalmap_from_pictures_uniforms["tLeft"].value  = this.picture_left_map;
 			this.normalmap_from_pictures_uniforms["tRight"].value = this.picture_right_map;
 			this.normalmap_from_pictures_uniforms["tBelow"].value = this.picture_below_map;
-			this.normalmap_from_pictures_uniforms["dimensions"].value = [NMO_FileDrop.picture_above.width, NMO_FileDrop.picture_above.height, 0];
+			this.normalmap_from_pictures_uniforms["dimensions"].value = [img.naturalWidth, img.naturalHeight, 0];
 
-			this.renderer_Normalview.setSize( NMO_FileDrop.picture_above.naturalWidth, NMO_FileDrop.picture_above.naturalHeight );
-			this.composer_Normalview.setSize( NMO_FileDrop.picture_above.naturalWidth, NMO_FileDrop.picture_above.naturalHeight );
+			this.renderer_Normalview.setSize( img.naturalWidth, img.naturalHeight );
+			this.composer_Normalview.setSize( img.naturalWidth, img.naturalHeight );
+			var renderTargetParameters = { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat, stencilBufer: false };
+			renderTarget = new THREE.WebGLRenderTarget( img.width, img.height, renderTargetParameters );
+			this.composer_Normalview.reset(renderTarget);
 
 			this.picture_above_map.needsUpdate = true;
 			this.picture_left_map.needsUpdate = true;
@@ -253,7 +259,7 @@ var NMO_RenderNormalview = new function(){
 		//console.log("NormalToHeight: " + NMO_FileDrop.picture_above.width);
 		//composer_Normalview = new THREE.EffectComposer( renderer_Normalview, renderTarget );
 		if (this.normal_to_height_canvas == null){
-			console.log("Create canvas");
+			//console.log("Create canvas");
 			this.normal_to_height_canvas = document.createElement("canvas");
 		}
 		var renderTargetParameters = { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat, stencilBufer: false };
@@ -269,11 +275,6 @@ var NMO_RenderNormalview = new function(){
 		// Shader + uniforms
 		var normal_to_height_shader = THREE.NormalToHeightShader;
 		var normal_to_height_uniforms = THREE.UniformsUtils.clone( normal_to_height_shader.uniforms );
-		//var normal_img = document.getElementById("normal_img");
-		//var normal_map			= new THREE.Texture( normal_img );
-		//normal_map.wrapS 		= normal_map.wrapT = THREE.ClampToEdgeWrapping; //RepeatWrapping, ClampToEdgeWrapping
-		//normal_map.minFilter 	= normal_map.magFilter = THREE.NearestFilter; //LinearFilter , NearestFilter
-		//normal_map.anisotropy   = 2;
 		var picture_above_map = new THREE.Texture( NMO_FileDrop.picture_above );
 		var picture_left_map  = new THREE.Texture( NMO_FileDrop.picture_left );
 		var picture_right_map = new THREE.Texture( NMO_FileDrop.picture_right );
@@ -286,10 +287,6 @@ var NMO_RenderNormalview = new function(){
 		normal_to_height_uniforms["tLeft"].value  = picture_left_map;
 		normal_to_height_uniforms["tRight"].value = picture_right_map;
 		normal_to_height_uniforms["tBelow"].value = picture_below_map;
-		/*normal_to_height_uniforms["tAbove"].value = this.picture_above_map;
-		normal_to_height_uniforms["tLeft"].value  = this.picture_left_map;
-		normal_to_height_uniforms["tRight"].value = this.picture_right_map;
-		normal_to_height_uniforms["tBelow"].value = this.picture_below_map;*/
 		//console.log("Width: " + normal_map.width);
 		
 		var normal_to_height_parameters = { 
@@ -305,28 +302,14 @@ var NMO_RenderNormalview = new function(){
 		render_mesh.name = "mesh";
 		scene_normal_to_height.add(render_mesh);
 		
-		//renderer_normal_to_height.preserveDrawingBuffer = true;
-		//renderer_normal_to_height.context = this.normal_to_height_canvas.getContext("2d");
 		renderer_normal_to_height.setSize( NMO_FileDrop.picture_above.width, NMO_FileDrop.picture_above.height );
 		renderer_normal_to_height.render( scene_normal_to_height, camera_normal_to_height, renderTarget );
 		renderer_normal_to_height.render( scene_normal_to_height, camera_normal_to_height );
-		//document.body.appendChild( renderer_normal_to_height.domElement );
-
-		/*var height_to_normal_pass = new THREE.RenderPass( scene_normal_to_height, camera_normal_to_height );
-		height_to_normal_pass.renderToScreen = true;
-		var composer_normal_to_height = new THREE.EffectComposer( renderer_normal_to_height, renderTarget );
-		composer_normal_to_height.setSize( this.picture_above_map.width, this.picture_above_map.height );
-		composer_normal_to_height.addPass( this.NormalRenderScene );
-		composer_normal_to_height.render( 1 / 60 );
-		document.body.appendChild( renderer_normal_to_height.domElement );*/
-
-	    //this.height_from_normal_img.src = this.normal_to_height_canvas.toDataURL("image/png");
 	    var gl = renderer_normal_to_height.getContext();
 		var data = new Uint8Array(4 * this.normal_to_height_canvas.width * this.normal_to_height_canvas.height)
 		var texture = new THREE.DataTexture(data, this.normal_to_height_canvas.width, this.normal_to_height_canvas.height, THREE.RGBAFormat);
 		gl.readPixels( 0, 0, this.normal_to_height_canvas.width, this.normal_to_height_canvas.height, gl.RGBA, gl.UNSIGNED_BYTE, texture.image.data );
 		texture.needsUpdate = true;
-		//this.height_from_normal_img_data = texture.image;
 		this.height_from_normal_img = texture.image;
 
 		NMO_DisplacementMap.createDisplacementMap();

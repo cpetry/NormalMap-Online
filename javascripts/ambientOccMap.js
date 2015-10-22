@@ -24,37 +24,23 @@
 NMO_AmbientOccMap = new function(){
 
 	this.ao_canvas = document.createElement("canvas");
-	this.ao_smoothing = -10;
+	this.ao_smoothing = 0;
 	this.ao_strength = 0.5;
-	this.ao_range = 255;
-	this.ao_mean = 255;
-	this.ao_level = 7;
+	this.ao_range = 1;
+	this.ao_mean = 1;
+	this.ao_level = 1;
 	this.invert_ao = false;
 	this.timer = 0;
 
 	this.createAmbientOcclusionTexture = function(){
+		this.createGPUbasedAOTexture();
+		return;
 		var start = Date.now();
 		
 		var grayscale;
 		var height, width;
 		// if normal from picture is selected
 		if(NMO_Main.normal_map_mode == "pictures"){
-			/*
-			width = NMO_FileDrop.picture_above.width;
-			height = NMO_FileDrop.picture_above.height;
-			var picture_sum = Filters.filterImage(Filters.grayscale, NMO_FileDrop.picture_above); // invert_source?!
-			var add_left    = Filters.filterImage(Filters.grayscale, NMO_FileDrop.picture_left);
-			var add_right   = Filters.filterImage(Filters.grayscale, NMO_FileDrop.picture_right);
-			var add_below   = Filters.filterImage(Filters.grayscale, NMO_FileDrop.picture_below);
-			
-			for (var i=0; i<picture_sum.data.length; i += 4){
-				var v = picture_sum.data[i] + add_left.data[i] + add_right.data[i] + add_below.data[i];
-				picture_sum.data[i] = picture_sum.data[i+1] = picture_sum.data[i+2] = v * 0.25;
-			}
-			grayscale = picture_sum;*/
-			/*var image = new Image();
-			image.src = NMO_RenderNormalview.normal_to_height_canvas.toDataURL("image/png");
-			grayscale = Filters.filterImage(Filters.grayscale, image);*/
 			grayscale = NMO_RenderNormalview.height_from_normal_img;
 			width = grayscale.width;
 			height = grayscale.height;
@@ -71,7 +57,7 @@ NMO_AmbientOccMap = new function(){
 		var ao_map = Filters.createImageData(width, height);
 
 		for (var i=0; i<grayscale.data.length; i += 4){
-			var v = (grayscale.data[i] + grayscale.data[i+1] + grayscale.data[i+2]) * 0.333333; // average
+			var v = grayscale.data[i];
 			v = v < 1.0 || v > 255.0 ? 0 : v; // clamp
 
 			var per_dist_to_mean = (this.ao_range - Math.abs(v - this.ao_mean)) / this.ao_range;
@@ -90,29 +76,7 @@ NMO_AmbientOccMap = new function(){
 			NMO_Gaussian.gaussiansharpen(ao_map, width, height, Math.abs(this.ao_smoothing));
 		else if (this.ao_smoothing < 0)
 			NMO_Gaussian.gaussianblur(ao_map, width, height, Math.abs(this.ao_smoothing));
-		
-		/*var sobelfiltered = Filters.sobelfilter(grayscale, this.ao_strength * 0.5, this.ao_level);
-		
-		var ao_map = Filters.createImageData(width, height);
-		
-		if (this.ao_smoothing > 0)
-			NMO_Gaussian.gaussiansharpen(sobelfiltered, width, height, Math.abs(this.ao_smoothing));
-		else if (this.ao_smoothing < 0)
-			NMO_Gaussian.gaussianblur(sobelfiltered, width, height, Math.abs(this.ao_smoothing));
-		
-		var v = 0;
-		for (var i=0; i<sobelfiltered.data.length && i<grayscale.data.length; i += 4){
-			v = (sobelfiltered.data[i] + sobelfiltered.data[i+1]) * 0.5;
-			v = v - grayscale.data[i] * this.ao_strength * 0.2;
-			v = Math.max(0, Math.min(255, v));
-			v = this.invert_ao ? 255-v : v;
-			ao_map.data[i]   = v;
-			ao_map.data[i+1] = v;
-			ao_map.data[i+2] = v;
-			//ao_map.data[i+3] = 255;
-			ao_map.data[i+3] = grayscale.data[i+3];
-		}*/
-		
+				
 		
 		
 		// write out texture
@@ -128,6 +92,87 @@ NMO_AmbientOccMap = new function(){
 		NMO_Main.setTexturePreview(this.ao_canvas, "ao_img", grayscale.width, grayscale.height);
 		//console.log("AmbientOcc: " + (new Date().getTime() - st));
 		//NMO_RenderView.ao_map.needsUpdate = true;
+	};
+
+
+
+	this.createGPUbasedAOTexture = function(){
+		var start = Date.now();
+		var heightmap;
+		
+		if(NMO_Main.normal_map_mode == "pictures")
+			//heightmap = Filters.filterImage(Filters.grayscale, NMO_RenderNormalview.height_from_normal_img);
+			heightmap = Filters.filterImage(Filters.grayscale, NMO_RenderNormalview.normal_to_height_canvas);
+		else
+			heightmap = Filters.filterImage(Filters.grayscale, NMO_FileDrop.height_image);
+		
+
+		var w = heightmap.width;
+		var h = heightmap.height;
+		
+		this.ao_canvas.width = w;
+		this.ao_canvas.height = h;
+		var renderer_aomap = new THREE.WebGLRenderer({ alpha: true, antialias: true, canvas: this.ao_canvas });
+		renderer_aomap.setSize( w, h );
+		//renderer_aomap.setClearColor( 0x000000, 0 ); // the default
+		//camera_Normalview = new THREE.OrthographicCamera( -1, 1, 1, -1, 0, 10 );
+		var camera_aomap = new THREE.OrthographicCamera(  1 / - 2, 1 / 2, 1 / 2, 1 / - 2, 0, 1);
+		var scene_aomap = new THREE.Scene();
+
+		// Shader + uniforms
+		var shader_aomap = NMO_AmbientOcclusionShader;
+		var uniforms_aomap = THREE.UniformsUtils.clone( shader_aomap.uniforms );
+		var height_map_tex = new THREE.Texture( heightmap );
+		height_map_tex.wrapS 		= height_map_tex.wrapT = THREE.ClampToEdgeWrapping; //RepeatWrapping, ClampToEdgeWrapping
+		height_map_tex.minFilter 	= height_map_tex.magFilter = THREE.NearestFilter; //LinearFilter , NearestFilter
+		height_map_tex.anisotropy  = 2;
+		height_map_tex.needsUpdate = true;
+
+		uniforms_aomap["invert"].value = this.invert_ao;
+		uniforms_aomap["range"].value = this.ao_range;
+		uniforms_aomap["strength"].value = this.ao_strength;
+		uniforms_aomap["mean"].value = this.ao_mean;
+		uniforms_aomap["level"].value = this.ao_level;
+		uniforms_aomap["tHeight"].value = height_map_tex;
+		
+		var parameters_aomap = { 
+			fragmentShader: shader_aomap.fragmentShader, 
+			vertexShader: shader_aomap.vertexShader, 
+			uniforms: uniforms_aomap
+		};
+
+		var material_aomap = new THREE.ShaderMaterial( parameters_aomap );
+		material_aomap.wrapAround = true;
+		material_aomap.transparent = true;
+
+		var render_mesh = new THREE.Mesh( new THREE.PlaneBufferGeometry(1, 1, 1, 1), material_aomap );
+		render_mesh.name = "mesh";		
+		scene_aomap.add(render_mesh);
+		
+		
+		var renderTargetParameters = { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat, stencilBufer: false };
+		var renderTarget = new THREE.WebGLRenderTarget( w, h, renderTargetParameters );
+		var composer_aomap = new THREE.EffectComposer( renderer_aomap, renderTarget );
+		//renderer_aomap.render( scene_aomap, camera_aomap, renderTarget );
+		//renderer_aomap.render( scene_aomap, camera_aomap );
+		//this.composer_aomap.setSize( w, h );
+
+		var gaussian_shader_y = new THREE.ShaderPass( THREE.VerticalBlurShader );
+		var gaussian_shader_x = new THREE.ShaderPass( THREE.HorizontalBlurShader );		 
+		gaussian_shader_y.uniforms[ "v" ].value = this.ao_smoothing / w / 5;
+		gaussian_shader_x.uniforms[ "h" ].value = this.ao_smoothing / h / 5;
+		gaussian_shader_x.renderToScreen = true;
+
+		var renderPass = new THREE.RenderPass( scene_aomap, camera_aomap );
+		composer_aomap.addPass( renderPass );
+		composer_aomap.addPass( gaussian_shader_y );	
+		composer_aomap.addPass( gaussian_shader_x );
+		composer_aomap.render( 1/60 );		
+		
+		NMO_Main.setTexturePreview( this.ao_canvas, "ao_img", w, h);
+
+		//console.log("Ambient Occ: " + (Date.now() - start));
+		
 	};
 
 		
@@ -147,10 +192,10 @@ NMO_AmbientOccMap = new function(){
 			this.ao_strength = v;
 		
 		else if (element == "mean")
-			this.ao_mean = v*255;
+			this.ao_mean  = v;
 
 		else if (element == "range")
-			this.ao_range = v*255;
+			this.ao_range = v;
 
 		else if (element == "level")
 			this.ao_level = v;
@@ -158,9 +203,9 @@ NMO_AmbientOccMap = new function(){
 		if(this.timer == 0)
 			this.timer = Date.now();
 			
-		if (NMO_Main.auto_update && Date.now() - this.timer > 50){
+		//if (NMO_Main.auto_update && Date.now() - this.timer > 50){
 			this.createAmbientOcclusionTexture();
-			this.timer = 0;
-		}
+		//	this.timer = 0;
+		//}
 	};
 }

@@ -34,36 +34,15 @@ NMO_DisplacementMap = new function(){
 
 	this.createDisplacementMap = function(){
 		var start = Date.now();
-		//var st = new Date().getTime();
 
 		var img_data;
 		// if normal from picture is selected
-		if(NMO_Main.normal_map_mode == "pictures"){
-			/*var picture_sum = Filters.filterImage(Filters.grayscale, NMO_FileDrop.picture_above);
-			var add_left    = Filters.filterImage(Filters.grayscale, NMO_FileDrop.picture_left);
-			var add_right   = Filters.filterImage(Filters.grayscale, NMO_FileDrop.picture_right);
-			var add_below   = Filters.filterImage(Filters.grayscale, NMO_FileDrop.picture_below);
-			
-			for (var i=0; i<picture_sum.data.length; i += 4){
-				var v = picture_sum.data[i] + add_left.data[i] + add_right.data[i] + add_below.data[i];
-				picture_sum.data[i] = picture_sum.data[i+1] = picture_sum.data[i+2] = v * 0.25;
-			}
-			img_data = picture_sum;*/
-
-			/*var image = new Image();
-			image.src = NMO_RenderNormalview.normal_to_height_canvas.toDataURL("image/png");
-			//image.
-			img_data = Filters.filterImage(Filters.grayscale, image);*/
-			/*var width = NMO_RenderNormalview.normal_to_height_canvas.width;
-			var height = NMO_RenderNormalview.normal_to_height_canvas.height;
-			img_data = NMO_RenderNormalview.normal_to_height_canvas.getContext("2d").getImageData(0,0, width, height);*/
-			//img_data = Filters.filterImage(Filters.grayscale, NMO_RenderNormalview.height_from_normal_img);
+		if(NMO_Main.normal_map_mode == "pictures")
 			img_data = NMO_RenderNormalview.height_from_normal_img;
-			//img_data = NMO_RenderNormalview.height_from_normal_img_data;
-		}
 		// Normal from height is selected
 		else
 			img_data = Filters.filterImage(Filters.grayscale, NMO_FileDrop.height_image);
+
 
 		//var img_data = Filters.filterImage(Filters.grayscale, normal_to_height_canvas);
 		var displace_map = Filters.createImageData(img_data.width, img_data.height);
@@ -107,7 +86,7 @@ NMO_DisplacementMap = new function(){
 		ctx_displace.clearRect(0, 0, img_data.width, img_data.height);
 		ctx_displace.putImageData(displace_map, 0, 0, 0, 0, img_data.width, img_data.height);
 
-		console.log("Displacement: " + (Date.now() - start));
+		//console.log("Displacement: " + (Date.now() - start));
 		start = Date.now();
 
 		NMO_Main.setTexturePreview(this.displacement_canvas, "displace_img", img_data.width, img_data.height);
@@ -116,7 +95,7 @@ NMO_DisplacementMap = new function(){
 		if (NMO_RenderView.render_model.material.uniforms[ "enableDisplacement" ].value == true){
 			NMO_RenderView.render_model.geometry.computeTangents();
 		}
-		console.log("Updating displacement: " + (Date.now() - start));
+		//console.log("Updating displacement: " + (Date.now() - start));
 		
 		//NMO_RenderView.displacement_map.needsUpdate = true;
 	};

@@ -30,8 +30,11 @@ THREE.NormalToHeightShader = {
         
 		"void main(void) {",
 		//"	gl_FragColor = texture2D(tBelow, vUv);",
-		"	gl_FragColor = vec4(1,1,0,1);",
-		"	gl_FragColor = (texture2D(tAbove, vUv) + texture2D(tLeft, vUv) + texture2D(tRight, vUv) + texture2D(tBelow, vUv)) / 4.0;",
+		//"	gl_FragColor = vec4(1,1,0,1);",
+		"	vec4 sum = (texture2D(tAbove, vUv) + texture2D(tLeft, vUv) + texture2D(tRight, vUv) + texture2D(tBelow, vUv)) / 4.0;",
+		"	float gray = dot(sum.rgb, vec3(0.299, 0.587, 0.114));",
+		"	gl_FragColor.rgb = vec3(gray, gray, gray);",
+		"	gl_FragColor.a = sum.a;",
 		"}"
 	].join("\n")
 
