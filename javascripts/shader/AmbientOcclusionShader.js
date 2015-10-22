@@ -6,18 +6,18 @@ NMO_AmbientOcclusionShader = {
     	"strength": 	{type: "1f", value: 0},
     	"mean": 		{type: "1f", value: 0},
     	"level": 		{type: "1f", value: 0},
+    	"flipY": 		{type: "1f", value: 0},
     	"tHeight": 		{type: "t", value: null }
 	},
 
 	vertexShader: [
 		"precision mediump float;",
         "varying vec2 vUv;",
-		"varying vec2 step;",
-        "uniform vec3 dimensions;",
+		"uniform float flipY;",
         "void main() {",
 			"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
 			"vUv = uv;",
-			"vUv.y = 1.0 - vUv.y;",
+			"vUv.y = (flipY > 0.0) ? (1.0 - vUv.y) : vUv.y;",
 		"}"
 	].join("\n"),
 

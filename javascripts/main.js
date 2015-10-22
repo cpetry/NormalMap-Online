@@ -182,15 +182,26 @@ var NMO_Main = new function(){
 		var draw_height = ratio >= 1 ? (NMO_FileDrop.container_height / ratio ) : NMO_FileDrop.container_height;
 		
 		var reduce_canvas = document.createElement('canvas');
+		var helper_canvas = document.createElement('canvas');
+		helper_canvas.width = width;
+		helper_canvas.height = height;
 		reduce_canvas.width = width;
 		reduce_canvas.height = height;
 
 		var current_width = width;
 		var current_height = height;
-		reduce_canvas.getContext('2d').drawImage(canvas, 0, 0, width, height);
+		var reduce_context = reduce_canvas.getContext('2d');
+		var helper_context = helper_canvas.getContext('2d');
+		reduce_context.clearRect(0,0,reduce_context.width, reduce_context.height);
+		reduce_context.drawImage(canvas, 0, 0, width, height);
+		helper_context.clearRect(0,0,helper_canvas.width, helper_canvas.height);
+		helper_context.drawImage(canvas, 0, 0, width, height);
 		while(2*draw_width < current_width && 2*draw_height < current_height ){
 			//console.log("redraw!");
-			reduce_canvas.getContext('2d').drawImage(reduce_canvas, 0, 0, reduce_canvas.width * 0.5, reduce_canvas.height * 0.5);
+			helper_context.clearRect(0, 0, helper_canvas.width, helper_canvas.height);
+			helper_context.drawImage(reduce_canvas, 0, 0, reduce_canvas.width, reduce_canvas.height);
+			reduce_context.clearRect(0, 0, reduce_canvas.width, reduce_canvas.height);
+			reduce_context.drawImage(helper_canvas, 0, 0, reduce_canvas.width * 0.5, reduce_canvas.height * 0.5);
 			current_width *= 0.5;
 			current_height *= 0.5;
 		}

@@ -112,47 +112,51 @@ NMO_AmbientOccMap = new function(){
 		
 		this.ao_canvas.width = w;
 		this.ao_canvas.height = h;
-		var renderer_aomap = new THREE.WebGLRenderer({ alpha: true, antialias: true, canvas: this.ao_canvas });
-		renderer_aomap.setSize( w, h );
+		var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, canvas: this.ao_canvas });
+		renderer.setSize( w, h );
 		//renderer_aomap.setClearColor( 0x000000, 0 ); // the default
 		//camera_Normalview = new THREE.OrthographicCamera( -1, 1, 1, -1, 0, 10 );
-		var camera_aomap = new THREE.OrthographicCamera(  1 / - 2, 1 / 2, 1 / 2, 1 / - 2, 0, 1);
-		var scene_aomap = new THREE.Scene();
+		var camera = new THREE.OrthographicCamera(  1 / - 2, 1 / 2, 1 / 2, 1 / - 2, 0, 1);
+		var scene = new THREE.Scene();
 
 		// Shader + uniforms
-		var shader_aomap = NMO_AmbientOcclusionShader;
-		var uniforms_aomap = THREE.UniformsUtils.clone( shader_aomap.uniforms );
+		var shader = NMO_AmbientOcclusionShader;
+		var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
 		var height_map_tex = new THREE.Texture( heightmap );
 		height_map_tex.wrapS 		= height_map_tex.wrapT = THREE.ClampToEdgeWrapping; //RepeatWrapping, ClampToEdgeWrapping
 		height_map_tex.minFilter 	= height_map_tex.magFilter = THREE.NearestFilter; //LinearFilter , NearestFilter
 		height_map_tex.anisotropy  = 2;
 		height_map_tex.needsUpdate = true;
 
-		uniforms_aomap["invert"].value = this.invert_ao;
-		uniforms_aomap["range"].value = this.ao_range;
-		uniforms_aomap["strength"].value = this.ao_strength;
-		uniforms_aomap["mean"].value = this.ao_mean;
-		uniforms_aomap["level"].value = this.ao_level;
-		uniforms_aomap["tHeight"].value = height_map_tex;
+		uniforms["invert"].value = this.invert_ao;
+		uniforms["range"].value = this.ao_range;
+		uniforms["strength"].value = this.ao_strength;
+		uniforms["mean"].value = this.ao_mean;
+		uniforms["level"].value = this.ao_level;
+		uniforms["tHeight"].value = height_map_tex;
+		if(NMO_Main.normal_map_mode == "pictures")
+			uniforms["flipY"].value = 1;
+		else
+			uniforms["flipY"].value = 0;
 		
-		var parameters_aomap = { 
-			fragmentShader: shader_aomap.fragmentShader, 
-			vertexShader: shader_aomap.vertexShader, 
-			uniforms: uniforms_aomap
+		var parameters = { 
+			fragmentShader: shader.fragmentShader, 
+			vertexShader: shader.vertexShader, 
+			uniforms: uniforms
 		};
 
-		var material_aomap = new THREE.ShaderMaterial( parameters_aomap );
-		material_aomap.wrapAround = true;
-		material_aomap.transparent = true;
+		var material = new THREE.ShaderMaterial( parameters );
+		material.wrapAround = true;
+		material.transparent = true;
 
-		var render_mesh = new THREE.Mesh( new THREE.PlaneBufferGeometry(1, 1, 1, 1), material_aomap );
+		var render_mesh = new THREE.Mesh( new THREE.PlaneBufferGeometry(1, 1, 1, 1), material );
 		render_mesh.name = "mesh";		
-		scene_aomap.add(render_mesh);
+		scene.add(render_mesh);
 		
 		
 		var renderTargetParameters = { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat, stencilBufer: false };
 		var renderTarget = new THREE.WebGLRenderTarget( w, h, renderTargetParameters );
-		var composer_aomap = new THREE.EffectComposer( renderer_aomap, renderTarget );
+		var composer = new THREE.EffectComposer( renderer, renderTarget );
 		//renderer_aomap.render( scene_aomap, camera_aomap, renderTarget );
 		//renderer_aomap.render( scene_aomap, camera_aomap );
 		//this.composer_aomap.setSize( w, h );
@@ -163,11 +167,11 @@ NMO_AmbientOccMap = new function(){
 		gaussian_shader_x.uniforms[ "h" ].value = this.ao_smoothing / h / 5;
 		gaussian_shader_x.renderToScreen = true;
 
-		var renderPass = new THREE.RenderPass( scene_aomap, camera_aomap );
-		composer_aomap.addPass( renderPass );
-		composer_aomap.addPass( gaussian_shader_y );	
-		composer_aomap.addPass( gaussian_shader_x );
-		composer_aomap.render( 1/60 );		
+		var renderPass = new THREE.RenderPass( scene, camera );
+		composer.addPass( renderPass );
+		composer.addPass( gaussian_shader_y );	
+		composer.addPass( gaussian_shader_x );
+		composer.render( 1/60 );		
 		
 		NMO_Main.setTexturePreview( this.ao_canvas, "ao_img", w, h);
 

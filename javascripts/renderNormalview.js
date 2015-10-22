@@ -177,7 +177,6 @@ var NMO_RenderNormalview = new function(){
 
 	this.renderNormalview_update = function(map){
 		//composer_Normalview = new THREE.EffectComposer( renderer_Normalview, renderTarget );
-
 		
 		var img = (map === "height") ? NMO_FileDrop.height_image : NMO_FileDrop.picture_above;
 		//console.log(img);
@@ -218,11 +217,11 @@ var NMO_RenderNormalview = new function(){
 		}
 
 		else if (map === "pictures"){
-			NMO_FileDrop.height_canvas.width = img.width;
-			NMO_FileDrop.height_canvas.height = img.height;
-			NMO_FileDrop.height_canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height, 0,0, NMO_FileDrop.height_canvas.width, NMO_FileDrop.height_canvas.height);
-			img.width = img.naturalWidth;
-			img.height = img.naturalHeight;
+			//NMO_FileDrop.height_canvas.width = img.width;
+			//NMO_FileDrop.height_canvas.height = img.height;
+			//NMO_FileDrop.height_canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height, 0,0, NMO_FileDrop.height_canvas.width, NMO_FileDrop.height_canvas.height);
+			//img.width = img.naturalWidth;
+			//img.height = img.naturalHeight;
 
 			this.picture_above_map.image		= img;
 			this.picture_left_map.image			= NMO_FileDrop.picture_left;
@@ -269,7 +268,7 @@ var NMO_RenderNormalview = new function(){
 		var renderer_normal_to_height = new THREE.WebGLRenderer({ alpha: true, antialias: true, canvas: this.normal_to_height_canvas });
 		renderer_normal_to_height.setClearColor( 0x000000, 0 ); // the default
 		//camera_Normalview = new THREE.OrthographicCamera( -1, 1, 1, -1, 0, 10 );
-		var camera_normal_to_height = new THREE.OrthographicCamera(  1 / - 2, 1 / 2, 1 / 2, 1 / - 2, 0, 1);
+		var camera_normal_to_height = new THREE.OrthographicCamera(  -1/2, 1/2, 1/2, -1/2, 0, 1);
 		var scene_normal_to_height = new THREE.Scene();
 
 		// Shader + uniforms
@@ -305,10 +304,14 @@ var NMO_RenderNormalview = new function(){
 		renderer_normal_to_height.setSize( NMO_FileDrop.picture_above.width, NMO_FileDrop.picture_above.height );
 		renderer_normal_to_height.render( scene_normal_to_height, camera_normal_to_height, renderTarget );
 		renderer_normal_to_height.render( scene_normal_to_height, camera_normal_to_height );
+
 	    var gl = renderer_normal_to_height.getContext();
+	    //gl.scale(1, -1);
 		var data = new Uint8Array(4 * this.normal_to_height_canvas.width * this.normal_to_height_canvas.height)
 		var texture = new THREE.DataTexture(data, this.normal_to_height_canvas.width, this.normal_to_height_canvas.height, THREE.RGBAFormat);
+		//texture.flipY = false;
 		gl.readPixels( 0, 0, this.normal_to_height_canvas.width, this.normal_to_height_canvas.height, gl.RGBA, gl.UNSIGNED_BYTE, texture.image.data );
+		//texture.flipY = true;
 		texture.needsUpdate = true;
 		this.height_from_normal_img = texture.image;
 
