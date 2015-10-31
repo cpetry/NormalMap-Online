@@ -140,7 +140,7 @@ NMO_AmbientOccMap = new function(){
 		this.composer.render( 1 / 60 );
 
 		NMO_Main.setTexturePreview(this.ao_canvas, "ao_img", w, h);
-		console.log("Ambient Occ: " + (Date.now() - start));
+		//console.log("Ambient Occ: " + (Date.now() - start));
 	}
 
 

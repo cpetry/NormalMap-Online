@@ -151,7 +151,7 @@ NMO_DisplacementMap = new function(){
 		this.composer.render( 1 / 60 );
 
 		NMO_Main.setTexturePreview(this.displacement_canvas, "displace_img", w, h);
-		console.log("Displacement: " + (Date.now() - start));
+		//console.log("Displacement: " + (Date.now() - start));
 	}
 
 	this.initDisplacementshader = function(){
@@ -228,7 +228,7 @@ NMO_DisplacementMap = new function(){
 		this.composer.addPass( this.gaussian_shader_x );
 		this.composer.render( 1/60 );		
 		
-		console.log("Displacement: " + (Date.now() - start));
+		//console.log("Displacement: " + (Date.now() - start));
 
 		NMO_Main.setTexturePreview( this.displacement_canvas, "displace_img", w, h);	
 		
