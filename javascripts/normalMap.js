@@ -95,6 +95,7 @@ var NMO_NormalMap = new function(){
 			smoothing = v;
 			NMO_RenderNormalview.gaussian_shader_y.uniforms["v"].value = v / NMO_FileDrop.height_image.naturalWidth / 5;
 			NMO_RenderNormalview.gaussian_shader_x.uniforms["h"].value = v / NMO_FileDrop.height_image.naturalHeight / 5;
+			//NMO_RenderNormalview.gaussian_shader.uniforms["sigma"].value = v / NMO_FileDrop.height_image.naturalHeight / 5;
 		}
 		
 		else if (element == "strength"){

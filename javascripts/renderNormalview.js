@@ -28,7 +28,7 @@ var NMO_RenderNormalview = new function(){
 	this.composer_Normalview;
 	this.scene_Normalview;
 	this.camera_Normalview;
-	this.gaussian_shader_y, this.gaussian_shader_x;
+	this.gaussian_shader_y, this.gaussian_shader_x, this.gaussian_shader;
 	this.NormalRenderScene;
 	this.normalmap_uniforms, this.normalmap_from_pictures_uniforms;
 	this.normal_map_material, this.normal_map_from_pictures_material;
@@ -132,6 +132,7 @@ var NMO_RenderNormalview = new function(){
 		// Prepare the blur shader passes
 		this.gaussian_shader_y = new THREE.ShaderPass( THREE.VerticalBlurShader );
 		this.gaussian_shader_x = new THREE.ShaderPass( THREE.HorizontalBlurShader );
+		//this.gaussian_shader = new THREE.ShaderPass( THREE.GaussianShader );
 		 
 		var bluriness = 0;
 	 
@@ -139,7 +140,11 @@ var NMO_RenderNormalview = new function(){
 		this.gaussian_shader_x.uniforms[ "h" ].value = bluriness / NMO_FileDrop.height_image.height;
 
 		this.gaussian_shader_x.renderToScreen = true;
-		
+
+		/*this.gaussian_shader.uniforms[ "sigma" ].value = bluriness / NMO_FileDrop.height_image.height;
+		this.gaussian_shader.uniforms[ "dimensions" ].value = [NMO_FileDrop.picture_above.width, NMO_FileDrop.picture_above.height, 0];
+		this.gaussian_shader.renderToScreen = true;*/
+
 		//copyPass = new THREE.ShaderPass( THREE.CopyShader );
 		//copyPass.renderToScreen = true;
 		//composer_Normalview.addPass( copyPass );
@@ -151,6 +156,7 @@ var NMO_RenderNormalview = new function(){
 		this.composer_Normalview.addPass( this.NormalRenderScene );
 		this.composer_Normalview.addPass( this.gaussian_shader_y );	
 		this.composer_Normalview.addPass( this.gaussian_shader_x );
+		//this.composer_Normalview.addPass( this.gaussian_shader );	
 		
 		
 		

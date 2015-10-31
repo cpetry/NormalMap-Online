@@ -25,7 +25,7 @@
 NMO_DisplacementMap = new function(){
 
 	this.displacement_bias = 0;
-	this.blur_sharp = 0;
+	this.smoothing = 0;
 	this.timer = 0;
 	this.current_disp_scale = 0;
 	this.contrast = -0.5;
@@ -33,6 +33,37 @@ NMO_DisplacementMap = new function(){
 	this.displacement_canvas = document.createElement("canvas");
 
 	this.createDisplacementMap = function(){
+		this.createGPUbasedDisplacementTexture();
+			
+		var displace_map = Filters.filterImage(Filters.grayscale, document.getElementById("displace_img"));
+
+		// GET BIAS FOR DISPLACMENT
+		// calc average value at the border of height tex
+		var top_left = 0;
+		var top_right = (displace_map.width-1)*4;
+		var bottom_left = ((displace_map.width-1) * (displace_map.height-1)*4) - (displace_map.width-1)*4;
+		var bottom_right = (displace_map.width-1) * (displace_map.height-1) * 4;
+		this.displacement_bias = (displace_map.data[top_left] + displace_map.data[top_right] + displace_map.data[bottom_left] + displace_map.data[bottom_right]) / 4.0 / 255.0;
+				
+		// write out texture
+		/**/
+
+		//console.log("Displacement: " + (Date.now() - start));
+		start = Date.now();
+
+		//NMO_Main.setTexturePreview(this.displacement_canvas, "displace_img", img_data.width, img_data.height);
+		this.updateDisplacementBias();
+		/*//console.log("w:" + img_data.width + ", h:" + img_data.height);
+		if (NMO_RenderView.render_model.material.uniforms[ "enableDisplacement" ].value == true){
+			NMO_RenderView.render_model.geometry.computeTangents();
+		}*/
+		//console.log("Updating displacement: " + (Date.now() - start));
+		
+		//NMO_RenderView.displacement_map.needsUpdate = true;
+	};
+
+	this.createCPUbasedDisplacementTexture = function(){
+
 		var start = Date.now();
 
 		var img_data;
@@ -64,43 +95,97 @@ NMO_DisplacementMap = new function(){
 		// add contrast value
 		displace_map = this.contrastImage(displace_map, this.contrast * 255);
 
-		if (this.blur_sharp > 0)
-			NMO_Gaussian.gaussiansharpen(displace_map, img_data.width, img_data.height, Math.abs(this.blur_sharp));
-		else if (this.blur_sharp < 0)
-			NMO_Gaussian.gaussianblur(displace_map, img_data.width, img_data.height, Math.abs(this.blur_sharp));		
-		
-		// GET BIAS FOR DISPLACMENT
-		// calc average value at the border of height tex
-		var top_left = 0;
-		var top_right = (displace_map.width-1)*4;
-		var bottom_left = ((displace_map.width-1) * (displace_map.height-1)*4) - (displace_map.width-1)*4;
-		var bottom_right = (displace_map.width-1) * (displace_map.height-1) * 4;
-		this.displacement_bias = (displace_map.data[top_left] + displace_map.data[top_right] + displace_map.data[bottom_left] + displace_map.data[bottom_right]) / 4.0 / 255.0;
-		
-		
-		
-		// write out texture
+		if (this.smoothing > 0)
+			NMO_Gaussian.gaussiansharpen(displace_map, img_data.width, img_data.height, Math.abs(this.smoothing));
+		else if (this.smoothing < 0)
+			NMO_Gaussian.gaussianblur(displace_map, img_data.width, img_data.height, Math.abs(this.smoothing));
+
 		var ctx_displace = this.displacement_canvas.getContext("2d");
 		this.displacement_canvas.width = img_data.width;
 		this.displacement_canvas.height = img_data.height;
 		ctx_displace.clearRect(0, 0, img_data.width, img_data.height);
 		ctx_displace.putImageData(displace_map, 0, 0, 0, 0, img_data.width, img_data.height);
+	}
 
-		//console.log("Displacement: " + (Date.now() - start));
-		start = Date.now();
-
-		NMO_Main.setTexturePreview(this.displacement_canvas, "displace_img", img_data.width, img_data.height);
-		this.updateDisplacementBias();
-		//console.log("w:" + img_data.width + ", h:" + img_data.height);
-		if (NMO_RenderView.render_model.material.uniforms[ "enableDisplacement" ].value == true){
-			NMO_RenderView.render_model.geometry.computeTangents();
-		}
-		//console.log("Updating displacement: " + (Date.now() - start));
+	this.createGPUbasedDisplacementTexture = function(){
+		var start = Date.now();
+		var heightmap;
 		
-		//NMO_RenderView.displacement_map.needsUpdate = true;
+		if(NMO_Main.normal_map_mode == "pictures")
+			//heightmap = Filters.filterImage(Filters.grayscale, NMO_RenderNormalview.height_from_normal_img);
+			heightmap = Filters.filterImage(Filters.grayscale, NMO_RenderNormalview.normal_to_height_canvas);
+		else
+			heightmap = Filters.filterImage(Filters.grayscale, NMO_FileDrop.height_image);
+		
+
+		var w = heightmap.width;
+		var h = heightmap.height;
+		
+		this.displacement_canvas.width = w;
+		this.displacement_canvas.height = h;
+		var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, canvas: this.displacement_canvas });
+		renderer.setSize( w, h );
+		//renderer_aomap.setClearColor( 0x000000, 0 ); // the default
+		//camera_Normalview = new THREE.OrthographicCamera( -1, 1, 1, -1, 0, 10 );
+		var camera = new THREE.OrthographicCamera(  1 / - 2, 1 / 2, 1 / 2, 1 / - 2, 0, 1);
+		var scene = new THREE.Scene();
+
+		// Shader + uniforms
+		var shader = NMO_DisplacementShader;
+		var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
+		var height_map_tex = new THREE.Texture( heightmap );
+		height_map_tex.wrapS 		= height_map_tex.wrapT = THREE.ClampToEdgeWrapping; //RepeatWrapping, ClampToEdgeWrapping
+		height_map_tex.minFilter 	= height_map_tex.magFilter = THREE.NearestFilter; //LinearFilter , NearestFilter
+		height_map_tex.anisotropy  = 2;
+		height_map_tex.needsUpdate = true;
+
+		uniforms["invert"].value = this.invert_displacement;
+		uniforms["contrast"].value = this.contrast;
+		uniforms["tHeight"].value = height_map_tex;
+		if(NMO_Main.normal_map_mode == "pictures")
+			uniforms["flipY"].value = 1;
+		else
+			uniforms["flipY"].value = 0;
+		
+		var parameters = { 
+			fragmentShader: shader.fragmentShader, 
+			vertexShader: shader.vertexShader, 
+			uniforms: uniforms
+		};
+
+		var material = new THREE.ShaderMaterial( parameters );
+		material.wrapAround = true;
+		material.transparent = true;
+
+		var render_mesh = new THREE.Mesh( new THREE.PlaneBufferGeometry(1, 1, 1, 1), material );
+		render_mesh.name = "mesh";		
+		scene.add(render_mesh);
+		
+		
+		var renderTargetParameters = { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat, stencilBufer: false };
+		var renderTarget = new THREE.WebGLRenderTarget( w, h, renderTargetParameters );
+		var composer = new THREE.EffectComposer( renderer, renderTarget );
+		//renderer_aomap.render( scene_aomap, camera_aomap, renderTarget );
+		//renderer_aomap.render( scene_aomap, camera_aomap );
+		//this.composer_aomap.setSize( w, h );
+
+		var gaussian_shader_y = new THREE.ShaderPass( THREE.VerticalBlurShader );
+		var gaussian_shader_x = new THREE.ShaderPass( THREE.HorizontalBlurShader );		 
+		gaussian_shader_y.uniforms[ "v" ].value = this.smoothing / w / 5;
+		gaussian_shader_x.uniforms[ "h" ].value = this.smoothing / h / 5;
+		gaussian_shader_x.renderToScreen = true;
+
+		var renderPass = new THREE.RenderPass( scene, camera );
+		composer.addPass( renderPass );
+		composer.addPass( gaussian_shader_y );	
+		composer.addPass( gaussian_shader_x );
+		composer.render( 1/60 );		
+		
+		console.log("Displacement: " + (Date.now() - start));
+
+		NMO_Main.setTexturePreview( this.displacement_canvas, "displace_img", w, h);	
+		
 	};
-
-
 		
 	this.invertDisplacement = function(){
 		this.invert_displacement = !this.invert_displacement;
@@ -111,7 +196,7 @@ NMO_DisplacementMap = new function(){
 	
 	this.setDisplacementSetting = function(element, v){	
 		if (element == "blur_sharp")
-			this.blur_sharp = v;
+			this.smoothing = v;
 		
 		else if (element == "strength")
 			this.current_disp_scale = v;
