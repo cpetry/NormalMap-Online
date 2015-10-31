@@ -32,6 +32,11 @@ NMO_AmbientOccMap = new function(){
 	this.invert_ao = false;
 	this.timer = 0;
 
+	this.renderer;
+	this.uniforms;
+	this.height_map_tex;
+	this.gaussian_shader_y, this.gaussian_shader_x;
+
 	this.createAmbientOcclusionTexture = function(){
 		this.createGPUbasedAOTexture();
 		return;
@@ -94,9 +99,52 @@ NMO_AmbientOccMap = new function(){
 		//NMO_RenderView.ao_map.needsUpdate = true;
 	};
 
-
-
 	this.createGPUbasedAOTexture = function(){
+		var start = Date.now();
+		var w, h;
+		if(NMO_Main.normal_map_mode == "pictures"){
+			//heightmap = Filters.filterImage(Filters.grayscale, NMO_RenderNormalview.height_from_normal_img);
+			this.height_map_tex.image = Filters.filterImage(Filters.grayscale, NMO_RenderNormalview.normal_to_height_canvas);
+			w = NMO_RenderNormalview.normal_to_height_canvas.width;
+			h = NMO_RenderNormalview.normal_to_height_canvas.height;
+		}
+		else{
+			this.height_map_tex.image = Filters.filterImage(Filters.grayscale, NMO_FileDrop.height_image);
+			w = NMO_FileDrop.height_image.width;
+			h = NMO_FileDrop.height_image.height;
+			//console.log ("w: " + w + ", h: " + h);
+		}
+		this.height_map_tex.needsUpdate = true;
+
+		this.uniforms["invert"].value = this.invert_ao;
+		this.uniforms["range"].value = this.ao_range;
+		this.uniforms["strength"].value = this.ao_strength;
+		this.uniforms["mean"].value = this.ao_mean;
+		this.uniforms["level"].value = this.ao_level;
+		this.uniforms["tHeight"].value = this.height_map_tex;
+
+		this.gaussian_shader_y.uniforms[ "v" ].value = this.ao_smoothing / w / 5;
+		this.gaussian_shader_x.uniforms[ "h" ].value = this.ao_smoothing / h / 5;
+
+		if(NMO_Main.normal_map_mode == "pictures")
+			this.uniforms["flipY"].value = 1;
+		else
+			this.uniforms["flipY"].value = 0;
+
+
+		this.renderer.setSize( w, h );
+		this.composer.setSize( w, h );
+		var renderTargetParameters = { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat, stencilBufer: false };
+		this.renderTarget = new THREE.WebGLRenderTarget( w, h, renderTargetParameters );
+		this.composer.reset(this.renderTarget);
+		this.composer.render( 1 / 60 );
+
+		NMO_Main.setTexturePreview(this.ao_canvas, "ao_img", w, h);
+		console.log("Ambient Occ: " + (Date.now() - start));
+	}
+
+
+	this.initAOshader = function(){
 		var start = Date.now();
 		var heightmap;
 		
@@ -112,8 +160,8 @@ NMO_AmbientOccMap = new function(){
 		
 		this.ao_canvas.width = w;
 		this.ao_canvas.height = h;
-		var renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, canvas: this.ao_canvas });
-		renderer.setSize( w, h );
+		this.renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, canvas: this.ao_canvas });
+		this.renderer.setSize( w, h );
 		//renderer_aomap.setClearColor( 0x000000, 0 ); // the default
 		//camera_Normalview = new THREE.OrthographicCamera( -1, 1, 1, -1, 0, 10 );
 		var camera = new THREE.OrthographicCamera(  1 / - 2, 1 / 2, 1 / 2, 1 / - 2, 0, 1);
@@ -121,28 +169,28 @@ NMO_AmbientOccMap = new function(){
 
 		// Shader + uniforms
 		var shader = NMO_AmbientOcclusionShader;
-		var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
-		var height_map_tex = new THREE.Texture( heightmap );
-		height_map_tex.wrapS 		= height_map_tex.wrapT = THREE.ClampToEdgeWrapping; //RepeatWrapping, ClampToEdgeWrapping
-		height_map_tex.minFilter 	= height_map_tex.magFilter = THREE.NearestFilter; //LinearFilter , NearestFilter
-		height_map_tex.anisotropy  = 2;
-		height_map_tex.needsUpdate = true;
+		this.uniforms = THREE.UniformsUtils.clone( shader.uniforms );
+		this.height_map_tex = new THREE.Texture( heightmap );
+		this.height_map_tex.wrapS 		= this.height_map_tex.wrapT = THREE.ClampToEdgeWrapping; //RepeatWrapping, ClampToEdgeWrapping
+		this.height_map_tex.minFilter 	= this.height_map_tex.magFilter = THREE.NearestFilter; //LinearFilter , NearestFilter
+		this.height_map_tex.anisotropy  = 2;
+		this.height_map_tex.needsUpdate = true;
 
-		uniforms["invert"].value = this.invert_ao;
-		uniforms["range"].value = this.ao_range;
-		uniforms["strength"].value = this.ao_strength;
-		uniforms["mean"].value = this.ao_mean;
-		uniforms["level"].value = this.ao_level;
-		uniforms["tHeight"].value = height_map_tex;
+		this.uniforms["invert"].value = this.invert_ao;
+		this.uniforms["range"].value = this.ao_range;
+		this.uniforms["strength"].value = this.ao_strength;
+		this.uniforms["mean"].value = this.ao_mean;
+		this.uniforms["level"].value = this.ao_level;
+		this.uniforms["tHeight"].value = this.height_map_tex;
 		if(NMO_Main.normal_map_mode == "pictures")
-			uniforms["flipY"].value = 1;
+			this.uniforms["flipY"].value = 1;
 		else
-			uniforms["flipY"].value = 0;
+			this.uniforms["flipY"].value = 0;
 		
 		var parameters = { 
 			fragmentShader: shader.fragmentShader, 
 			vertexShader: shader.vertexShader, 
-			uniforms: uniforms
+			uniforms: this.uniforms
 		};
 
 		var material = new THREE.ShaderMaterial( parameters );
@@ -155,23 +203,23 @@ NMO_AmbientOccMap = new function(){
 		
 		
 		var renderTargetParameters = { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat, stencilBufer: false };
-		var renderTarget = new THREE.WebGLRenderTarget( w, h, renderTargetParameters );
-		var composer = new THREE.EffectComposer( renderer, renderTarget );
+		this.renderTarget = new THREE.WebGLRenderTarget( w, h, renderTargetParameters );
+		this.composer = new THREE.EffectComposer( this.renderer, this.renderTarget );
 		//renderer_aomap.render( scene_aomap, camera_aomap, renderTarget );
 		//renderer_aomap.render( scene_aomap, camera_aomap );
 		//this.composer_aomap.setSize( w, h );
 
-		var gaussian_shader_y = new THREE.ShaderPass( THREE.VerticalBlurShader );
-		var gaussian_shader_x = new THREE.ShaderPass( THREE.HorizontalBlurShader );		 
-		gaussian_shader_y.uniforms[ "v" ].value = this.ao_smoothing / w / 5;
-		gaussian_shader_x.uniforms[ "h" ].value = this.ao_smoothing / h / 5;
-		gaussian_shader_x.renderToScreen = true;
+		this.gaussian_shader_y = new THREE.ShaderPass( THREE.VerticalBlurShader );
+		this.gaussian_shader_x = new THREE.ShaderPass( THREE.HorizontalBlurShader );		 
+		this.gaussian_shader_y.uniforms[ "v" ].value = this.ao_smoothing / w / 5;
+		this.gaussian_shader_x.uniforms[ "h" ].value = this.ao_smoothing / h / 5;
+		this.gaussian_shader_x.renderToScreen = true;
 
 		var renderPass = new THREE.RenderPass( scene, camera );
-		composer.addPass( renderPass );
-		composer.addPass( gaussian_shader_y );	
-		composer.addPass( gaussian_shader_x );
-		composer.render( 1/60 );		
+		this.composer.addPass( renderPass );
+		this.composer.addPass( this.gaussian_shader_y );	
+		this.composer.addPass( this.gaussian_shader_x );
+		this.composer.render( 1/60 );		
 		
 		NMO_Main.setTexturePreview( this.ao_canvas, "ao_img", w, h);
 

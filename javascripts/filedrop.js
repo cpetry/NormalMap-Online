@@ -139,6 +139,8 @@ NMO_FileDrop = new function(){
 
 			NMO_FileDrop.initHeightFromPictures();
 			NMO_RenderNormalview.renderNormalview_init(); // init only when both types of images are loaded (init)
+			NMO_AmbientOccMap.initAOshader();
+			NMO_DisplacementMap.initDisplacementshader();
 			NMO_RenderNormalview.height_map.needsUpdate = true;
 				
 			NMO_NormalMap.setNormalSetting('strength', document.getElementById('strength_nmb').value, 'initial');
