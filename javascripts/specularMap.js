@@ -70,8 +70,10 @@ NMO_SpecularMap = new function(){
 
 
 	this.createSpecularTexture = function(){
-		this.createGPUbasedSpecularTexture();
-		return;
+		this.createGPUbasedSpecularTexture();		
+	};
+
+	this.createCPUbasedSpecularTexture = function(){
 		var img_data;
 		// if normal from picture is selected
 		if(NMO_Main.normal_map_mode == "pictures"){
@@ -120,8 +122,7 @@ NMO_SpecularMap = new function(){
 		NMO_Main.setTexturePreview(this.specular_canvas, "specular_img", img_data.width, img_data.height);
 		//console.log("Specular: " + (new Date().getTime() - st));
 		//NMO_RenderView.specular_map.needsUpdate = true;
-	};
-
+	}
 
 	this.createGPUbasedSpecularTexture = function(){
 

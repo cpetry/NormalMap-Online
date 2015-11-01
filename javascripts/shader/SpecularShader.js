@@ -51,7 +51,7 @@ NMO_SpecularShader = {
 		"	else if (falloff == 2)", // square
 		"		perc_dist_to_mean = (perc_dist_to_mean > 0.0) ? sqrt(perc_dist_to_mean) : 0.0;",
 		"	v.r = v.g = v.b = perc_dist_to_mean;",
-		"   v.rgb = v.rgb + (vec3(1,1,1) - v.rgb) * (1.0 - strength);",
+		"   v.rgb = v.rgb * strength;",
 		"   v.rgb = (invert == 1) ? (1.0 - v.rgb) : v.rgb;",
 		"	gl_FragColor = v;",
 		"}"
