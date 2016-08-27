@@ -132,7 +132,6 @@ var NMO_RenderNormalview = new function(){
 		// Prepare the blur shader passes
 		this.gaussian_shader_y = new THREE.ShaderPass( THREE.VerticalBlurShader );
 		this.gaussian_shader_x = new THREE.ShaderPass( THREE.HorizontalBlurShader );
-		//this.gaussian_shader = new THREE.ShaderPass( THREE.GaussianShader );
 		 
 		var bluriness = 0;
 	 
@@ -156,7 +155,6 @@ var NMO_RenderNormalview = new function(){
 		this.composer_Normalview.addPass( this.NormalRenderScene );
 		this.composer_Normalview.addPass( this.gaussian_shader_y );	
 		this.composer_Normalview.addPass( this.gaussian_shader_x );
-		//this.composer_Normalview.addPass( this.gaussian_shader );	
 		
 		
 		
