@@ -201,7 +201,7 @@ NMO_DisplacementMap = new function(){
 		};
 
 		var material = new THREE.ShaderMaterial( parameters );
-		material.wrapAround = true;
+		//material.wrapAround = true;
 		material.transparent = true;
 
 		var render_mesh = new THREE.Mesh( new THREE.PlaneBufferGeometry(1, 1, 1, 1), material );
@@ -287,8 +287,7 @@ NMO_DisplacementMap = new function(){
 	};
 
 	this.updateDisplacementBias = function(){
-		NMO_RenderView.render_model.material.uniforms[ "uDisplacementScale" ].value = this.current_disp_scale * 5;
-		NMO_RenderView.render_model.material.uniforms[ "uDisplacementBias" ].value = this.current_disp_scale * 5 * - this.displacement_bias;
+		NMO_RenderView.setDisplacementOptions(this.current_disp_scale, this.displacement_bias);
 		//console.log("updateDisplacementBias()");
 	};
 

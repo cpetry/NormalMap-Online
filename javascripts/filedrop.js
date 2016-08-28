@@ -48,6 +48,42 @@ NMO_FileDrop = new function(){
 	};
 	
 
+	this.handleModelFileSelect = function(evt) {
+	    var files = evt.target.files; // FileList object
+	    NMO_FileDrop.readModelFile(evt.target.files[0]); // files is a FileList of File objects. List some properties.
+	}
+
+	this.readModelFile = function(file){
+		console.log(file);
+		console.log("trying to load model")
+
+		var onProgress = function ( xhr ) {
+			if ( xhr.lengthComputable ) {
+				var percentComplete = xhr.loaded / xhr.total * 100;
+				console.log( Math.round(percentComplete, 2) + '% downloaded' );
+			}
+		};
+		var onError = function ( xhr ) { };
+
+		var reader = new FileReader();
+		reader.onload = function(e){
+			// model
+			//console.log(e.target.result)
+			var data = e.target.result;
+			var objLoader = new THREE.OBJLoader();
+			var object = objLoader.parse( data );
+			object.traverse( function ( child ) {
+				if ( child instanceof THREE.Mesh ) {
+					child.material = NMO_RenderView.render_model.material;
+					NMO_RenderView.customModel = child;
+					NMO_RenderView.setModel("Custom");
+				}
+			} );
+		}
+		reader.readAsText(file);
+		
+	};
+
 
 	this.isPowerOf2 = function(x){
 		return ((x != 0) && !(x & (x - 1)))
@@ -336,3 +372,6 @@ document.getElementById("picture_below_drop").addEventListener("drop", function(
 	e.preventDefault(); 
 	NMO_FileDrop.readImage(e.dataTransfer.files[0], "pictures", "below");
 }, true);
+
+
+document.getElementById('select_model_file').addEventListener('change', NMO_FileDrop.handleModelFileSelect, false);

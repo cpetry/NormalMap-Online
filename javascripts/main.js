@@ -21,8 +21,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-console.log("Warnings are disabled!");
-console.warn = function() {};
+//console.log("Warnings are disabled!");
+//console.warn = function() {};
 
 NMO_FileDrop.initHeightMap();
 NMO_RenderView.initRenderer();

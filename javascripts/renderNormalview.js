@@ -112,10 +112,10 @@ var NMO_RenderNormalview = new function(){
 		};
 
 		this.normal_map_material = new THREE.ShaderMaterial( normal_map_parameters );
-		this.normal_map_material.wrapAround = true;
+		//this.normal_map_material.wrapAround = true;
 		this.normal_map_material.transparent = true;
 		this.normal_map_from_pictures_material = new THREE.ShaderMaterial( normal_map_from_pictures_parameters );
-		this.normal_map_from_pictures_material.wrapAround = true;
+		//this.normal_map_from_pictures_material.wrapAround = true;
 		this.normal_map_from_pictures_material.transparent = true;
 		
 
@@ -298,7 +298,7 @@ var NMO_RenderNormalview = new function(){
 			uniforms: normal_to_height_uniforms
 		};
 		var normal_to_height_material = new THREE.ShaderMaterial( normal_to_height_parameters );
-		normal_to_height_material.wrapAround = true;
+		//normal_to_height_material.wrapAround = true;
 		normal_to_height_material.transparent = true;
 
 		var render_mesh = new THREE.Mesh( new THREE.PlaneBufferGeometry(1, 1, 1, 1), normal_to_height_material );

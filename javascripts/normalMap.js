@@ -44,7 +44,6 @@ var NMO_NormalMap = new function(){
 	this.createNormalMap = function(){
 		NMO_RenderNormalview.renderNormalView();
 		NMO_Main.setTexturePreview(this.normal_canvas, "normal_img", this.normal_canvas.width, this.normal_canvas.height);
-		//NMO_RenderView.normal_map.needsUpdate = true;
 	};
 
 

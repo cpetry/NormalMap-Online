@@ -94,8 +94,6 @@
 		</p>
 	</div>
 	
-
-	<div style="min-height:10px"></div>
 	
 	<div class="content">
 		
@@ -613,6 +611,8 @@
 		<div class="column" id="preview" style="float:right;">
 			<div class="column_top">
 				<table style="border-spacing:0px; width:100%;" >
+					<col width="100">
+  					<col width="500">
 					<tr style="height:30px;">
 						<td align="center" class="option_text" colspan="2" style="text-align:center">
 							<span >3D Preview<i style="font-size:0.7em">(runs best on chrome)</i></span>
@@ -623,60 +623,56 @@
 							<span>Model</span>
 						</td>
 						<td class="options">
-							x:<input style="width:50px;" id="repeat_sliderx" onchange="NMO_RenderView.setRepeat(this.value, document.getElementById('repeat_slidery').value)"
-								type="number"  min='1' max='3' value='1' step='1'/>
-							y:<input style="width:50px;" id="repeat_slidery" onchange="NMO_RenderView.setRepeat(document.getElementById('repeat_sliderx').value, this.value)"
-								type="number"  min='1' max='3' value='1' step='1'/>
-						</td>
-					</tr>
-					<tr style="height:30px;">
-						<td class="option_text">
-							<span>Diffuse Map</span>
-						</td>
-						<td class="options" style="font-size: small;">
-							<input id="select_diffuse_file" type="file" accept="image/*, .tga" onpropertychange="handleDiffuseFileSelect()" style="position:absolute;visibility:hidden;"/>
-							<input type="button" id="browseDiffuseButton" value="Load..." onclick="select_diffuse_file.click();">
-							<input id="input_diffuse" type="checkbox" value="Diffuse" onclick="NMO_RenderView.toggleDiffuse()" disabled>Diffuse
-						<td>
-					</tr>
-					<tr style="height:30px;">
-						<td class="option_text">
-							<span>UV</span>
-						</td>
-						<td class="options">
 							<select id="model" onchange="NMO_RenderView.setModel(document.getElementById('model').value)">
 								<option selected>Cube</option>
 								<option>Plane</option>
 								<option>Sphere</option>
 								<option>Cylinder</option>
+								<option>Teapot</option>
+								<option>Custom</option>
+								
 							</select>
-							<input id="input_rot" type="checkbox" value="rotation" onclick="NMO_RenderView.toggleRotation()" checked> Rotation
+							<input id="select_model_file" type="file" accept=".obj" onpropertychange="NMO_FileDrop.handleModelFileSelect()" style="position:absolute;visibility:hidden;"/>
+							<input type="button" id="browseModelButton" value="Load .obj" onclick="select_model_file.click();">
 						</td>
 					</tr>
 					<tr style="height:30px;">
 						<td class="option_text">
-							<span>Displacement</span>
+							<span>Maps</span>
 						</td>
-						<td class="options">
-							<input id="input_displacement" type="checkbox" value="displacement" onclick="NMO_RenderView.toggleDisplacement()" style="vertical-align: middle;" checked >
-							<input id="dm_strength_slider" style="width:70px; vertical-align: middle;"
+						<td class="options" style="font-size: small;">
+							<input id="input_diffuse" type="checkbox" value="Diffuse" onclick="NMO_RenderView.toggleDiffuse()" disabled>Diffuse
+							<input id="select_diffuse_file" type="file" accept="image/*, .tga" onpropertychange="handleDiffuseFileSelect()" style="position:absolute;visibility:hidden;"/>
+							<input type="button" id="browseDiffuseButton" value="Load..." onclick="select_diffuse_file.click();">
+						<td>
+					</tr>
+					<tr style="height:30px;">
+						<td class="option_text"></td>
+						<td class="options" style="font-size: small;">
+							<input id="input_displacement" type="checkbox" value="displacement" onclick="NMO_RenderView.setDisplacement(document.getElementById('input_displacement').checked)" style="vertical-align: middle;" checked >
+							Displacement
+							<input id="dm_strength_slider" style="width:50px; vertical-align: middle;"
 								onchange="NMO_DisplacementMap.setDisplaceStrength( this.value); document.getElementById('dm_strength_nmb').value = this.value;"
 								oninput="NMO_DisplacementMap.setDisplaceStrength( this.value); document.getElementById('dm_strength_nmb').value = this.value;"
-								type="range" value='0.3' min='-1' max='1' step='0.01'/>
+								type="range" value='0.3' min='-1' max='1' step='0.01' />
 							<input id="dm_strength_nmb" type="number" step="0.01" style="width:40px;vertical-align: middle;" value='0.3'
-								onchange="NMO_DisplacementMap.setDisplaceStrength(this.value); document.getElementById('dm_strength_slider').value = this.value;">
-
+								onchange="NMO_DisplacementMap.setDisplaceStrength(this.value); document.getElementById('dm_strength_slider').value = this.value;">	
 						</td>
 					</tr>
 
 					<tr style="height:30px;">
-						<td class="option_text">
-							<span>Use Map</span>
-						</td>
+						<td class="option_text"></td>
 						<td class="options" style="font-size: small;">
 							<input id="input_normal" type="checkbox" value="normal" onclick="NMO_RenderView.toggleNormal()" checked>Normal
 							<input id="input_ao" type="checkbox" value="ao" onclick="NMO_RenderView.toggleAO()" checked>AO
 							<input id="input_specular" type="checkbox" value="specular" onclick="NMO_RenderView.toggleSpecular()" checked>Specular
+						</td>
+					</tr>
+
+					<tr style="height:30px;">
+						<td class="option_text"></td>
+						<td class="options" style="font-size: small;">
+							<input id="input_enviroment" type="checkbox" value="normal" onclick="NMO_RenderView.setEnvironment(document.getElementById('input_enviroment').checked)" >Environment
 						</td>
 					</tr>
 				</table>
@@ -726,6 +722,8 @@
 		<p>Imprint: Christian Petry, Fliederweg 6, 91094 Langensendelbach, Germany - 
 		
 		<a href="http://www.petry-christian.de"> www.petry-christian.de </a>
+		<br/>
+		Enviroment map from <a href="http://www.humus.name/index.php?page=Textures">Humus</a>
 		</p>
 	</footer>
 	
@@ -739,18 +737,22 @@
 <link rel="stylesheet" href="javascripts/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
 <script type="text/javascript" src="javascripts/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
 
-<script src="javascripts/extern/readTGA.js"></script>
-<script src="javascripts/extern/blob.js"></script>
-<script src="javascripts/extern/canvas-toBlob.js"></script>
-<script src="javascripts/extern/filesaver.min.js"></script>
 <script src="javascripts/extern/three.min.js"></script>
 
+<script src="javascripts/extern/blob.js"></script>
+<script src="javascripts/extern/canvas-toBlob.js"></script>
+<script src="javascripts/extern/CopyShader.js"></script>
+<script src="javascripts/extern/filesaver.min.js"></script>
 <script src="javascripts/extern/EffectComposer.js"></script>
+<script src="javascripts/extern/ganalytics.js"></script>
+<script src="javascripts/extern/MaskPass.js"></script>
+<script src="javascripts/extern/OBJLoader.js"></script>
+<script src="javascripts/extern/OrbitControls.js"></script>
+<script src="javascripts/extern/readTGA.js"></script>
 <script src="javascripts/extern/RenderPass.js"></script>
 <script src="javascripts/extern/ShaderPass.js"></script>
-<script src="javascripts/extern/MaskPass.js"></script>
-<script src="javascripts/extern/CopyShader.js"></script>
-<script src="javascripts/extern/NormalDisplacementShader.js"></script>
+<script src="javascripts/extern/TeapotBufferGeometry.js"></script>
+
 <script src="javascripts/shader/NormalMapShader.js"></script>
 <script src="javascripts/shader/NormalToHeightShader.js"></script>
 <script src="javascripts/shader/NormalMapFromPicturesShader.js"></script>
@@ -759,12 +761,8 @@
 <script src="javascripts/shader/SpecularShader.js"></script>
 <script src="javascripts/shader/HorizontalBlurShader.js"></script>
 <script src="javascripts/shader/VerticalBlurShader.js"></script>
-<!-- <script src="javascripts/shader/GaussianShader.js"></script> -->
-<script src="javascripts/extern/OrbitControls.js"></script>
-<script src="javascripts/extern/ganalytics.js"></script>
 
 <script type="text/javascript" src="javascripts/filedrop.js"></script>
-<script type="text/javascript" src="javascripts/parallel.js"></script>
 <script type="text/javascript" src="javascripts/filters.js"></script>
 <script type="text/javascript" src="javascripts/renderView.js"></script>
 <script type="text/javascript" src="javascripts/renderNormalview.js"></script>
@@ -773,7 +771,6 @@
 <script type="text/javascript" src="javascripts/ambientOccMap.js"></script>
 <script type="text/javascript" src="javascripts/specularMap.js"></script>
 <script type="text/javascript" src="javascripts/diffuseMap.js"></script>
-<script type="text/javascript" src="javascripts/gaussianblur.js"></script>
 <script type="text/javascript" src="javascripts/main.js"></script>
 
 </html>

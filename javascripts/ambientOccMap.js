@@ -40,7 +40,7 @@ NMO_AmbientOccMap = new function(){
 	this.createAmbientOcclusionTexture = function(){
 		this.createGPUbasedAOTexture();
 		return;
-		var start = Date.now();
+		/*var start = Date.now();
 		
 		var grayscale;
 		var height, width;
@@ -49,7 +49,6 @@ NMO_AmbientOccMap = new function(){
 			grayscale = NMO_RenderNormalview.height_from_normal_img;
 			width = grayscale.width;
 			height = grayscale.height;
-
 		}
 		// Normal from height is selected
 		else{
@@ -96,7 +95,7 @@ NMO_AmbientOccMap = new function(){
 
 		NMO_Main.setTexturePreview(this.ao_canvas, "ao_img", grayscale.width, grayscale.height);
 		//console.log("AmbientOcc: " + (new Date().getTime() - st));
-		//NMO_RenderView.ao_map.needsUpdate = true;
+		//NMO_RenderView.ao_map.needsUpdate = true;*/
 	};
 
 	this.createGPUbasedAOTexture = function(){
@@ -194,7 +193,7 @@ NMO_AmbientOccMap = new function(){
 		};
 
 		var material = new THREE.ShaderMaterial( parameters );
-		material.wrapAround = true;
+		//material.wrapAround = true;
 		material.transparent = true;
 
 		var render_mesh = new THREE.Mesh( new THREE.PlaneBufferGeometry(1, 1, 1, 1), material );

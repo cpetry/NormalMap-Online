@@ -30,12 +30,12 @@ NMO_SpecularMap = new function(){
 	}
 
 	//this.timer = 0;
-	this.specular_mean = 1;
+	this.specular_mean = 0.8;
 	this.specular_range = 1;
 	this.specular_strength = 1;
 	this.specular_invert = 0;
 	this.specular_canvas = document.createElement("canvas");
-	this.specular_falloff = this.FallOffEnum.LINEAR;
+	this.specular_falloff = this.FallOffEnum.SQUARE;
 	this.smoothing = 0;
 
 	this.renderer;
@@ -221,7 +221,7 @@ NMO_SpecularMap = new function(){
 		};
 
 		var material = new THREE.ShaderMaterial( parameters );
-		material.wrapAround = true;
+		//material.wrapAround = true;
 		material.transparent = true;
 
 		var render_mesh = new THREE.Mesh( new THREE.PlaneBufferGeometry(1, 1, 1, 1), material );
