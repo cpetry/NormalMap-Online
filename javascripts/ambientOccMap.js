@@ -25,9 +25,9 @@ NMO_AmbientOccMap = new function(){
 
 	this.ao_canvas = document.createElement("canvas");
 	this.ao_smoothing = 0;
-	this.ao_strength = 0.5;
+	this.ao_strength = 1;
+	this.ao_mean = 0;
 	this.ao_range = 1;
-	this.ao_mean = 1;
 	this.ao_level = 1;
 	this.invert_ao = false;
 	this.timer = 0;

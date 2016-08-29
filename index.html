@@ -283,7 +283,7 @@
 								onchange="NMO_NormalMap.setNormalSetting('level', this.value);  document.getElementById('level_nmb').value = this.value;"
 								oninput="NMO_NormalMap.setNormalSetting('level', this.value);  document.getElementById('level_nmb').value = this.value;"
 								style="width:60%;"
-								type="range" value='8.0' min='4' max='10' step='0.1'/>
+								type="range" value='7.0' min='4' max='10' step='0.1'/>
 						<input id="level_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='8.0'
 								onchange="NMO_NormalMap.setNormalSetting('level', this.value); document.getElementById('level_slider').value = this.value;">
 					</td>
@@ -405,25 +405,11 @@
 									onchange="NMO_AmbientOccMap.setAOSetting('strength', this.value); document.getElementById('ao_strength_nmb').value = this.value;"
 									oninput="NMO_AmbientOccMap.setAOSetting('strength', this.value); document.getElementById('ao_strength_nmb').value = this.value;"
 									style="width:60%;"
-									type="range"  value='0.5' min='0' max='1' step='0.01'/>
-							<input id="ao_strength_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='0.5'
+									type="range"  value='1' min='0' max='1' step='0.01'/>
+							<input id="ao_strength_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='1'
 									onchange="NMO_AmbientOccMap.setAOSetting('strength', this.value); document.getElementById('ao_strength_slider').value = this.value;">
 						</td>
 					</tr>
-					<!--<tr>
-						<td class="option_text">
-							<span >Level</span>
-						</td>
-						<td class="options">
-							<input id="ao_level_slider"
-									onchange="NMO_AmbientOccMap.setAOSetting('level', this.value);  document.getElementById('ao_level_nmb').value = this.value;"
-									oninput="NMO_AmbientOccMap.setAOSetting('level', this.value);  document.getElementById('ao_level_nmb').value = this.value;"
-									style="width:60%;"
-									type="range" value='7.0' min='4' max='10' step='0.1'/>
-							<input id="ao_level_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='7.0'
-									onchange="NMO_AmbientOccMap.setAOSetting('level', this.value); document.getElementById('ao_level_slider').value = this.value;">
-						</td>
-					</tr>-->
 					<tr>
 						<td class="option_text">
 							<span>Mean</span>
@@ -433,8 +419,8 @@
 									onchange="NMO_AmbientOccMap.setAOSetting('mean', this.value); document.getElementById('ao_mean_nmb').value = this.value;"
 									oninput="NMO_AmbientOccMap.setAOSetting('mean', this.value); document.getElementById('ao_mean_nmb').value = this.value;"
 									style="width:60%;"
-									type="range"  value='1' min='0' max='1' step='0.01'/>
-							<input id="ao_mean_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='1'
+									type="range"  value='0' min='0' max='1' step='0.01'/>
+							<input id="ao_mean_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='0'
 									onchange="NMO_AmbientOccMap.setAOSetting('mean', this.value); document.getElementById('ao_mean_slider').value = this.value;">
 						</td>
 					</tr>
@@ -622,7 +608,7 @@
 						<td class="option_text">
 							<span>Model</span>
 						</td>
-						<td class="options">
+						<td class="options" style="font-size: small;">
 							<select id="model" onchange="NMO_RenderView.setModel(document.getElementById('model').value)">
 								<option selected>Cube</option>
 								<option>Plane</option>
@@ -634,6 +620,7 @@
 							</select>
 							<input id="select_model_file" type="file" accept=".obj" onpropertychange="NMO_FileDrop.handleModelFileSelect()" style="position:absolute;visibility:hidden;"/>
 							<input type="button" id="browseModelButton" value="Load .obj" onclick="select_model_file.click();">
+							<input id="input_rot" type="checkbox" value="rotation" onclick="NMO_RenderView.toggleRotation()" checked> Rotation
 						</td>
 					</tr>
 					<tr style="height:30px;">

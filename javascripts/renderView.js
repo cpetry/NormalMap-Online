@@ -66,62 +66,51 @@ var NMO_RenderView = new function(){
 		
 		var controls = new THREE.OrbitControls( this.camera, this.renderer.domElement );
 		
-		// add subtle ambient lighting
-		var ambientLight = new THREE.AmbientLight(0x606060 );
-		this.scene.add(ambientLight);
 		
-		// directional lighting with shadows
-		var directionalLight = new THREE.DirectionalLight(0xdddddd, 0.5 );
-		//console.log(directionalLight);
-		directionalLight.position.set(40, 40, 40);
-		directionalLight.castShadow = true;
-		//directionalLight.shadowDarkness = 0.40;
-		directionalLight.shadow.mapSize.width = 2048;
-		directionalLight.shadow.mapSize.height = 2048;
-		directionalLight.shadow.camera.far = 100;
-		directionalLight.shadow.camera.right     =  50;
-		directionalLight.shadow.camera.left     = -50;
-		directionalLight.shadow.camera.top      =  50;
-		directionalLight.shadow.camera.bottom   = -50;
-		// debug shadow
-		//directionalLight.shadowCameraVisible = true;
-		this.scene.add(directionalLight);
+		var hemiLight = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 );
+		hemiLight.color.setHSL( 0.6, 1, 0.6 );
+		hemiLight.groundColor.setHSL( 0.095, 1, 0.75 );
+		hemiLight.position.set( 0, 500, 0 );
+		this.scene.add( hemiLight );
+
 		
-		// light without any shadows
-		var dL2 = new THREE.DirectionalLight( 0xbbdbff, 0.3 );
-		dL2.position.set( 0, -1, 1 );
-		this.scene.add( dL2 );
-		
-		// light without any shadows
-		var dL3 = new THREE.DirectionalLight( 0xbbffff, 0.25 );
-		dL3.position.set( -3, 1, -1 );
-		this.scene.add( dL3 );
+		var dirLight = new THREE.DirectionalLight( 0xffffff, 1 );
+		dirLight.color.setHSL( 0.1, 1, 0.95 );
+		dirLight.position.set( -1, 1.75, 1 );
+		dirLight.position.multiplyScalar( 50 );
+		this.scene.add( dirLight );
+
+		dirLight.castShadow = true;
+		dirLight.shadowDarkness = 0.40;
+
+		dirLight.shadowMapWidth = 2048;
+		dirLight.shadowMapHeight = 2048;
+
+		var d = 50;
+
+		dirLight.shadowCameraLeft = -d;
+		dirLight.shadowCameraRight = d;
+		dirLight.shadowCameraTop = d;
+		dirLight.shadowCameraBottom = -d;
+
+		dirLight.shadowCameraFar = 3500;
+		dirLight.shadowBias = -0.0001;
 		
 		
 		
 		//var height_canvas   = document.getElementById('height_canvas');
 		
-		this.displacement_map				= new THREE.Texture( NMO_DisplacementMap.displacement_canvas );
-		this.displacement_map.wrapS 		= this.displacement_map.wrapT = THREE.RepeatWrapping;
-		this.displacement_map.minFilter 	= THREE.LinearFilter;
-		this.displacement_map.anisotropy 	= 2;
-		this.diffuse_map				= new THREE.Texture( diffuse_canvas );
-		this.diffuse_map.wrapS 			= this.diffuse_map.wrapT = THREE.RepeatWrapping;
-		this.diffuse_map.minFilter 		= THREE.LinearFilter;
-		this.diffuse_map.anisotropy  	= 2;
-		this.ao_map  			= new THREE.Texture( NMO_AmbientOccMap.ao_canvas );
-		this.ao_map.wrapS 		= this.ao_map.wrapT = THREE.RepeatWrapping;
-		this.ao_map.minFilter 	= THREE.LinearFilter;
-		this.ao_map.anisotropy 	= 2;
+		this.diffuse_map			= new THREE.Texture( diffuse_canvas );
+		this.specular_map  			= new THREE.Texture( NMO_SpecularMap.specular_canvas );
 		this.normal_map  			= new THREE.Texture( NMO_NormalMap.normal_canvas );
+		this.displacement_map		= new THREE.Texture( NMO_DisplacementMap.displacement_canvas );
+		this.ao_map  				= new THREE.Texture( NMO_AmbientOccMap.ao_canvas );
+		this.diffuse_map.wrapS 		= this.diffuse_map.wrapT = THREE.RepeatWrapping;
+		this.specular_map.wrapS 	= this.specular_map.wrapT = THREE.RepeatWrapping;
 		this.normal_map.wrapS 		= this.normal_map.wrapT = THREE.RepeatWrapping;
-		this.normal_map.minFilter 	= THREE.LinearFilter;
-		this.normal_map.anisotropy 	= 2;
-		this.specular_map  				= new THREE.Texture( NMO_SpecularMap.specular_canvas );
-		this.specular_map.wrapS 		= this.specular_map.wrapT = THREE.RepeatWrapping;
-		this.specular_map.minFilter 	= THREE.LinearFilter;
-		this.specular_map.anisotropy 	= 2;
-
+		this.displacement_map.wrapS = this.displacement_map.wrapT = THREE.RepeatWrapping;
+		this.ao_map.wrapS 			= this.ao_map.wrapT = THREE.RepeatWrapping;
+		
 		var loader = new THREE.CubeTextureLoader();
 		loader.setPath( 'cubemaps/park/' );
 
@@ -182,10 +171,12 @@ var NMO_RenderView = new function(){
 		this.material.uniforms.aoMap.value = this.ao_map;
 		this.material.uniforms.displacementScale.value = -0.3
 		this.material.uniforms.displacementBias.value = 0;
-		this.material.uniforms.diffuse.value = new THREE.Color(0xbbbbbb);
-		this.material.uniforms.specular.value = new THREE.Color(0x777777);
+		this.material.uniforms.diffuse.value = new THREE.Color(0xaaaaaa);
+		this.material.uniforms.specular.value = new THREE.Color(0x444444);
 		//this.material.unshininess.value = 40;
-		this.material.uniforms.ambientLightColor.value = new THREE.Color(0x777777);
+		//this.material.uniforms.ambientLightColor.value = new THREE.Color(0x777777);
+
+
 		this.setModel("Cube");
 
 		//this.scene.background = textureCube;
@@ -205,7 +196,7 @@ var NMO_RenderView = new function(){
 		this.scene.remove( this.render_model );
 
 		if (type == "Cube"){
-			var geometry = new THREE.BoxGeometry(10, 10, 10, 96, 96, 96);
+			var geometry = new THREE.BoxGeometry(10, 10, 10, 128, 128, 128);
 			//geometry.computeTangents();
 			this.render_model = new THREE.Mesh( new THREE.BufferGeometry().fromGeometry( geometry), this.material);
 			this.render_model.castShadow = true;

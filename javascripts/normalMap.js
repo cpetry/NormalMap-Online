@@ -28,7 +28,7 @@ var NMO_NormalMap = new function(){
 	this.invert_source = false;
 	this.smoothing = 0;
 	this.strength = 2.5;
-	this.level = 8;
+	this.level = 7;
 	this.normal_type = "sobel";
 	this.normal_canvas = document.createElement("canvas");
 
