@@ -131,13 +131,13 @@ var NMO_RenderView = new function(){
 		//uniforms[ "specular" ].value = new THREE.Color(0x777777);
 		//uniforms[ "ambientLightColor" ].value = new THREE.Color(0x000000);
 
-		console.log(this.diffuse_map);
+		//console.log(this.diffuse_map);
 		//uniforms["color"].value 	           = new THREE.Color("rgb(255, 0, 0)");
 		var textureLoader = new THREE.TextureLoader();
 
 		shaderUniforms = uniforms;
 		//shaderUniforms.aoMap = this.ao_map;
-		console.log(shaderUniforms);
+		//console.log(shaderUniforms);
 
 		var defines = {};
 
@@ -160,6 +160,7 @@ var NMO_RenderView = new function(){
 			//transparent: true,
 			lights: true
 		} );
+		//console.log(shaderUniforms)
 
 		this.material.extensions.derivatives = true;  // needed for normalmap
 		this.material.uniforms.map.value = this.diffuse_map;
@@ -169,6 +170,7 @@ var NMO_RenderView = new function(){
 		//this.material.uniforms.lightMap.value = textureCube;
 		this.material.uniforms.envMap.value = this.textureCube;
 		this.material.uniforms.aoMap.value = this.ao_map;
+		this.material.uniforms.aoMapIntensity.value = 1;
 		this.material.uniforms.displacementScale.value = -0.3
 		this.material.uniforms.displacementBias.value = 0;
 		this.material.uniforms.diffuse.value = new THREE.Color(0xaaaaaa);
@@ -197,6 +199,7 @@ var NMO_RenderView = new function(){
 
 		if (type == "Cube"){
 			var geometry = new THREE.BoxGeometry(10, 10, 10, 128, 128, 128);
+			geometry.faceVertexUvs[ 1 ] = geometry.faceVertexUvs[ 0 ];
 			//geometry.computeTangents();
 			this.render_model = new THREE.Mesh( new THREE.BufferGeometry().fromGeometry( geometry), this.material);
 			this.render_model.castShadow = true;
@@ -262,6 +265,7 @@ var NMO_RenderView = new function(){
 			this.render_model.receiveShadow = true;
 			this.scene.add( this.render_model );
 		}
+		//this.render_model.geometry.faceVertexUvs[ 1 ] = this.render_model.geometry.faceVertexUvs[ 0 ];
 	};
 
 				
