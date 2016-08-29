@@ -208,6 +208,7 @@ var NMO_RenderView = new function(){
 		}
 		else if (type == "Sphere"){
 			var geometry = new THREE.SphereGeometry( 7, 128, 128);
+			geometry.faceVertexUvs[ 1 ] = geometry.faceVertexUvs[ 0 ];
 			//geometry.computeTangents();
 			this.render_model = new THREE.Mesh( new THREE.BufferGeometry().fromGeometry( geometry), this.material);
 			this.render_model.castShadow = true;
@@ -216,6 +217,7 @@ var NMO_RenderView = new function(){
 		}
 		else if (type == "Cylinder"){
 			var geometry = new THREE.CylinderGeometry( 7, 7, 10, 128 );
+			geometry.faceVertexUvs[ 1 ] = geometry.faceVertexUvs[ 0 ];
 			//geometry.computeTangents();
 			this.render_model = new THREE.Mesh( new THREE.BufferGeometry().fromGeometry( geometry), this.material);
 			this.render_model.castShadow = true;
@@ -223,7 +225,8 @@ var NMO_RenderView = new function(){
 			this.scene.add( this.render_model );
 		}
 		else if (type == "Plane"){
-			var geometry = new THREE.PlaneBufferGeometry(12, 12, 128, 128);
+			var geometry = new THREE.PlaneGeometry(12, 12, 128, 128);
+			geometry.faceVertexUvs[ 1 ] = geometry.faceVertexUvs[ 0 ];
 			//geometry.computeTangents();
 			this.rotation_enabled = 0;
 			this.render_model.rotation.x = 0;
