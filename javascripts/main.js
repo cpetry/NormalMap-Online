@@ -359,9 +359,15 @@ var NMO_Main = new function(){
 		
 			
 		var qual = $('#file_jpg_qual_nmb').val() / 100;
-		
-		canvas.toBlob(function(blob) {
-	    	saveAs(blob, file_name + "." + file_type);
-		}, image_type, qual);
+		if (file_type == "tiff"){
+			CanvasToTIFF.toBlob(canvas, function(blob) {
+   				saveAs(blob, file_name + ".tif");
+		    });
+		}
+		else{
+			canvas.toBlob(function(blob) {
+	    		saveAs(blob, file_name + "." + file_type);
+			}, image_type, qual);
+		}
 	});
 }

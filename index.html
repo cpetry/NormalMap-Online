@@ -565,9 +565,10 @@
 			<!-- Download Button -->
 			<div>
 				<input id="file_name" type="text" placeholder="NormalMap" size="12">
-				<select id="file_type" onChange="switchJPGQual();">
+				<select id="file_type" onChange="NMO_Main.switchJPGQual();">
 					<option value="png" selected>PNG</option>
 					<option value="jpg">JPG</option>
+					<option value="tiff">TIFF</option>
 				</select>
 				
 				<div style="min-height:3px"></div>
@@ -728,6 +729,7 @@
 
 <script src="javascripts/extern/blob.js"></script>
 <script src="javascripts/extern/canvas-toBlob.js"></script>
+<script src="javascripts/extern/canvastotiff.min.js"></script>
 <script src="javascripts/extern/CopyShader.js"></script>
 <script src="javascripts/extern/filesaver.min.js"></script>
 <script src="javascripts/extern/EffectComposer.js"></script>
