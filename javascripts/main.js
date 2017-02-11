@@ -38,7 +38,8 @@ var NMO_Main = new function(){
 	this.auto_update = true;
 	this.current_texture = this.TextureEnum.NORMAL;
 	this.normal_map_mode = "height";
-	this.button = document.getElementById('download');
+	this.download_btn = document.getElementById('download');
+	this.download_all_btn = document.getElementById('download_all');
 
 
 	this.activate_height_tab = function(type){
@@ -303,10 +304,30 @@ var NMO_Main = new function(){
 			NMO_SpecularMap.createSpecularTexture();
 	};
 
-
-	this.button.addEventListener('click', function (e) {
-		
-		var filesize = 0;
+	this.download_all_btn.addEventListener('click', function (e) {		
+		NMO_Main.downloadImage("NormalMap");
+		NMO_Main.downloadImage("DisplacementMap");
+		NMO_Main.downloadImage("AmbientOcclusionMap");
+		NMO_Main.downloadImage("SpecularMap");
+	});
+	
+	this.download_btn.addEventListener('click', function (e) {		
+		if (document.getElementById('normal_map').style.cssText != "display: none;"){
+			NMO_Main.downloadImage("NormalMap");
+		}
+		else if (document.getElementById('displacement_map').style.cssText != "display: none;"){
+			NMO_Main.downloadImage("DisplacementMap");
+		}
+		else if (document.getElementById('ao_map').style.cssText != "display: none;"){
+			NMO_Main.downloadImage("AmbientOcclusionMap");
+		}
+		else if (document.getElementById('specular_map').style.cssText != "display: none;"){
+			NMO_Main.downloadImage("SpecularMap");
+		}		
+	});
+	
+	
+	this.downloadImage = function(type){
 		var qual = 0.9;
 		var file_name = "download";
 		var canvas = document.createElement("canvas");
@@ -316,7 +337,7 @@ var NMO_Main = new function(){
 		if (file_type == "jpg")
 			image_type = "image/jpeg";
 
-		if (document.getElementById('normal_map').style.cssText != "display: none;"){
+		if (type == "NormalMap"){
 			canvas.width = NMO_NormalMap.normal_canvas.width;
 			canvas.height = NMO_NormalMap.normal_canvas.height;
 			var context = canvas.getContext('2d');
@@ -325,7 +346,7 @@ var NMO_Main = new function(){
 			context.drawImage(NMO_NormalMap.normal_canvas,0,0);
 			file_name="NormalMap";
 		}
-		else if (document.getElementById('displacement_map').style.cssText != "display: none;"){
+		else if (type == "DisplacementMap"){
 			canvas.width = NMO_DisplacementMap.displacement_canvas.width;
 			canvas.height = NMO_DisplacementMap.displacement_canvas.height;
 			var context = canvas.getContext('2d');
@@ -334,7 +355,7 @@ var NMO_Main = new function(){
 			context.drawImage(NMO_DisplacementMap.displacement_canvas,0,0);
 			file_name="DisplacementMap";
 		}
-		else if (document.getElementById('ao_map').style.cssText != "display: none;"){
+		else if (type == "AmbientOcclusionMap"){
 			canvas.width = NMO_AmbientOccMap.ao_canvas.width;
 			canvas.height = NMO_AmbientOccMap.ao_canvas.height;
 			var context = canvas.getContext('2d');
@@ -343,7 +364,7 @@ var NMO_Main = new function(){
 			context.drawImage(NMO_AmbientOccMap.ao_canvas,0,0);
 			file_name="AmbientOcclusionMap";
 		}
-		else if (document.getElementById('specular_map').style.cssText != "display: none;"){
+		else if (type == "SpecularMap"){
 			canvas.width = NMO_SpecularMap.specular_canvas.width;
 			canvas.height = NMO_SpecularMap.specular_canvas.height;
 			var context = canvas.getContext('2d');
@@ -369,5 +390,5 @@ var NMO_Main = new function(){
 	    		saveAs(blob, file_name + "." + file_type);
 			}, image_type, qual);
 		}
-	});
+	}
 }
