@@ -22,6 +22,14 @@
  */
 
 NMO_FileDrop = new function(){
+	window.addEventListener("dragover",function(e){
+	  e = e || event;
+	  e.preventDefault();
+	},false);
+	window.addEventListener("drop",function(e){
+	  e = e || event;
+	  e.preventDefault();
+	},false);
 	
 	this.height_canvas = document.getElementById("height_canvas");
 	this.height_image;
