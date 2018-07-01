@@ -110,6 +110,13 @@
 		<!-- Drop box %D -->
 		<div class="column" id="column_height" style="float:left;">
 			<div class="column_top">
+				<div style="position: absolute; top:20px;">
+					<button class="download" style="width: 7em;  height: 2em;" onclick="select_multiple_height_files.click()">
+					<input id="select_multiple_height_files" type="file" accept="image/*, .tga" onpropertychange="handleFileSelect()" style="position:absolute;visibility:hidden;" multiple>
+						Batch mode
+					</button>
+					<a style="top: -18px; left: -120px; position: relative; overflow:hidden;" class="various" href="#batch_mode_help"><img src="images/help.png" /></a>
+				</div>
 				<!--<input id="select_file_height" type="file" accept="image/*, .tga" onpropertychange="handleFileSelect()" style="position:absolute;visibility:hidden;"/>
 				<input type="button" style="margin-top:30px" id="browseButton" value="Select image...">
 				or-->
@@ -117,6 +124,16 @@
 				<a style="top: -18px; right: -10px; position: relative; overflow:hidden;" class="various" href="#heightmap_help"><img src="images/help.png" /></a>
 				<a style="top: -18px; right: -40px; position: relative; overflow:hidden;" class="various" href="#photo_help"><img src="images/attention.png" /></a>
 			</div>
+			
+			<div id="batch_mode_help" style="display:none;overflow:hidden;font-family:Georgia" align="left">					
+				<h1>Batch mode</h1>
+				
+				<p>
+					With this you can create maps for multiple height maps all at once. </br>
+					Try it out and give feedback!
+				</p>
+			</div>
+
 			
 			<!-- DESCRIPTION HEIGHT MAP -->
 
@@ -582,6 +599,8 @@
                 <span style="display: inline-block; vertical-align: middle;">
 				    <td><button id="download" class="download" style="width: 8em;  height: 2em;"><b>Download</b></button></td>
                     <td><button id="download_all" class="download" style="width: 5em;  height: 2em;"><b>All</b></button></td>
+					
+	
                 </span>
 					<!--<img src="images/Download_NormalMap_128.png"/>-->
 			</div>
@@ -700,12 +719,18 @@
 		
 	</div>
 	
-	<div class="texture_link">
+	<div class="texture_link" <!--style="margin-top:-350px"-->>
 		Need a Texture?<br/>
 		<a href="http://cpetry.github.io/TextureGenerator-Online/">
 			<img src="http://www.petry-christian.de/content_images/texture_generator_logo.png" style="padding-top:5px"/>
 		</a>
 	</div>
+	<!--<div class="texture_link">
+		Full-fledged </br> material designer<br/>
+		<a href="https://material-z.com/">
+			<img src="images/material_z_logo.png" style="padding-top:5px; width:64px; height:64px;"/>
+		</a>
+	</div>-->
 
 </body>
 <footer>

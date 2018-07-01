@@ -46,13 +46,33 @@ NMO_FileDrop = new function(){
 
 	// Setup the dnd listeners.
 	this.handleFileSelect = function(evt) {
-		//alert(evt.target.param);
+		console.log(evt.target.param);
 		if (typeof evt !== 'undefined'){
 	    	if (evt.target.param === 'height')
 		    	NMO_FileDrop.readImage(evt.target.files[0], "height", ""); // files is a FileList of File objects. List some properties.
+			else if (evt.target.param === 'multiple_height')
+			{
+				for (var i=0; i<evt.target.files.length; i++)
+				{
+					NMO_FileDrop.readImage(evt.target.files[i], "height", "", NMO_FileDrop.downloadAll, evt.target.files[i].name);
+				}
+			}
+				
+				
 	    	else
 	    		NMO_FileDrop.readImage(evt.target.files[0], "pictures", evt.target.param); // files is a FileList of File objects. List some properties.
 		}
+	};
+	
+	this.downloadAll = function(name){
+		document.getElementById('file_name').value = name + "_normal";
+		NMO_Main.downloadImage("NormalMap");
+		document.getElementById('file_name').value = name + "_displacement";
+		NMO_Main.downloadImage("DisplacementMap");
+		document.getElementById('file_name').value = name + "_ambient";
+		NMO_Main.downloadImage("AmbientOcclusionMap");
+		document.getElementById('file_name').value = name + "_specular";
+		NMO_Main.downloadImage("SpecularMap");
 	};
 	
 
@@ -103,7 +123,7 @@ NMO_FileDrop = new function(){
 
 
 
-	this.readImage = function(imgFile, type, direction){
+	this.readImage = function(imgFile, type, direction, readImageCallback=false, name=""){
 		//console.log(imgFile);
 		if(!imgFile.type.match(/image.*/)){
 			console.log("The dropped file is not an image: ", imgFile.type);
@@ -123,6 +143,8 @@ NMO_FileDrop = new function(){
 				NMO_FileDrop.loadHeightmap(data);
 			else if (type === "pictures")
 				NMO_FileDrop.loadHeightFromPictures(data, direction);
+			
+			readImageCallback(name);
 		};
 		if (imgFile.type == "image/targa")
 			reader.readAsArrayBuffer(imgFile);
@@ -343,11 +365,13 @@ document.getElementById('select_file_above').param = "above";
 document.getElementById('select_file_left').param = "left";
 document.getElementById('select_file_right').param = "right";
 document.getElementById('select_file_below').param = "below";
+document.getElementById('select_multiple_height_files').param = "multiple_height";
 document.getElementById('select_file_height').addEventListener('change', NMO_FileDrop.handleFileSelect, false);
 document.getElementById('select_file_above').addEventListener('change', NMO_FileDrop.handleFileSelect, false);
 document.getElementById('select_file_left').addEventListener('change', NMO_FileDrop.handleFileSelect, false);
 document.getElementById('select_file_right').addEventListener('change', NMO_FileDrop.handleFileSelect, false);
 document.getElementById('select_file_below').addEventListener('change', NMO_FileDrop.handleFileSelect, false);
+document.getElementById('select_multiple_height_files').addEventListener('change', NMO_FileDrop.handleFileSelect, false);
 
 document.getElementById("height_map").addEventListener("dragover", function(e) {e.preventDefault();}, true);
 document.getElementById("height_map").addEventListener("drop", function(e){

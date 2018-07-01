@@ -328,6 +328,7 @@ var NMO_Main = new function(){
 	
 	
 	this.downloadImage = function(type){
+		console.log("Downloading image");
 		var qual = 0.9;
 		var file_name = "download";
 		var canvas = document.createElement("canvas");
