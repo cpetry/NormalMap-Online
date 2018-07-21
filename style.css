@@ -68,6 +68,7 @@ div.content {
 }
 
 div.texture_link {
+	font-size: 11px;
 	position: absolute; 
 	margin-top: -200px; 
 	margin-left: 30px; 
