@@ -144,7 +144,8 @@ NMO_FileDrop = new function(){
 			else if (type === "pictures")
 				NMO_FileDrop.loadHeightFromPictures(data, direction);
 			
-			readImageCallback(name);
+			if (readImageCallback != false)
+				readImageCallback(name);
 		};
 		if (imgFile.type == "image/targa")
 			reader.readAsArrayBuffer(imgFile);

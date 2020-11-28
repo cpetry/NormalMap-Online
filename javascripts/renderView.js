@@ -81,20 +81,19 @@ var NMO_RenderView = new function(){
 		this.scene.add( dirLight );
 
 		dirLight.castShadow = true;
-		dirLight.shadowDarkness = 0.40;
 
-		dirLight.shadowMapWidth = 2048;
-		dirLight.shadowMapHeight = 2048;
+		dirLight.shadow.mapSize.width = 2048;
+		dirLight.shadow.mapSize.height = 2048;
 
 		var d = 50;
 
-		dirLight.shadowCameraLeft = -d;
-		dirLight.shadowCameraRight = d;
-		dirLight.shadowCameraTop = d;
-		dirLight.shadowCameraBottom = -d;
+		dirLight.shadow.camera.left = -d;
+		dirLight.shadow.camera.right = d;
+		dirLight.shadow.camera.top = d;
+		dirLight.shadow.camera.bottom = -d;
 
-		dirLight.shadowCameraFar = 3500;
-		dirLight.shadowBias = -0.0001;
+		dirLight.shadow.camera.far = 3500;
+		dirLight.shadow.bias = -0.0001;
 		
 		
 		
