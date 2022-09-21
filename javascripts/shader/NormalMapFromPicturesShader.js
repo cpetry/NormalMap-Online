@@ -58,7 +58,7 @@ THREE.NormalMapFromPicturesShader = {
 		//"	gl_FragColor = A;",
 		//"	gl_FragColor = B;",
 		//"	gl_FragColor = overlay;",
-		"	gl_FragColor = (heightOffset == 0) ? vec4(1.0 - (normal.xy * 0.5 + 0.5), normal.zw) : vec4(1.0 - (normal.xyz * 0.5 + 0.5), normal.w);",
+		"	gl_FragColor = (heightOffset == 0) ? vec4(1.0 - (normal.xy * 0.5 + 0.5), normal.zw) : vec4(1.0 - (normal.xy * 0.5 + 0.5), normal.z * 0.5 + 0.5, normal.w);",
 		//"	gl_FragColor = texture2D(tAbove, vUv);",
 		//"	gl_FragColor = texture2D(tDiffuse, vec2(0.0,0.0));",
 		//"	gl_FragColor = texture2D(tDiffuse, tlv);",
