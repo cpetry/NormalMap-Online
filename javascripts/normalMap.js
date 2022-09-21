@@ -26,6 +26,7 @@ var NMO_NormalMap = new function(){
 	this.invert_red = false;
 	this.invert_green = false;
 	this.invert_source = false;
+	this.height_offset = true;
 	this.smoothing = 0;
 	this.strength = 2.5;
 	this.level = 7;
@@ -86,6 +87,20 @@ var NMO_NormalMap = new function(){
 			NMO_RenderNormalview.normalmap_from_pictures_uniforms["invertH"].value = -1;
 		}
 
+		NMO_NormalMap.createNormalMap();
+	};
+
+	this.heightOffset = function(){
+		this.height_offset = !this.height_offset;
+		if (this.height_offset){
+			NMO_RenderNormalview.normalmap_uniforms["heightOffset"].value = 0;
+			NMO_RenderNormalview.normalmap_from_pictures_uniforms["heightOffset"].value = 0;
+		}
+		else{
+			NMO_RenderNormalview.normalmap_uniforms["heightOffset"].value = 1;
+			NMO_RenderNormalview.normalmap_from_pictures_uniforms["heightOffset"].value = 1;
+		}
+		
 		NMO_NormalMap.createNormalMap();
 	};
 
