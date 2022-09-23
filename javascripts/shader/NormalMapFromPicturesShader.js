@@ -9,7 +9,8 @@ THREE.NormalMapFromPicturesShader = {
     	"tAbove": 		{type: "t", value: null },
     	"tLeft": 		{type: "t", value: null },
     	"tRight": 		{type: "t", value: null },
-    	"tBelow": 		{type: "t", value: null }
+    	"tBelow": 		{type: "t", value: null },
+    	"heightOffset": {type: "1i", value: 0}
 	},
 
 	vertexShader: [
@@ -38,6 +39,7 @@ THREE.NormalMapFromPicturesShader = {
 		"uniform sampler2D tLeft;",
 		"uniform sampler2D tRight;",
 		"uniform sampler2D tBelow;",
+		"uniform int heightOffset;",
         
 		"void main(void) {",
 		//"	gl_FragColor = texture2D(tAbove, vUv);",
@@ -56,7 +58,10 @@ THREE.NormalMapFromPicturesShader = {
 		//"	gl_FragColor = A;",
 		//"	gl_FragColor = B;",
 		//"	gl_FragColor = overlay;",
-		"	gl_FragColor = vec4(1.0 - (normal.xy * 0.5 + 0.5), normal.zw);",
+		"   normal.xy = 1.0 - (normal.xy * 0.5 + 0.5);",
+		"   if(heightOffset == 0)",
+		"   	normal.z = normal.z * 0.5 + 0.5;",
+		"	gl_FragColor = normal;",
 		//"	gl_FragColor = texture2D(tAbove, vUv);",
 		//"	gl_FragColor = texture2D(tDiffuse, vec2(0.0,0.0));",
 		//"	gl_FragColor = texture2D(tDiffuse, tlv);",
