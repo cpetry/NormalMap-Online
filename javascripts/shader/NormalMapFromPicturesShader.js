@@ -9,7 +9,8 @@ THREE.NormalMapFromPicturesShader = {
     	"tAbove": 		{type: "t", value: null },
     	"tLeft": 		{type: "t", value: null },
     	"tRight": 		{type: "t", value: null },
-    	"tBelow": 		{type: "t", value: null }
+    	"tBelow": 		{type: "t", value: null },
+    	"heightOffset": {type: "1i", value: 0}
 	},
 
 	vertexShader: `
@@ -49,6 +50,9 @@ THREE.NormalMapFromPicturesShader = {
 			float b = dz;
 			vec4 overlay = vec4(r, g, b, 1);
 			vec4 normal = vec4(normalize(vec3((r-0.5) * invertR * invertH * 255.0, (g-0.5) * invertG * invertH * 255.0, b)), 1);
-			gl_FragColor = vec4(1.0 - (normal.xy * 0.5 + 0.5), normal.zw);
+			normal.xy = 1.0 - (normal.xy * 0.5 + 0.5);
+		    if(heightOffset == 0)
+		   		normal.z = normal.z * 0.5 + 0.5;
+			gl_FragColor = normal;
 		}`
 }
