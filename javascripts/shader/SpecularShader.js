@@ -10,51 +10,40 @@ NMO_SpecularShader = {
     	"tHeight": 		{type: "t", value: null }
 	},
 
-	vertexShader: [
-		"precision mediump float;",
-        "varying vec2 vUv;",
-		"uniform float flipY;",
-        "void main() {",
-			"gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );",
-			"vUv = uv;",
-			"vUv.y = (flipY > 0.0) ? (1.0 - vUv.y) : vUv.y;",
-		"}"
-	].join("\n"),
+	vertexShader: `
+		precision mediump float;
+        varying vec2 vUv;
+		uniform float flipY;
+        void main() 
+		{
+			gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+			vUv = uv;
+			vUv.y = (flipY > 0.0) ? (1.0 - vUv.y) : vUv.y;
+		}`,
 
-	fragmentShader: [
-		"precision mediump float;",
-        "varying vec2 vUv;",
-        "uniform float range;",
-        "uniform float strength;",
-        "uniform float mean;",
-        "uniform int invert;",
-        "uniform int falloff;",
-		"uniform sampler2D tHeight;",
+	fragmentShader: `
+		precision mediump float;
+        varying vec2 vUv;
+        uniform float range;
+        uniform float strength;
+        uniform float mean;
+        uniform int invert;
+        uniform int falloff;
+		uniform sampler2D tHeight;
         
-		"void main(void) {",
-		// var per_dist_to_mean = (this.specular_range - Math.abs(v - this.specular_mean)) / this.specular_range;
-
-		//	if(this.specular_falloff == this.FallOffEnum.NO)
-		//		v = per_dist_to_mean > 0 ? 1 : 0;
-		//	else if(this.specular_falloff == this.FallOffEnum.LINEAR)
-		//		v = per_dist_to_mean > 0 ? per_dist_to_mean : 0;
-		//	else if(this.specular_falloff == this.FallOffEnum.SQUARE)
-		//		v = per_dist_to_mean > 0 ? Math.sqrt(per_dist_to_mean,2) : 0;
-
-		// v = v*255 * this.specular_strength;
-		"	vec4 v = vec4(texture2D(tHeight,  vUv.xy));",
-		"	float perc_dist_to_mean = (range - abs(v.r - mean)) / range;",
-		"	if (falloff == 0)", // No FallOff
-		"		perc_dist_to_mean = (perc_dist_to_mean > 0.0) ? 1.0 : 0.0;",
-		"	else if (falloff == 1)", // linear
-		"		perc_dist_to_mean = (perc_dist_to_mean > 0.0) ? perc_dist_to_mean : 0.0;",
-		"	else if (falloff == 2)", // square
-		"		perc_dist_to_mean = (perc_dist_to_mean > 0.0) ? sqrt(perc_dist_to_mean) : 0.0;",
-		"	v.r = v.g = v.b = perc_dist_to_mean;",
-		"   v.rgb = v.rgb * strength;",
-		"   v.rgb = (invert == 1) ? (1.0 - v.rgb) : v.rgb;",
-		"	gl_FragColor = v;",
-		"}"
-	].join("\n")
-
+		void main(void) 
+		{
+			vec4 v = vec4(texture2D(tHeight,  vUv.xy));
+			float perc_dist_to_mean = (range - abs(v.r - mean)) / range;
+			if (falloff == 0) // No FallOff
+				perc_dist_to_mean = (perc_dist_to_mean > 0.0) ? 1.0 : 0.0;
+			else if (falloff == 1) // linear
+				perc_dist_to_mean = (perc_dist_to_mean > 0.0) ? perc_dist_to_mean : 0.0;
+			else if (falloff == 2) // square
+				perc_dist_to_mean = (perc_dist_to_mean > 0.0) ? sqrt(perc_dist_to_mean) : 0.0;
+			v.r = v.g = v.b = perc_dist_to_mean;
+		   v.rgb = v.rgb * strength;
+		   v.rgb = (invert == 1) ? (1.0 - v.rgb) : v.rgb;
+			gl_FragColor = v;
+		}`
 }
