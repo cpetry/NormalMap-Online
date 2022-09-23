@@ -39,6 +39,7 @@ THREE.NormalMapFromPicturesShader = {
 		uniform sampler2D tLeft;
 		uniform sampler2D tRight;
 		uniform sampler2D tBelow;
+		uniform int heightOffset;
         
 		void main(void) 
 		{
@@ -50,9 +51,6 @@ THREE.NormalMapFromPicturesShader = {
 			float b = dz;
 			vec4 overlay = vec4(r, g, b, 1);
 			vec4 normal = vec4(normalize(vec3((r-0.5) * invertR * invertH * 255.0, (g-0.5) * invertG * invertH * 255.0, b)), 1);
-			normal.xy = 1.0 - (normal.xy * 0.5 + 0.5);
-		    if(heightOffset == 0)
-		   		normal.z = normal.z * 0.5 + 0.5;
-			gl_FragColor = normal;
+			gl_FragColor = (heightOffset == 0) ? vec4(1.0 - (normal.xy * 0.5 + 0.5), normal.zw) : vec4(1.0 - (normal.xyz * 0.5 + 0.5), normal.w);
 		}`
 }

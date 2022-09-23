@@ -33,6 +33,7 @@ THREE.NormalMapShader = {
         uniform float invertH;
         uniform int type;
 		uniform sampler2D tHeightMap;
+		uniform int heightOffset;
         
 		void main(void) 
 		{
@@ -80,7 +81,7 @@ THREE.NormalMapShader = {
 				dy = tl*3.0 + t*10.0 + tr*3.0 - bl*3.0 - b*10.0 - br*3.0;
 		    }
 			vec4 normal = vec4(normalize(vec3(dx * invertR * invertH * 255.0, dy * invertG * invertH * 255.0, dz)), texture2D(tHeightMap, vUv).a);
-			gl_FragColor = vec4(normal.xy * 0.5 + 0.5, normal.zw);
+			gl_FragColor = (heightOffset == 0) ? vec4(normal.xy * 0.5 + 0.5, normal.zw) : vec4(normal.xyz * 0.5 + 0.5, normal.w);
 		}`
 
 }
