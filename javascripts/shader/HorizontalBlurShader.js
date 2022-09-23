@@ -73,7 +73,7 @@ THREE.HorizontalBlurShader = {
 			sum += texture2D( tDiffuse, vec2( rig2, vUv.y ) ) * 0.12245;
 			sum += texture2D( tDiffuse, vec2( rig3, vUv.y ) ) * 0.0918;
 			sum += texture2D( tDiffuse, vec2( rig4, vUv.y ) ) * 0.051;
-			if (h > 0.0){",
+			if (h > 0.0){
 				vec4 srcValue = texture2D( tDiffuse, vec2( vUv.x, vUv.y ) );
 				sum = srcValue + srcValue - sum;
 			}
