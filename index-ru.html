@@ -1,0 +1,795 @@
+<!--/*
+ * Author: Christian Petry
+ * Homepage: www.petry-christian.de
+ *
+ * License: MIT
+ * Copyright (c) 2014 Christian Petry
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software 
+ * and associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute, 
+ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is 
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or 
+ * substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. 
+ * IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, 
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR 
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="en" dir="ltr" xmlns:fb="http://ogp.me/ns/fb#">
+
+<head>
+	<meta charset="utf-8">
+
+	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+	<meta http-equiv="Pragma" content="no-cache" />
+	<meta http-equiv="Expires" content="0" />
+	<meta http-equiv="reply-to" content="petry_christian@web.de">
+	<meta name="description" content="Online NormalMap Generator FREE! Create a Normalmap directly inside your browser! No Uploads required, completely client-based">
+	<meta name="author" content="Christian Petry">
+	<meta name="language" CONTENT="english">
+	<meta name="keywords" content="Normalmap,Normal,Mapping,Online,cpetry,github,NormalMap-Generator,Heightmap,Javascript">
+	<meta name="date" content="2014-06-28">
+	<meta name="page-topic" content="Dienstleistung">
+	<meta name="robots" content="index,follow">
+
+	<title>NormalMap-Online</title>
+	<link rel="icon" type="image/png" href="images/favicon.png" />
+	<link type="text/css" rel="stylesheet" href="./opensans700.css">
+	<link type="text/css" rel="stylesheet" href="./style.css">
+</head>
+
+	
+<body style="text-align: center">
+	<br/>
+	<div align="center" >
+		<img src="images/nmap_logo_trans_small.png" /><br/>
+		<p style="display: inline; position: absolute; top:180px; left: 52%;">GPU powered!</p>
+
+		<a style="top: -180px; right: -220px; position: relative; overflow:hidden;" class="various" href="#normalmaponline_help">
+			<img src="images/help.png" />
+		</a>
+	</div>
+
+	<!-- DESCRIPTION -->
+	<div id="normalmaponline_help" style="display:none;overflow:hidden;font-family:Georgia" align="left">		
+		<h1>NormalMap-Online</h1>
+		<p>
+			Этот веб-сайт позволяет создавать карты нормалей из карт высот <b>бесплатно</b>.<br/>
+			Все текстуры нормальных карт, которые вы создаете, <b>ваши</b>.<br/>
+			Текстуры <b>не</b> сохраняются на сервере, и все скрипты выполняются в вашем браузере.<br/>
+			<br/>
+			Просто <b>перетащите</b> карту высот в указанное поле и настройте параметры.<br/>
+            После этого проверьте окно предварительного просмотра и загрузите собственную карту нормалей.<br/>
+            Кроме того, вы можете настроить и загрузить карты смещения и окружающего затенения<br/>
+            <br/>
+            В окне предварительного просмотра отображается 3D-модель с несколькими различными картами.<br/>
+            Каждую карту можно включить/отключить, а модель предварительного просмотра можно настроить.<br/>
+            <br/>
+            Если у вас есть дополнительные вопросы, просто оставьте отзыв на адрес электронной почты, указанный на веб-странице.<br/>
+		</p>			
+
+		<h2>Карта Нормали</h2>
+		<p>
+			<img src="images/normal_description.png" style="display: block; 
+				margin-left: auto; margin-right: auto; padding-left: 10px;" align="right" />
+
+            Карты нормалей — это текстуры, которые наследуют информацию о глубине поверхности.<br/>
+            Они не меняют структуру модели и <b>практически не влияют на производительность</b>.<br/>
+            Каждый пиксель представляет собой <b>вектор нормали</b> и состоит из трех цветов.<br/>
+            Эти цвета обозначают направление вектора нормали.<br/>
+            <br/>
+            Они могут значительно усилить оптическую иллюзию глубины и
+            особенно полезны на плоских поверхностях, имеющих несколько <b>выпуклостей или неровностей и трещины</b>.<br/>
+            Как показано справа, высоту, описанную картой высот, можно преобразовать в карту нормалей, которую можно считать с вашей видеокарты внутри шейдерных блоков.<br/>
+            Если вы стремитесь к более радикальной иллюзии по глубине, где части могут закрывать модель, вам следует попробовать карты смещения<br/>
+            Эти карты действительно изменяют полигоны, но могут значительно снизить производительность!<br/>
+		</p>
+	</div>
+	
+	
+	<div class="content">
+		
+		<div class="column_btn" style="display:inline-block; float:left; position:relative">
+			<span class="helper_column_button"></span>
+			<div id="column_btn_left" onclick="NMO_Main.toggle_height_column();">
+				<span style="display: inline-block; min-height: 50px; vertical-align: middle;"></span>
+			<div id="column_btn_left_div" style="vertical-align:middle"> >> </div>
+			</div>
+		</div>
+	
+		<!--<div class="column_block" style="display:inline-block; vertical-align:top;">-->
+		
+		<!-- Drop box %D -->
+		<div class="column" id="column_height" style="float:left;">
+			<div class="column_top">
+				<div style="position: absolute; top:20px;">
+					<button class="download" style="width: 7em;  height: 2em;" onclick="select_multiple_height_files.click()">
+					<input id="select_multiple_height_files" type="file" accept="image/*, .tga" onpropertychange="handleFileSelect()" style="position:absolute;visibility:hidden;" multiple>
+					Пакетный режим
+					</button>
+					<a style="top: -18px; left: -120px; position: relative; overflow:hidden;" class="various" href="#batch_mode_help"><img src="images/help.png" /></a>
+				</div>
+				<!--<input id="select_file_height" type="file" accept="image/*, .tga" onpropertychange="handleFileSelect()" style="position:absolute;visibility:hidden;"/>
+				<input type="button" style="margin-top:30px" id="browseButton" value="Select image...">
+				or-->
+				<img src="images/drag_drop.png" style="padding-top:80px"/>
+				<a style="top: -18px; right: -10px; position: relative; overflow:hidden;" class="various" href="#heightmap_help"><img src="images/help.png" /></a>
+				<a style="top: -18px; right: -40px; position: relative; overflow:hidden;" class="various" href="#photo_help"><img src="images/attention.png" /></a>
+			</div>
+			
+			<div id="batch_mode_help" style="display:none;overflow:hidden;font-family:Georgia" align="left">					
+				<h1>Пакетный режим</h1>
+				
+				<p>
+					Благодаря этому вы можете создавать карты для нескольких карт высот одновременно. </br>
+                    Попробуйте и оставьте отзыв!
+				</p>
+			</div>
+
+			
+			<!-- DESCRIPTION HEIGHT MAP -->
+
+			<div id="heightmap_help" style="display:none;overflow:hidden;font-family:Georgia" align="left">					
+				<h1>Карта высот</h1>
+				
+				<p>
+					<img src="images/description_height.png" style=" 
+					margin-left: auto; margin-right: auto; padding-left: 20px;" align="right" />
+
+                    Эта текстура содержит расстояние «высота» от «пола».
+                    Чем ярче пиксель, тем дальше (больше глубины).
+                    <br/>
+                    В этом приложении не имеет значения, инвертированы ли значения, поскольку вы можете изменить это в любое время позже.
+                    Однако самое важное — это разница значений между пикселями.
+                    <br/>
+
+                    Идеальной является текстура с размерами в пикселях степенью 2 (2, 4, 8,..., 256, 512 и т.д.)
+				</p>
+				<br/>
+				<br/>
+				<br/>
+				<hr/>
+				<p>
+					Если использовать карту высот в качестве карты смещения,
+                    Вы можете легко увидеть эффект на поверхности.
+                    Пример карты высот (слева), неровности (вверху справа)
+                    и выходящие выступы (внизу справа) показаны на изображении ниже.<br/>
+					
+				</p>
+				<img src="images/example_height.png" style="display: block; 
+				margin-left: auto; margin-right: auto;" />
+			</div>
+
+			<div id="photo_help" style="display:none;overflow:hidden;font-family:Georgia" align="left">					
+				<h1>Нормальные карты из фотографий</h1>
+				<p style="width:500px">
+					Чтобы создать карты нормалей из фотографий, вам нужны четыре конкретных изображения одной и той же поверхности. Каждому изображению требуется разное освещение. <br/>
+                    Свет должен светить сверху, слева, справа и снизу изображения. <br/>
+                    Для этого вам понадобится простая камера, фонарик и опционально штатив.
+                    Если вы не используете штатив, вам, вероятно, придется выровнять и обрезать снимки перед их использованием.
+				</p>
+				<img src="images/light_directions.png" style="display: block; margin-left: auto; margin-right: auto;" />
+				<p style="width:500px">
+					Перетащите изображения в четыре позиции внутри левого окна просмотра.
+                    Вы также можете нажать на каждое изображение, чтобы выбрать файл.<br/>
+                    Имейте в виду, что источник света, показанный внутри окна просмотра, находится в центре!<br/>
+                    Кроме того, все четыре изображения должны иметь одинаковое разрешение.
+				</p>
+				<div style="text-align: center">
+					<img src="images/picture_arranged.PNG" style="display: inline-block; margin-left: auto; margin-right: auto;" />
+					<img src="images/normalmap_from_photos.png" style="display: inline-block; margin-left: auto; margin-right: auto;" />
+				</div>
+				<p style="width:500px">
+					В результате из изображений (моего коврика для ванной...) создается довольно приличная карта нормалей.
+                    После этого измените значения для достижения лучших результатов.<br/>
+                    <br/>
+                    <b>Внимание:</b>
+                    Лучше всего попробуйте заснять поверхность со штатива и не забудьте сделать дополнительное изображение для диффузной карты!
+
+				</p>
+			</div>
+
+			<div class="tabs" style="margin-right:10px; text-align:right;">
+				<input class="tab_button" id="tab_btn_heightmap" type="button" value="HeightMap" onclick="NMO_Main.activate_height_tab('height')" disabled />
+				<input class="tab_button" id="tab_btn_pictures" type="button" value="Pictures" onclick="NMO_Main.activate_height_tab('pictures')" />
+				<!--
+				<input class="tab_button" style="color: #888888; border: 2px solid #666666;" id="tab_btn_photo" type="button" value="Photo"/>
+
+				<input class="tab_button" id="tab_btn_heightmap" type="button" disabled value="HeightMap" onclick="activate_height_tab('height')"/>
+				<input class="tab_button" id="tab_btn_photo"     type="button" value="Photo" onclick="activate_height_tab('photo'); reconstruct_depth();"/>
+				-->
+				
+			</div>			
+			<div class="view" id="height_map" style="display: inline-block;float: left;">
+				<input id="select_file_height" type="file" accept="image/*, .tga" onpropertychange="handleFileSelect()" style="position:absolute;visibility:hidden;"/>
+				<canvas id="height_canvas" onclick="select_file_height.click()" onmouseover="" style="cursor: pointer;"></canvas>
+			</div>
+			<div class="view" id="pictures_map" style="display: inline-block;float: left; display:none;">
+				<input id="select_file_above" type="file" accept="image/*, .tga" onpropertychange="handleFileSelect()" style="position:absolute;visibility:hidden;"/>
+				<input id="select_file_left"  type="file" accept="image/*, .tga" onpropertychange="handleFileSelect()" style="position:absolute;visibility:hidden;"/>
+				<input id="select_file_right" type="file" accept="image/*, .tga" onpropertychange="handleFileSelect()" style="position:absolute;visibility:hidden;"/>
+				<input id="select_file_below" type="file" accept="image/*, .tga" onpropertychange="handleFileSelect()" style="position:absolute;visibility:hidden;"/>
+				<div class="pictures_view">
+					<div class="pictures_view_row">
+						<div class="pictures_view_cell">
+							
+						</div>
+						<div class="pictures_view_cell drop_cell" id="picture_below_drop">
+							<canvas id="picture_canvas_below" style="width:100%; height: 100%; cursor: pointer;" onclick="select_file_below.click()" onmouseover=""></canvas>
+						</div>
+					</div>
+					<div class="pictures_view_row">
+						<div class="pictures_view_cell drop_cell" id="picture_right_drop">
+							<canvas id="picture_canvas_right" style="width:100%; height: 100%; cursor: pointer;" onclick="select_file_right.click()" onmouseover=""></canvas>
+						</div>
+						<div class="pictures_view_cell">
+							
+						</div>
+						
+						<div class="pictures_view_cell drop_cell" id="picture_left_drop">
+							<canvas id="picture_canvas_left" style="width:100%; height: 100%; cursor: pointer;" onclick="select_file_left.click()" onmouseover=""></canvas>
+						</div>
+						
+					</div>
+					<div class="pictures_view_row">
+						<div class="pictures_view_cell">
+							
+						</div>
+						<div class="pictures_view_cell drop_cell" id="picture_above_drop">
+							<canvas id="picture_canvas_above" style="width:100%; height: 100%; cursor: pointer;" onclick="select_file_above.click()" onmouseover=""></canvas>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="view" id="photo_map" style="display: none;">
+				<canvas id="photo_canvas"></canvas>
+			</div>
+			
+			<div style="float:center; margin:-8px 15px 0 0; padding:0 0 0 0;">Size: 
+				<input style="border: none; color:white; background-color: transparent; border-color: transparent;" id="size" type="text" size="30" maxlength="30" readonly>
+			</div>
+			
+			<div style="min-height:10px"></div>
+			<p>
+				Feedback:<br/>
+				<img src="images/email_adresse.png"/><br/>
+				
+			</p>
+			
+		</div>
+		<!--</div>-->
+		
+		
+		
+		<!-- Texture -->
+		<div class="column">
+		
+		
+			<!-- Normal Settings -->
+			<div class="column_top" id="normal_settings" style="width:100%;">
+				<table class="options_top">
+				<tr>
+					<td class="option_text">
+						<span> Strength</span>
+					</td>
+					<td class="options">
+						<input id="strength_slider" 
+								onchange="NMO_NormalMap.setNormalSetting('strength', this.value); document.getElementById('strength_nmb').value = this.value;"
+								oninput="NMO_NormalMap.setNormalSetting('strength', this.value); document.getElementById('strength_nmb').value = this.value;"
+								style="width:60%;"
+								type="range"  value='2.5' min='0.01' max='5' step='0.01'/>
+						<input id="strength_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" 
+								value='2.5' min='0.01' max='5' 
+								onchange="NMO_NormalMap.setNormalSetting('strength', this.value); document.getElementById('strength_slider').value = this.value;">
+					</td>
+				</tr>
+				<tr>
+					<td class="option_text">
+						<span >Level</span>
+					</td>
+					<td class="options">
+						<input id="level_slider" 
+								onchange="NMO_NormalMap.setNormalSetting('level', this.value);  document.getElementById('level_nmb').value = this.value;"
+								oninput="NMO_NormalMap.setNormalSetting('level', this.value);  document.getElementById('level_nmb').value = this.value;"
+								style="width:60%;"
+								type="range" value='7.0' min='4' max='10' step='0.1'/>
+						<input id="level_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='7.0'
+								onchange="NMO_NormalMap.setNormalSetting('level', this.value); document.getElementById('level_slider').value = this.value;">
+					</td>
+				</tr>
+				<tr>
+					<td class="option_text">
+						<span>Blur/Sharp</span>
+					</td>
+					<td class="options">
+						<input id="blur_sharp_slider" 
+								onchange="NMO_NormalMap.setNormalSetting('blur_sharp', this.value); document.getElementById('blur_sharp_nmb').value = this.value;"
+								oninput="NMO_NormalMap.setNormalSetting('blur_sharp', this.value); document.getElementById('blur_sharp_nmb').value = this.value;"
+								style="width:60%;"
+								type="range" value='0' min='-32' max='32' step='1'/>
+						<input id="blur_sharp_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='0'
+								onchange="NMO_NormalMap.setNormalSetting('blur_sharp', this.value); document.getElementById('blur_sharp_slider').value = this.value;">
+					</td>
+				</tr>
+				<tr>
+					<td class="option_text">
+						<span>Filter</span>
+					</td>
+					<td class="options">
+						<div>
+							<select onChange="NMO_NormalMap.setNormalSetting('type', this.options[this.selectedIndex].value)">
+								<option value="sobel">Sobel</option>
+								<option value="scharr">Scharr</option>
+							</select>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="option_text">
+						<span>Invert</span>
+					</td>
+					<td class="options">
+						<div>
+							<input id="invert_r" type="checkbox" onclick="NMO_NormalMap.invertRed()" />R
+							<input id="invert_g" type="checkbox" onclick="NMO_NormalMap.invertGreen()" />G
+							<input id="invert_height" type="checkbox" onclick="NMO_NormalMap.invertSource()" />Height
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="option_text">
+						<span>Z Range</span>
+					</td>
+					<td class="options">
+						<div>
+							<input id="height_offset" type="checkbox" onclick="NMO_NormalMap.heightOffset()" />-1 to +1
+						</div>
+					</td>
+				</tr>
+				
+				</table>
+			</div>
+						
+			<!-- Displacement Settings -->
+			<div class="column_top" id="displacement_settings" style="display: none;width:100%;">
+				<table class="options_top">
+				<tr>
+					<td class="option_text">
+						<span>Contrast</span>
+					</td>
+					<td class="options">
+						<input id="dm_contrast_slider" 
+							onchange="NMO_DisplacementMap.setDisplacementSetting('contrast', this.value); document.getElementById('dm_contrast_nmb').value = this.value;"
+							oninput="NMO_DisplacementMap.setDisplacementSetting('contrast', this.value); document.getElementById('dm_contrast_nmb').value = this.value;"
+							style="width:60%;"
+							type="range" value='-0.5' min='-1' max='1' step='0.01'/>
+						<input id="dm_contrast_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='-0.5'
+							onchange="document.getElementById('dm_contrast_slider').value = this.value;NMO_DisplacementMap.setDisplacementSetting('contrast', this.value);">
+					</td>
+				</tr>
+				<tr>
+					<td class="option_text">
+						<span>Blur/Sharp</span>
+					</td>
+					<td class="options">
+						<input id="dm_blur_sharp_slider" 
+								onchange="NMO_DisplacementMap.setDisplacementSetting('blur_sharp', this.value); document.getElementById('dm_blur_sharp_nmb').value = this.value;"
+								oninput="NMO_DisplacementMap.setDisplacementSetting('blur_sharp', this.value); document.getElementById('dm_blur_sharp_nmb').value = this.value;"
+								style="width:60%;"
+								type="range" value='0' min='-32' max='32' step='1'/>
+						<input id="dm_blur_sharp_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='0'
+								onchange="NMO_DisplacementMap.setDisplacementSetting('blur_sharp', this.value); document.getElementById('dm_blur_sharp_slider').value = this.value;">
+					</td>
+				</tr>
+				<tr>
+					<td class="option_text">
+						<span>Invert</span>
+					</td>
+					<td class="options">
+						<div>
+							<input id="invert_height" type="checkbox" onclick="NMO_DisplacementMap.invertDisplacement(); NMO_DisplacementMap.setDisplacementContrast(document.getElementById('dm_contrast_nmb').value);" />
+						</div>
+					</td>
+				</tr>
+
+				<!--
+				<tr>
+					<td>
+						<span style="width:70px;display:inline-block;vertical-align:top;padding-right:30px;text-align:left;">Resolution:</span>
+					</td>
+					<td>
+						<input id="dm_res_slider" 
+							onchange="setDisplacementResolution(this.value); document.getElementById('dm_res_nmb').value = Math.pow(2, this.value);"
+							oninput="setDisplacementResolution(this.value); document.getElementById('dm_res_nmb').value = Math.pow(2, this.value);"
+							style="width:80px;"
+							type="range" value='7' min='2' max='8' step='1'/>
+						<input id="dm_res_nmb" type="number" step="1" style="width:45px;vertical-align:top;" value='128'
+							onchange="setDisplaceSetting('strength', this.value); document.getElementById('dm_res_slider').value = Math.sqrt(this.value);">
+					</td>
+				
+				</tr>
+				-->
+				</table>
+			</div>
+			
+			<!-- Ambient Occlusion Settings -->
+			<div class="column_top" id="ao_settings" style="display: none;width:100%;">
+				<table class="options_top">
+					<tr>
+						<td class="option_text">
+							<span> Strength</span>
+						</td>
+						<td class="options">
+							<input id="ao_strength_slider"
+									onchange="NMO_AmbientOccMap.setAOSetting('strength', this.value); document.getElementById('ao_strength_nmb').value = this.value;"
+									oninput="NMO_AmbientOccMap.setAOSetting('strength', this.value); document.getElementById('ao_strength_nmb').value = this.value;"
+									style="width:60%;"
+									type="range"  value='0.5' min='0' max='1' step='0.01'/>
+							<input id="ao_strength_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='0.5'
+									onchange="NMO_AmbientOccMap.setAOSetting('strength', this.value); document.getElementById('ao_strength_slider').value = this.value;">
+						</td>
+					</tr>
+					<tr>
+						<td class="option_text">
+							<span>Mean</span>
+						</td>
+						<td class="options">
+							<input id="ao_mean_slider"
+									onchange="NMO_AmbientOccMap.setAOSetting('mean', this.value); document.getElementById('ao_mean_nmb').value = this.value;"
+									oninput="NMO_AmbientOccMap.setAOSetting('mean', this.value); document.getElementById('ao_mean_nmb').value = this.value;"
+									style="width:60%;"
+									type="range"  value='1' min='0' max='1' step='0.01'/>
+							<input id="ao_mean_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='1'
+									onchange="NMO_AmbientOccMap.setAOSetting('mean', this.value); document.getElementById('ao_mean_slider').value = this.value;">
+						</td>
+					</tr>
+					<tr>
+						<td class="option_text">
+							<span>Range</span>
+						</td>
+						<td class="options">
+							<input id="ao_range_slider"
+									onchange="NMO_AmbientOccMap.setAOSetting('range', this.value); document.getElementById('ao_range_nmb').value = this.value;"
+									oninput="NMO_AmbientOccMap.setAOSetting('range', this.value); document.getElementById('ao_range_nmb').value = this.value;"
+									style="width:60%;"
+									type="range" value='1' min='0' max='1' step='0.01'/>
+							<input id="ao_range_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='1'
+									onchange="NMO_AmbientOccMap.setAOSetting('range', this.value); document.getElementById('ao_range_slider').value = this.value;">
+						</td>
+					</tr>
+					<tr>
+						<td class="option_text">
+							<span>Blur/Sharp</span>
+						</td>
+						<td class="options">
+							<input id="ao_blur_sharp_slider"
+									onchange="NMO_AmbientOccMap.setAOSetting('blur_sharp', this.value); document.getElementById('ao_blur_sharp_nmb').value = this.value;"
+									oninput="NMO_AmbientOccMap.setAOSetting('blur_sharp', this.value); document.getElementById('ao_blur_sharp_nmb').value = this.value;"
+									style="width:60%;"
+									type="range" value='0' min='-32' max='32' step='1'/>
+							<input id="ao_blur_sharp_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='0'
+									onchange="NMO_AmbientOccMap.setAOSetting('blur_sharp', this.value); document.getElementById('ao_blur_sharp_slider').value = this.value;">
+						</td>
+					</tr>
+					<tr>
+						<td class="option_text">
+							<span>Invert</span>
+						</td>
+						<td class="options">
+							<div>
+								<input id="invert_AO" type="checkbox" onclick="NMO_AmbientOccMap.invertAO();" />
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+
+			<!-- Specular Settings -->
+			<div class="column_top" id="specular_settings" style="display: none;width:100%;">
+				<table class="options_top">
+					<tr>
+						<td class="option_text">
+							<span>Strength</span>
+						</td>
+						<td class="options">
+							<input id="specular_strength_slider"
+									onchange="NMO_SpecularMap.setSpecularSetting('spec_strength', this.value); document.getElementById('specular_strength_nmb').value = this.value;"
+									oninput="NMO_SpecularMap.setSpecularSetting('spec_strength', this.value); document.getElementById('specular_strength_nmb').value = this.value;"
+									style="width:60%;"
+									type="range"  value='1' min='0' max='1' step='0.01'/>
+							<input id="specular_strength_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='1'
+									onchange="NMO_SpecularMap.setSpecularSetting('spec_strength', this.value); document.getElementById('specular_strength_slider').value = this.value;">
+						</td>
+					</tr>
+					<tr>
+						<td class="option_text">
+							<span>Mean</span>
+						</td>
+						<td class="options">
+							<input id="specular_mean_slider"
+									onchange="NMO_SpecularMap.setSpecularSetting('spec_mean', this.value); document.getElementById('specular_mean_nmb').value = this.value;"
+									oninput="NMO_SpecularMap.setSpecularSetting('spec_mean', this.value); document.getElementById('specular_mean_nmb').value = this.value;"
+									style="width:60%;"
+									type="range"  value='1' min='0' max='1' step='0.01'/>
+							<input id="specular_mean_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='1'
+									onchange="NMO_SpecularMap.setSpecularSetting('spec_mean', this.value); document.getElementById('specular_mean_slider').value = this.value;">
+						</td>
+					</tr>
+					<tr>
+						<td class="option_text">
+							<span>Range</span>
+						</td>
+						<td class="options">
+							<input id="specular_range_slider"
+									onchange="NMO_SpecularMap.setSpecularSetting('spec_range', this.value); document.getElementById('specular_range_nmb').value = this.value;"
+									oninput="NMO_SpecularMap.setSpecularSetting('spec_range', this.value); document.getElementById('specular_range_nmb').value = this.value;"
+									style="width:60%;"
+									type="range" value='1' min='0' max='1' step='0.01'/>
+							<input id="specular_range_nmb" type="number" step="0.01" style="width:20%;vertical-align:top;" value='1'
+									onchange="NMO_SpecularMap.setSpecularSetting('spec_range', this.value); document.getElementById('specular_range_slider').value = this.value;">
+						</td>
+					</tr>
+					<tr>
+						<td class="option_text">
+							<span>Falloff</span>
+						</td>
+						<td class="options">
+							<div>
+								<select onChange="NMO_SpecularMap.setSpecularSetting('spec_falloff', this.options[this.selectedIndex].value)">
+									<option value="no">No</option>
+									<option value="linear" selected>Linear</option>
+									<option value="square">Square</option>
+								</select>
+							</div>
+						</td>
+					</tr>
+				</table>
+			</div>
+			
+			<!-- Textures -->
+			<div class="texture_container">
+				<div class="tabs">
+					<input class="tab_button" id="tab_btn_normal" type="button" onclick="NMO_Main.activate_texture('normal');" disabled value="Normal"/>
+					<input class="tab_button" id="tab_btn_displace" type="button" onclick="NMO_Main.activate_texture('displace');" value="Displacement"/>
+					<input class="tab_button" id="tab_btn_ao" type="button" onclick="NMO_Main.activate_texture('ao');" value="AmbientOcc"/>
+					<input class="tab_button" id="tab_btn_specular" type="button" onclick="NMO_Main.activate_texture('specular');" value="Specular"/>
+				</div>
+				<!-- Normal Texture -->
+				<div class="view" id="normal_map">
+					<span class="helper"></span><canvas class="preview_img" id="normal_img" />
+				</div>
+				
+				<!-- Displacement Texture -->
+				<div class="view" id="displacement_map" style="display: none;">
+					<span class="helper"></span><canvas class="preview_img" id="displace_img" />
+				</div>
+				
+				<!-- Ambient Occlusion Texture -->
+				<div class="view" id="ao_map" style="display: none;">
+					<span class="helper"></span><canvas class="preview_img" id="ao_img" />
+				</div>
+
+				<!-- Specular Texture -->
+				<div class="view" id="specular_map" style="display: none;">
+					<span class="helper"></span><canvas class="preview_img" id="specular_img" />
+				</div>
+			</div>
+			
+			<!-- Autoupdate stuff -->
+			<!--<div style="min-height:15px;margin-top:-10px;">
+				<input id="auto_update" type="checkbox" onclick="toggleAutoUpdate();document.getElementById('update').disabled = auto_update;" checked />Auto update
+				<input id="update" type="button" onclick="updateCurrentTexture();" value="Update" disabled />
+			</div>-->
+			<div style="min-height:10px"></div>
+			<!-- Download Button -->
+			<div>
+				<input id="file_name" type="text" placeholder="NormalMap" size="12">
+				<select id="file_type" onChange="NMO_Main.switchJPGQual();">
+					<option value="png" selected>PNG</option>
+					<option value="jpg">JPG</option>
+					<option value="tiff">TIFF</option>
+				</select>
+				
+				<div style="min-height:3px"></div>
+				<div id="file_jpg_qual" style="display:none;">
+					Quality <input type="number" id="file_jpg_qual_nmb" step="1" style="width:40px;" min='0' max='100' value="95" size="4" > %
+				</div>
+				<div id="total_transparency" style="font-size:11px;">
+					Opacity <input type="number" id="transparency_nmb" step="1" style="width:40px;" value='100' max='100' min='0'> %
+				</div>
+				<div style="min-height:10px"></div>
+                <span style="display: inline-block; vertical-align: middle;">
+				    <td><button id="download" class="download" style="width: 8em;  height: 2em;"><b>Download</b></button></td>
+                    <td><button id="download_all" class="download" style="width: 5em;  height: 2em;"><b>All</b></button></td>
+					
+	
+                </span>
+					<!--<img src="images/Download_NormalMap_128.png"/>-->
+			</div>
+		</div>
+		
+		
+		<div class="column_btn" style="float:right; position:relative">
+			<span class="helper_column_button"></span>
+			<div id="column_btn_right" onclick="NMO_Main.toggle_preview_column();">
+				<span style="display: inline-block; min-height: 50px; vertical-align: middle;"></span>
+				<div id="column_btn_right_div" style="vertical-align:middle"> << </div>
+			</div>
+		</div>
+
+		<!-- Preview -->
+		<div class="column" id="preview" style="float:right;">
+			<div class="column_top">
+				<table style="border-spacing:0px; width:100%;" >
+					<col width="100">
+  					<col width="500">
+					<tr style="height:30px;">
+						<td align="center" class="option_text" colspan="2" style="text-align:center">
+							<span >3D Preview<i style="font-size:0.7em">(runs best on chrome)</i></span>
+						</td>
+					</tr>
+					<tr style="height:30px;">
+						<td class="option_text">
+							<span>Model</span>
+						</td>
+						<td class="options" style="font-size: small;">
+							<select id="model" onchange="NMO_RenderView.setModel(document.getElementById('model').value)">
+								<option selected>Cube</option>
+								<option>Plane</option>
+								<option>Sphere</option>
+								<option>Cylinder</option>
+								<option>Teapot</option>
+								<option>Custom</option>
+								
+							</select>
+							<input id="select_model_file" type="file" accept=".obj" onpropertychange="NMO_FileDrop.handleModelFileSelect()" style="position:absolute;visibility:hidden;"/>
+							<input type="button" id="browseModelButton" value="Load .obj" onclick="select_model_file.click();">
+							<input id="input_rot" type="checkbox" value="rotation" onclick="NMO_RenderView.toggleRotation()" checked> Rotation
+						</td>
+					</tr>
+					<tr style="height:30px;">
+						<td class="option_text">
+							<span>Maps</span>
+						</td>
+						<td class="options" style="font-size: small;">
+							<input id="input_diffuse" type="checkbox" value="Diffuse" onclick="NMO_RenderView.toggleDiffuse()" disabled>Diffuse
+							<input id="select_diffuse_file" type="file" accept="image/*, .tga" onpropertychange="handleDiffuseFileSelect()" style="position:absolute;visibility:hidden;"/>
+							<input type="button" id="browseDiffuseButton" value="Load..." onclick="select_diffuse_file.click();">
+						<td>
+					</tr>
+					<tr style="height:30px;">
+						<td class="option_text"></td>
+						<td class="options" style="font-size: small;">
+							<input id="input_displacement" type="checkbox" value="displacement" onclick="NMO_RenderView.setDisplacement(document.getElementById('input_displacement').checked)" style="vertical-align: middle;" checked >
+							Displacement
+							<input id="dm_strength_slider" style="width:50px; vertical-align: middle;"
+								onchange="NMO_DisplacementMap.setDisplaceStrength( this.value); document.getElementById('dm_strength_nmb').value = this.value;"
+								oninput="NMO_DisplacementMap.setDisplaceStrength( this.value); document.getElementById('dm_strength_nmb').value = this.value;"
+								type="range" value='0.3' min='-1' max='1' step='0.01' />
+							<input id="dm_strength_nmb" type="number" step="0.01" style="width:40px;vertical-align: middle;" value='0.3'
+								onchange="NMO_DisplacementMap.setDisplaceStrength(this.value); document.getElementById('dm_strength_slider').value = this.value;">	
+						</td>
+					</tr>
+
+					<tr style="height:30px;">
+						<td class="option_text"></td>
+						<td class="options" style="font-size: small;">
+							<input id="input_normal" type="checkbox" value="normal" onclick="NMO_RenderView.toggleNormal()" checked>Normal
+							<input id="input_ao" type="checkbox" value="ao" onclick="NMO_RenderView.toggleAO()" checked>AO
+							<input id="input_specular" type="checkbox" value="specular" onclick="NMO_RenderView.toggleSpecular()" checked>Specular
+						</td>
+					</tr>
+
+					<tr style="height:30px;">
+						<td class="option_text"></td>
+						<td class="options" style="font-size: small;">
+							<input id="input_enviroment" type="checkbox" value="normal" onclick="NMO_RenderView.setEnvironment(document.getElementById('input_enviroment').checked)" >Environment
+						</td>
+					</tr>
+				</table>
+				
+				
+				<div style="height:50px;"></div>
+			</div>
+	
+			<div class="view" id="render_view">
+				<a class="render_magnifier big_preview" href="#renderBig">
+					<img src="images/iconmonstr-magnifier-6-icon-16.png" />
+				</a>
+			</div>
+			
+			
+			<div id="renderBig" style="display:none;overflow:hidden;">	</div>
+				
+	
+			
+			<div style="min-height:10px"></div>
+			If you like this, please
+			<div style="min-height:5px"></div>
+			<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                <input type="hidden" name="cmd" value="_donations" />
+                <input type="hidden" name="business" value="petry2christian@gmail.com" />
+                <input type="hidden" name="item_name" value="NormalMapOnline" />
+                <input type="hidden" name="currency_code" value="USD" />
+                <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+                <img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
+            </form>
+
+			<!--
+				<input type="button" onclick="createNormalMap()" value="Generate NormalMap"/>
+			-->
+		</div>
+
+
+		
+	</div>
+	
+	<div class="texture_link">
+		Need a Texture?<br/>
+		<a href="http://cpetry.github.io/TextureGenerator-Online/">
+			<img src="https://cpetry.github.io/TextureGenerator-Online/images/logo.png" style="padding-top:5px"/>
+		</a>
+	</div>
+
+</body>
+<footer>
+		<p>Imprint: Christian Petry, Am Gänsweiher 8, 91486 Uehlfeld, Germany
+		<br/>
+		Enviroment map from <a href="http://www.humus.name/index.php?page=Textures">Humus</a>
+		</p>
+	</footer>
+	
+	
+<!-- Add jQuery library -->
+<script src="javascripts/extern/jquery-2.1.1.min.js"></script>
+<script src="javascripts/extern/jquery-ui.min.js"></script>
+
+
+<!-- Add fancyBox -->
+<link rel="stylesheet" href="javascripts/fancybox/source/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+<script type="text/javascript" src="javascripts/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+<script src="javascripts/extern/three.min.js"></script>
+
+<script src="javascripts/extern/blob.js"></script>
+<script src="javascripts/extern/canvas-toBlob.js"></script>
+<script src="javascripts/extern/canvastotiff.min.js"></script>
+<script src="javascripts/extern/CopyShader.js"></script>
+<script src="javascripts/extern/filesaver.min.js"></script>
+<script src="javascripts/extern/EffectComposer.js"></script>
+<script src="javascripts/extern/MaskPass.js"></script>
+<script src="javascripts/extern/OBJLoader.js"></script>
+<script src="javascripts/extern/OrbitControls.js"></script>
+<script src="javascripts/extern/readTGA.js"></script>
+<script src="javascripts/extern/RenderPass.js"></script>
+<script src="javascripts/extern/ShaderPass.js"></script>
+<script src="javascripts/extern/TeapotBufferGeometry.js"></script>
+
+<script src="javascripts/shader/NormalMapShader.js"></script>
+<script src="javascripts/shader/NormalToHeightShader.js"></script>
+<script src="javascripts/shader/NormalMapFromPicturesShader.js"></script>
+<script src="javascripts/shader/AmbientOcclusionShader.js"></script>
+<script src="javascripts/shader/DisplacementShader.js"></script>
+<script src="javascripts/shader/SpecularShader.js"></script>
+<script src="javascripts/shader/HorizontalBlurShader.js"></script>
+<script src="javascripts/shader/VerticalBlurShader.js"></script>
+
+<script type="text/javascript" src="javascripts/filedrop.js"></script>
+<script type="text/javascript" src="javascripts/filters.js"></script>
+<script type="text/javascript" src="javascripts/renderView.js"></script>
+<script type="text/javascript" src="javascripts/renderNormalview.js"></script>
+<script type="text/javascript" src="javascripts/normalMap.js"></script>
+<script type="text/javascript" src="javascripts/displaceMap.js"></script>
+<script type="text/javascript" src="javascripts/ambientOccMap.js"></script>
+<script type="text/javascript" src="javascripts/specularMap.js"></script>
+<script type="text/javascript" src="javascripts/diffuseMap.js"></script>
+<script type="text/javascript" src="javascripts/main.js"></script>
+
+</html>
