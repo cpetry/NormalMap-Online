@@ -186,6 +186,18 @@ NMO_FileDrop = new function(){
 			tga.load(new Uint8Array(data))
 			processedData = tga.getDataURL('image/png');
 		}
+		
+		const textureNames = {
+			[NMO_Main.TextureEnum.NORMAL]: "NormalMap",
+			[NMO_Main.TextureEnum.DISPLACEMENT]: "DisplacementMap",
+			[NMO_Main.TextureEnum.AMBIENT]: "AmbientOcclusionMap",
+			[NMO_Main.TextureEnum.SPECULAR]: "SpecularMap",
+		};
+
+		const file_name = imgFile.name.replace(/\.[^/.]+$/, "") + '_';
+
+		document.getElementById('file_name').placeholder = file_name + textureNames[NMO_Main.current_texture];
+		NMO_Main.default_file_name = file_name;
 
 		if (type === "height")
 			await NMO_FileDrop.loadHeightmap(processedData);

@@ -41,6 +41,8 @@ var NMO_Main = new function(){
 	this.download_btn = document.getElementById('download');
 	this.download_all_btn = document.getElementById('download_all');
 
+	this.default_file_name = "";
+
 
 	this.activate_height_tab = function(type){
 		this.normal_map_mode = type;
@@ -94,7 +96,7 @@ var NMO_Main = new function(){
 			document.getElementById('specular_map').style.cssText = "display: none;";
 			document.getElementById('specular_settings').style.cssText = "display: none;";
 
-			document.getElementById('file_name').placeholder = "NormalMap";
+			document.getElementById('file_name').placeholder = this.default_file_name + "NormalMap";
 			this.current_texture = this.TextureEnum.NORMAL;
 		}
 		
@@ -116,7 +118,7 @@ var NMO_Main = new function(){
 			document.getElementById('specular_map').style.cssText = "display: none;";
 			document.getElementById('specular_settings').style.cssText = "display: none;";
 
-			document.getElementById('file_name').placeholder = "DisplacementMap";
+			document.getElementById('file_name').placeholder = this.default_file_name + "DisplacementMap";
 			this.current_texture = this.TextureEnum.DISPLACEMENT;
 			//console.log("displace!");
 		}
@@ -138,7 +140,7 @@ var NMO_Main = new function(){
 			document.getElementById('specular_map').style.cssText = "display: none;";
 			document.getElementById('specular_settings').style.cssText = "display: none;";
 
-			document.getElementById('file_name').placeholder = "AmbientOcclusionMap";
+			document.getElementById('file_name').placeholder = this.default_file_name + "AmbientOcclusionMap";
 			this.current_texture = this.TextureEnum.AMBIENT;
 			//console.log("displace!");
 		}
@@ -160,7 +162,7 @@ var NMO_Main = new function(){
 			document.getElementById('specular_map').style.cssText = "";
 			document.getElementById('specular_settings').style.cssText = "";
 
-			document.getElementById('file_name').placeholder = "SpecularMap";
+			document.getElementById('file_name').placeholder = this.default_file_name + "SpecularMap";
 			this.current_texture = this.TextureEnum.SPECULAR;
 			//console.log("displace!");
 		}
@@ -375,9 +377,12 @@ var NMO_Main = new function(){
 			file_name="SpecularMap";
 		}
 		
-		if (document.getElementById('file_name').value != "")
-			file_name = document.getElementById('file_name').value;
-		
+		let file_name_el = document.getElementById('file_name');
+		if (file_name_el.value != "")
+			file_name = file_name_el.value;
+		else if (file_name_el.placeholder != file_name) {
+			file_name = this.default_file_name + file_name;
+		}
 		
 			
 		var qual = $('#file_jpg_qual_nmb').val() / 100;
