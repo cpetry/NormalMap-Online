@@ -49,6 +49,13 @@ NMO_DisplacementMap = new function(){
 	this.height_map_tex;
 	this.gaussian_shader_y, this.gaussian_shader_x;
 
+	this.disposeRenderTarget = function(){
+		if (this.renderTarget){
+			this.renderTarget.dispose();
+			this.renderTarget = null;
+		}
+	};
+
 	this.createDisplacementMap = function(){
 		this.createGPUbasedDisplacementTexture();
 			
@@ -158,6 +165,7 @@ NMO_DisplacementMap = new function(){
 		this.renderer.setSize( w, h );
 		this.composer.setSize( w, h );
 		var renderTargetParameters = { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat, stencilBufer: false };
+		this.disposeRenderTarget();
 		this.renderTarget = new THREE.WebGLRenderTarget( w, h, renderTargetParameters );
 		this.composer.reset(this.renderTarget);
 		this.composer.render( 1 / 60 );
@@ -222,8 +230,9 @@ NMO_DisplacementMap = new function(){
 		
 		
 		var renderTargetParameters = { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat, stencilBufer: false };
+		this.disposeRenderTarget();
 		this.renderTarget = new THREE.WebGLRenderTarget( w, h, renderTargetParameters );
-		this.composer = new THREE.EffectComposer( this.renderer, renderTarget );
+		this.composer = new THREE.EffectComposer( this.renderer, this.renderTarget );
 		//renderer_aomap.render( scene_aomap, camera_aomap, renderTarget );
 		//renderer_aomap.render( scene_aomap, camera_aomap );
 		//this.composer_aomap.setSize( w, h );

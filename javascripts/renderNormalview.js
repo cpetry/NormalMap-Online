@@ -26,6 +26,7 @@ var NMO_RenderNormalview = new function(){
 
 	this.renderer_Normalview;
 	this.composer_Normalview;
+	this.renderTarget;
 	this.scene_Normalview;
 	this.camera_Normalview;
 	this.gaussian_shader_y, this.gaussian_shader_x, this.gaussian_shader;
@@ -43,6 +44,13 @@ var NMO_RenderNormalview = new function(){
 
 	this.renderNormalView = function() {
 		this.composer_Normalview.render( 1 / 60 );		
+	};
+
+	this.disposeRenderTarget = function() {
+		if (this.renderTarget){
+			this.renderTarget.dispose();
+			this.renderTarget = null;
+		}
 	};
 
 	this.renderNormalview_init = function() {
@@ -149,8 +157,9 @@ var NMO_RenderNormalview = new function(){
 		//composer_Normalview.addPass( copyPass );
 
 		var renderTargetParameters = { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat, stencilBufer: false };
-		renderTarget = new THREE.WebGLRenderTarget( NMO_FileDrop.height_image.width, NMO_FileDrop.height_image.height, renderTargetParameters );
-		this.composer_Normalview = new THREE.EffectComposer( this.renderer_Normalview, renderTarget );
+		this.disposeRenderTarget();
+		this.renderTarget = new THREE.WebGLRenderTarget( NMO_FileDrop.height_image.width, NMO_FileDrop.height_image.height, renderTargetParameters );
+		this.composer_Normalview = new THREE.EffectComposer( this.renderer_Normalview, this.renderTarget );
 		this.composer_Normalview.setSize( NMO_FileDrop.height_image.width, NMO_FileDrop.height_image.height );
 		this.composer_Normalview.addPass( this.NormalRenderScene );
 		this.composer_Normalview.addPass( this.gaussian_shader_y );	
@@ -216,8 +225,9 @@ var NMO_RenderNormalview = new function(){
 			this.renderer_Normalview.setSize( img.naturalWidth, img.naturalHeight );
 			this.composer_Normalview.setSize( img.naturalWidth, img.naturalHeight );
 			var renderTargetParameters = { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat, stencilBufer: false };
-			renderTarget = new THREE.WebGLRenderTarget( img.width, img.height, renderTargetParameters );
-			this.composer_Normalview.reset(renderTarget);
+			this.disposeRenderTarget();
+			this.renderTarget = new THREE.WebGLRenderTarget( img.width, img.height, renderTargetParameters );
+			this.composer_Normalview.reset(this.renderTarget);
 		}
 
 		else if (map === "pictures"){
@@ -240,8 +250,9 @@ var NMO_RenderNormalview = new function(){
 			this.renderer_Normalview.setSize( img.naturalWidth, img.naturalHeight );
 			this.composer_Normalview.setSize( img.naturalWidth, img.naturalHeight );
 			var renderTargetParameters = { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat, stencilBufer: false };
-			renderTarget = new THREE.WebGLRenderTarget( img.width, img.height, renderTargetParameters );
-			this.composer_Normalview.reset(renderTarget);
+			this.disposeRenderTarget();
+			this.renderTarget = new THREE.WebGLRenderTarget( img.width, img.height, renderTargetParameters );
+			this.composer_Normalview.reset(this.renderTarget);
 
 			this.picture_above_map.needsUpdate = true;
 			this.picture_left_map.needsUpdate = true;

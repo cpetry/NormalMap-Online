@@ -63,31 +63,39 @@ NMO_FileDrop = new function(){
 		const includeDisplacement = document.getElementById('displacement_tick').checked;
 		const includeAmbient = document.getElementById('ambient_tick').checked;
 		const includeSpecular = document.getElementById('specular_tick').checked;
+		const fileNameInput = document.getElementById('file_name');
+		const batchInput = document.getElementById('select_multiple_height_files');
+		const originalFileName = fileNameInput.value;
+		const selectedMaps = [];
 
-		for (let i = 0; i < files.length; i++) {
-			await this.readImage(files[i], "height", "", async (name) => {
-				const baseName = name.replace(/\.[^/.]+$/, "");
-				
-				if (includeNormal) {
-					document.getElementById('file_name').value = `${baseName}_normal`;
-					await NMO_Main.downloadImage("NormalMap");
-				}
-				
-				if (includeDisplacement) {
-					document.getElementById('file_name').value = `${baseName}_displacement`;
-					await NMO_Main.downloadImage("DisplacementMap");
-				}
-				
-				if (includeAmbient) {
-					document.getElementById('file_name').value = `${baseName}_ambient`;
-					await NMO_Main.downloadImage("AmbientOcclusionMap");
-				}
-				
-				if (includeSpecular) {
-					document.getElementById('file_name').value = `${baseName}_specular`;
-					await NMO_Main.downloadImage("SpecularMap");
-				}
-			}, files[i].name);
+		if (includeNormal)
+			selectedMaps.push({ type: "NormalMap", suffix: "normal" });
+		if (includeDisplacement)
+			selectedMaps.push({ type: "DisplacementMap", suffix: "displacement" });
+		if (includeAmbient)
+			selectedMaps.push({ type: "AmbientOcclusionMap", suffix: "ambient" });
+		if (includeSpecular)
+			selectedMaps.push({ type: "SpecularMap", suffix: "specular" });
+
+		if (selectedMaps.length === 0)
+			return;
+
+		try {
+			for (let i = 0; i < files.length; i++) {
+				await this.readImage(files[i], "height", "", async (name) => {
+					const baseName = name.replace(/\.[^/.]+$/, "");
+
+					for (let mapIndex = 0; mapIndex < selectedMaps.length; mapIndex++) {
+						const map = selectedMaps[mapIndex];
+						fileNameInput.value = `${baseName}_${map.suffix}`;
+						await NMO_Main.downloadImage(map.type);
+					}
+				}, files[i].name);
+			}
+		}
+		finally {
+			fileNameInput.value = originalFileName;
+			batchInput.value = "";
 		}
 	};
 
@@ -113,6 +121,26 @@ NMO_FileDrop = new function(){
 	    var files = evt.target.files; // FileList object
 	    NMO_FileDrop.readModelFile(evt.target.files[0]); // files is a FileList of File objects. List some properties.
 	}
+
+	this.isSupportedImageFile = function(imgFile){
+		const fileType = (imgFile.type || "").toLowerCase();
+		const fileName = (imgFile.name || "").toLowerCase();
+
+		if (fileType.match(/image.*/))
+			return true;
+
+		return /\.(png|jpe?g|bmp|gif|webp|tga)$/i.test(fileName);
+	};
+
+	this.isTargaFile = function(imgFile){
+		const fileType = (imgFile.type || "").toLowerCase();
+		const fileName = (imgFile.name || "").toLowerCase();
+
+		return fileType == "image/targa" ||
+			fileType == "image/x-targa" ||
+			fileType == "image/x-tga" ||
+			/\.tga$/i.test(fileName);
+	};
 
 	this.readModelFile = function(file){
 		console.log(file);
@@ -158,14 +186,14 @@ NMO_FileDrop = new function(){
 
 	this.readImage = async function(imgFile, type, direction, readImageCallback=false, name=""){
 		//console.log(imgFile);
-		if(!imgFile.type.match(/image.*/))
+		if(!this.isSupportedImageFile(imgFile))
 		{
-			console.log("The dropped file is not an image: ", imgFile.type);
+			console.log("The dropped file is not an image: ", imgFile.type || imgFile.name);
 			return;
 		}
-		console.log("Loading " + imgFile.type + " image");
+		console.log("Loading " + (imgFile.type || imgFile.name) + " image");
 
-		let isTarga = imgFile.type == "image/targa" || imgFile.type == "image/x-targa" || imgFile.type == "image/x-tga";
+		let isTarga = this.isTargaFile(imgFile);
 
 		const data = await new Promise((resolve, reject) => {
 			const reader = new FileReader();
