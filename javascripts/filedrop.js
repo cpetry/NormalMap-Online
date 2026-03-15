@@ -122,26 +122,6 @@ NMO_FileDrop = new function(){
 	    NMO_FileDrop.readModelFile(evt.target.files[0]); // files is a FileList of File objects. List some properties.
 	}
 
-	this.isSupportedImageFile = function(imgFile){
-		const fileType = (imgFile.type || "").toLowerCase();
-		const fileName = (imgFile.name || "").toLowerCase();
-
-		if (fileType.match(/image.*/))
-			return true;
-
-		return /\.(png|jpe?g|bmp|gif|webp|tga)$/i.test(fileName);
-	};
-
-	this.isTargaFile = function(imgFile){
-		const fileType = (imgFile.type || "").toLowerCase();
-		const fileName = (imgFile.name || "").toLowerCase();
-
-		return fileType == "image/targa" ||
-			fileType == "image/x-targa" ||
-			fileType == "image/x-tga" ||
-			/\.tga$/i.test(fileName);
-	};
-
 	this.readModelFile = function(file){
 		console.log(file);
 		console.log("trying to load model")
@@ -186,14 +166,14 @@ NMO_FileDrop = new function(){
 
 	this.readImage = async function(imgFile, type, direction, readImageCallback=false, name=""){
 		//console.log(imgFile);
-		if(!this.isSupportedImageFile(imgFile))
+		if(!imgFile.type.match(/image.*/))
 		{
-			console.log("The dropped file is not an image: ", imgFile.type || imgFile.name);
+			console.log("The dropped file is not an image: ", imgFile.type);
 			return;
 		}
-		console.log("Loading " + (imgFile.type || imgFile.name) + " image");
+		console.log("Loading " + imgFile.type + " image");
 
-		let isTarga = this.isTargaFile(imgFile);
+		let isTarga = imgFile.type == "image/targa" || imgFile.type == "image/x-targa" || imgFile.type == "image/x-tga";
 
 		const data = await new Promise((resolve, reject) => {
 			const reader = new FileReader();

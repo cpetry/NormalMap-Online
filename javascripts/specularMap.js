@@ -58,13 +58,7 @@ NMO_SpecularMap = new function(){
 	this.uniforms;
 	this.height_map_tex;
 	this.gaussian_shader_y, this.gaussian_shader_x;
-
-	this.disposeRenderTarget = function(){
-		if (this.renderTarget){
-			this.renderTarget.dispose();
-			this.renderTarget = null;
-		}
-	};
+	this.renderTarget;
 
 	this.setSpecularSetting = function(element, v){
 		if (element == "spec_strength")
@@ -184,7 +178,7 @@ NMO_SpecularMap = new function(){
 		this.renderer.setSize( w, h );
 		this.composer.setSize( w, h );
 		var renderTargetParameters = { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat, stencilBufer: false };
-		this.disposeRenderTarget();
+		NMO_RenderTargetUtils.disposeRenderTarget(this);
 		this.renderTarget = new THREE.WebGLRenderTarget( w, h, renderTargetParameters );
 		this.composer.reset(this.renderTarget);
 		this.composer.render( 1 / 60 );
@@ -254,7 +248,7 @@ NMO_SpecularMap = new function(){
 		
 		
 		var renderTargetParameters = { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat, stencilBufer: false };
-		this.disposeRenderTarget();
+		NMO_RenderTargetUtils.disposeRenderTarget(this);
 		this.renderTarget = new THREE.WebGLRenderTarget( w, h, renderTargetParameters );
 		this.composer = new THREE.EffectComposer( this.renderer, this.renderTarget );
 		//this.renderer.render( scene, camera, this.renderTarget );

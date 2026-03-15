@@ -46,13 +46,6 @@ var NMO_RenderNormalview = new function(){
 		this.composer_Normalview.render( 1 / 60 );		
 	};
 
-	this.disposeRenderTarget = function() {
-		if (this.renderTarget){
-			this.renderTarget.dispose();
-			this.renderTarget = null;
-		}
-	};
-
 	this.renderNormalview_init = function() {
 		
 		this.renderer_Normalview = new THREE.WebGLRenderer({ alpha: true, antialias: true, canvas: NMO_NormalMap.normal_canvas });
@@ -157,7 +150,7 @@ var NMO_RenderNormalview = new function(){
 		//composer_Normalview.addPass( copyPass );
 
 		var renderTargetParameters = { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat, stencilBufer: false };
-		this.disposeRenderTarget();
+		NMO_RenderTargetUtils.disposeRenderTarget(this);
 		this.renderTarget = new THREE.WebGLRenderTarget( NMO_FileDrop.height_image.width, NMO_FileDrop.height_image.height, renderTargetParameters );
 		this.composer_Normalview = new THREE.EffectComposer( this.renderer_Normalview, this.renderTarget );
 		this.composer_Normalview.setSize( NMO_FileDrop.height_image.width, NMO_FileDrop.height_image.height );
@@ -225,7 +218,7 @@ var NMO_RenderNormalview = new function(){
 			this.renderer_Normalview.setSize( img.naturalWidth, img.naturalHeight );
 			this.composer_Normalview.setSize( img.naturalWidth, img.naturalHeight );
 			var renderTargetParameters = { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat, stencilBufer: false };
-			this.disposeRenderTarget();
+			NMO_RenderTargetUtils.disposeRenderTarget(this);
 			this.renderTarget = new THREE.WebGLRenderTarget( img.width, img.height, renderTargetParameters );
 			this.composer_Normalview.reset(this.renderTarget);
 		}
@@ -250,7 +243,7 @@ var NMO_RenderNormalview = new function(){
 			this.renderer_Normalview.setSize( img.naturalWidth, img.naturalHeight );
 			this.composer_Normalview.setSize( img.naturalWidth, img.naturalHeight );
 			var renderTargetParameters = { minFilter: THREE.NearestFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat, stencilBufer: false };
-			this.disposeRenderTarget();
+			NMO_RenderTargetUtils.disposeRenderTarget(this);
 			this.renderTarget = new THREE.WebGLRenderTarget( img.width, img.height, renderTargetParameters );
 			this.composer_Normalview.reset(this.renderTarget);
 
