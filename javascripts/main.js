@@ -304,14 +304,26 @@ var NMO_Main = new function(){
 			NMO_SpecularMap.createSpecularTexture();
 	};
 
-	this.download_all_btn.addEventListener('click', function (e) {		
-		NMO_Main.downloadImage("NormalMap");
-		NMO_Main.downloadImage("DisplacementMap");
-		NMO_Main.downloadImage("AmbientOcclusionMap");
-		NMO_Main.downloadImage("SpecularMap");
+	this.wait = function(ms){
+		return new Promise(function(resolve){
+			setTimeout(resolve, ms);
+		});
+	};
+
+	this.finishDownload = async function(blob, file_name){
+		saveAs(blob, file_name);
+		// Give the browser a moment to register each programmatic save before the next one.
+		await this.wait(150);
+	};
+
+	this.download_all_btn.addEventListener('click', async function (e) {
+		await NMO_Main.downloadImage("NormalMap");
+		await NMO_Main.downloadImage("DisplacementMap");
+		await NMO_Main.downloadImage("AmbientOcclusionMap");
+		await NMO_Main.downloadImage("SpecularMap");
 	});
 	
-	this.download_btn.addEventListener('click', function (e) {		
+	this.download_btn.addEventListener('click', function (e) {
 		if (document.getElementById('normal_map').style.cssText != "display: none;"){
 			NMO_Main.downloadImage("NormalMap");
 		}
@@ -327,12 +339,11 @@ var NMO_Main = new function(){
 	});
 	
 	
-	this.downloadImage = function(type){
+	this.downloadImage = async function(type){
 		console.log("Downloading image");
-		var qual = 0.9;
 		var file_name = "download";
 		var canvas = document.createElement("canvas");
-		
+
 		var file_type = NMO_Main.getImageType();
 		var image_type = "image/png";
 		if (file_type == "jpg")
@@ -342,7 +353,7 @@ var NMO_Main = new function(){
 			canvas.width = NMO_NormalMap.normal_canvas.width;
 			canvas.height = NMO_NormalMap.normal_canvas.height;
 			var context = canvas.getContext('2d');
-			if (file_type == "png") 
+			if (file_type == "png")
 				context.globalAlpha = $('#transparency_nmb').val() / 100;
 			context.drawImage(NMO_NormalMap.normal_canvas,0,0);
 			file_name="NormalMap";
@@ -351,7 +362,7 @@ var NMO_Main = new function(){
 			canvas.width = NMO_DisplacementMap.displacement_canvas.width;
 			canvas.height = NMO_DisplacementMap.displacement_canvas.height;
 			var context = canvas.getContext('2d');
-			if (file_type == "png") 
+			if (file_type == "png")
 				context.globalAlpha = $('#transparency_nmb').val() / 100;
 			context.drawImage(NMO_DisplacementMap.displacement_canvas,0,0);
 			file_name="DisplacementMap";
@@ -360,7 +371,7 @@ var NMO_Main = new function(){
 			canvas.width = NMO_AmbientOccMap.ao_canvas.width;
 			canvas.height = NMO_AmbientOccMap.ao_canvas.height;
 			var context = canvas.getContext('2d');
-			if (file_type == "png") 
+			if (file_type == "png")
 				context.globalAlpha = $('#transparency_nmb').val() / 100;
 			context.drawImage(NMO_AmbientOccMap.ao_canvas,0,0);
 			file_name="AmbientOcclusionMap";
@@ -369,28 +380,41 @@ var NMO_Main = new function(){
 			canvas.width = NMO_SpecularMap.specular_canvas.width;
 			canvas.height = NMO_SpecularMap.specular_canvas.height;
 			var context = canvas.getContext('2d');
-			if (file_type == "png") 
+			if (file_type == "png")
 				context.globalAlpha = $('#transparency_nmb').val() / 100;
 			context.drawImage(NMO_SpecularMap.specular_canvas,0,0);
 			file_name="SpecularMap";
 		}
-		
+
 		if (document.getElementById('file_name').value != "")
 			file_name = document.getElementById('file_name').value;
-		
-		
-			
+
 		var qual = $('#file_jpg_qual_nmb').val() / 100;
-		if (file_type == "tiff"){
-			CanvasToTIFF.toBlob(canvas, function(blob) {
-   				saveAs(blob, file_name + ".tif");
-		    });
-		}
-		else{
-			canvas.toBlob(function(blob) {
-	    		saveAs(blob, file_name + "." + file_type);
-			}, image_type, qual);
-		}
+		var blob = await new Promise(function(resolve, reject) {
+			if (file_type == "tiff"){
+				CanvasToTIFF.toBlob(canvas, function(generatedBlob) {
+					if (!generatedBlob){
+						reject(new Error("Could not create TIFF blob."));
+						return;
+					}
+					resolve(generatedBlob);
+			    });
+			}
+			else{
+				canvas.toBlob(function(generatedBlob) {
+					if (!generatedBlob){
+						reject(new Error("Could not create image blob."));
+						return;
+					}
+					resolve(generatedBlob);
+				}, image_type, qual);
+			}
+		});
+
+		if (file_type == "tiff")
+			await NMO_Main.finishDownload(blob, file_name + ".tif");
+		else
+			await NMO_Main.finishDownload(blob, file_name + "." + file_type);
 	}
 
 	this.resetNormalMapSettings = function() {

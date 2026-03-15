@@ -63,31 +63,39 @@ NMO_FileDrop = new function(){
 		const includeDisplacement = document.getElementById('displacement_tick').checked;
 		const includeAmbient = document.getElementById('ambient_tick').checked;
 		const includeSpecular = document.getElementById('specular_tick').checked;
+		const fileNameInput = document.getElementById('file_name');
+		const batchInput = document.getElementById('select_multiple_height_files');
+		const originalFileName = fileNameInput.value;
+		const selectedMaps = [];
 
-		for (let i = 0; i < files.length; i++) {
-			await this.readImage(files[i], "height", "", async (name) => {
-				const baseName = name.replace(/\.[^/.]+$/, "");
-				
-				if (includeNormal) {
-					document.getElementById('file_name').value = `${baseName}_normal`;
-					await NMO_Main.downloadImage("NormalMap");
-				}
-				
-				if (includeDisplacement) {
-					document.getElementById('file_name').value = `${baseName}_displacement`;
-					await NMO_Main.downloadImage("DisplacementMap");
-				}
-				
-				if (includeAmbient) {
-					document.getElementById('file_name').value = `${baseName}_ambient`;
-					await NMO_Main.downloadImage("AmbientOcclusionMap");
-				}
-				
-				if (includeSpecular) {
-					document.getElementById('file_name').value = `${baseName}_specular`;
-					await NMO_Main.downloadImage("SpecularMap");
-				}
-			}, files[i].name);
+		if (includeNormal)
+			selectedMaps.push({ type: "NormalMap", suffix: "normal" });
+		if (includeDisplacement)
+			selectedMaps.push({ type: "DisplacementMap", suffix: "displacement" });
+		if (includeAmbient)
+			selectedMaps.push({ type: "AmbientOcclusionMap", suffix: "ambient" });
+		if (includeSpecular)
+			selectedMaps.push({ type: "SpecularMap", suffix: "specular" });
+
+		if (selectedMaps.length === 0)
+			return;
+
+		try {
+			for (let i = 0; i < files.length; i++) {
+				await this.readImage(files[i], "height", "", async (name) => {
+					const baseName = name.replace(/\.[^/.]+$/, "");
+
+					for (let mapIndex = 0; mapIndex < selectedMaps.length; mapIndex++) {
+						const map = selectedMaps[mapIndex];
+						fileNameInput.value = `${baseName}_${map.suffix}`;
+						await NMO_Main.downloadImage(map.type);
+					}
+				}, files[i].name);
+			}
+		}
+		finally {
+			fileNameInput.value = originalFileName;
+			batchInput.value = "";
 		}
 	};
 
